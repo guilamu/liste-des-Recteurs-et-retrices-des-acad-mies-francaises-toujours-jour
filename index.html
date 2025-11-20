@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Recteurs et Rectrices</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .badge { font-size: 0.8em; color: #666; }
+    </style>
+</head>
+<body>
+    <h1>🎓 Recteurs et Rectrices d'Académie</h1>
+    <p>Mise à jour quotidienne automatique.</p>
+    
+    <table id="rectors-table">
+        <thead>
+            <tr>
+                <th>Académie</th>
+                <th>Genre</th>
+                <th>Nom</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td colspan="3">Chargement...</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        fetch('recteurs.json')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('#rectors-table tbody');
+                tbody.innerHTML = '';
+                data.forEach(row => {
+                    if(row.error) return; 
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><a href="${row.url}" target="_blank">${row.academie}</a></td>
+                        <td>${row.genre}</td>
+                        <td><strong>${row.nom}</strong></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(err => console.error(err));
+    </script>
+</body>
+</html>
