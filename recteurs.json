@@ -1,0 +1,238 @@
+[
+  {
+    "academie": "Aix-Marseille",
+    "genre": "M.",
+    "nom": "Benoît Delaunay",
+    "url": "https://www.education.gouv.fr/academie-d-aix-marseille-100103",
+    "updated_at": "2025-11-20T12:13:02.969Z"
+  },
+  {
+    "academie": "Amiens",
+    "genre": "M.",
+    "nom": "Pierre Moya",
+    "url": "https://www.education.gouv.fr/academie-d-amiens-253",
+    "updated_at": "2025-11-20T12:13:05.194Z"
+  },
+  {
+    "academie": "Besançon",
+    "genre": "Mme",
+    "nom": "Nathalie Albert-Moretti",
+    "url": "https://www.education.gouv.fr/academie-de-besancon-100076",
+    "updated_at": "2025-11-20T12:13:06.935Z"
+  },
+  {
+    "academie": "Bordeaux",
+    "genre": "M.",
+    "nom": "Jean-Marc Huart",
+    "url": "https://www.education.gouv.fr/academie-de-bordeaux-100094",
+    "updated_at": "2025-11-20T12:13:08.871Z"
+  },
+  {
+    "academie": "Clermont-Ferrand",
+    "genre": "Mme",
+    "nom": "Virginie Dupont",
+    "url": "https://www.education.gouv.fr/academie-de-clermont-ferrand-100085",
+    "updated_at": "2025-11-20T12:13:10.643Z"
+  },
+  {
+    "academie": "Corse",
+    "error": "Regex non trouvée",
+    "url": "https://www.education.gouv.fr/academie-de-corse-100109"
+  },
+  {
+    "academie": "Créteil",
+    "genre": "M.",
+    "nom": "Jean-François Chanet",
+    "url": "https://www.education.gouv.fr/academie-de-creteil-100052",
+    "updated_at": "2025-11-20T12:13:16.237Z"
+  },
+  {
+    "academie": "Dijon",
+    "genre": "Mme",
+    "nom": "Mathilde Gollety",
+    "url": "https://www.education.gouv.fr/academie-de-dijon-100073",
+    "updated_at": "2025-11-20T12:13:18.595Z"
+  },
+  {
+    "academie": "Grenoble",
+    "genre": "M.",
+    "nom": "Philippe Dulbecco",
+    "url": "https://www.education.gouv.fr/academie-de-grenoble-100082",
+    "updated_at": "2025-11-20T12:13:21.325Z"
+  },
+  {
+    "academie": "Guadeloupe",
+    "genre": "M.",
+    "nom": "Gabriele FIONI est nommé recteur de la région académique de la Guadeloupe",
+    "url": "https://www.education.gouv.fr/academie-de-guadeloupe-100115",
+    "updated_at": "2025-11-20T12:13:24.491Z"
+  },
+  {
+    "academie": "Guyane",
+    "genre": "M.",
+    "nom": "Guillaume Gellé",
+    "url": "https://www.education.gouv.fr/academie-de-guyane-100121",
+    "updated_at": "2025-11-20T12:13:26.967Z"
+  },
+  {
+    "academie": "La Réunion",
+    "genre": "M.",
+    "nom": "Rostane Mehdi",
+    "url": "https://www.education.gouv.fr/academie-de-la-reunion-100118",
+    "updated_at": "2025-11-20T12:13:29.468Z"
+  },
+  {
+    "academie": "Lille",
+    "genre": "Mme",
+    "nom": "Sophie Béjean",
+    "url": "https://www.education.gouv.fr/academie-de-lille-100043",
+    "updated_at": "2025-11-20T12:13:31.112Z"
+  },
+  {
+    "academie": "Limoges",
+    "genre": "Mme",
+    "nom": "Valérie Baglin-Le Goff",
+    "url": "https://www.education.gouv.fr/academie-de-limoges-100088",
+    "updated_at": "2025-11-20T12:13:32.976Z"
+  },
+  {
+    "academie": "Lyon",
+    "genre": "Mme",
+    "nom": "Anne Bisagni-Faure",
+    "url": "https://www.education.gouv.fr/academie-de-lyon-100079",
+    "updated_at": "2025-11-20T12:13:35.290Z"
+  },
+  {
+    "academie": "Martinique",
+    "genre": "Mme",
+    "nom": "Nathalie Mons",
+    "url": "https://www.education.gouv.fr/academie-de-martinique-100112",
+    "updated_at": "2025-11-20T12:13:37.409Z"
+  },
+  {
+    "academie": "Mayotte",
+    "genre": "M.",
+    "nom": "Jacques Mikulovic",
+    "url": "https://www.education.gouv.fr/academie-de-mayotte-100124",
+    "updated_at": "2025-11-20T12:13:40.408Z"
+  },
+  {
+    "academie": "Montpellier",
+    "genre": "Mme",
+    "nom": "Carole Drucker-Godard",
+    "url": "https://www.education.gouv.fr/academie-de-montpellier-100100",
+    "updated_at": "2025-11-20T12:13:42.003Z"
+  },
+  {
+    "academie": "Nancy-Metz",
+    "genre": "M.",
+    "nom": "Pierre-François Mourier",
+    "url": "https://www.education.gouv.fr/academie-de-nancy-metz-100058",
+    "updated_at": "2025-11-20T12:13:43.494Z"
+  },
+  {
+    "academie": "Nantes",
+    "genre": "Mme",
+    "nom": "Katia Béguin",
+    "url": "https://www.education.gouv.fr/academie-de-nantes-100067",
+    "updated_at": "2025-11-20T12:13:46.104Z"
+  },
+  {
+    "academie": "Nice",
+    "genre": "Mme",
+    "nom": "Natacha Chicot",
+    "url": "https://www.education.gouv.fr/academie-de-nice-100106",
+    "updated_at": "2025-11-20T12:13:48.767Z"
+  },
+  {
+    "academie": "Normandie",
+    "genre": "Mme",
+    "nom": "Valérie Cabuil",
+    "url": "https://www.education.gouv.fr/academie-de-normandie-101186",
+    "updated_at": "2025-11-20T12:13:52.168Z"
+  },
+  {
+    "academie": "Nouvelle-Calédonie",
+    "genre": "M.",
+    "nom": "Didier VIN-DATICHE",
+    "url": "https://www.education.gouv.fr/vice-rectorat-de-nouvelle-caledonie-100133",
+    "updated_at": "2025-11-20T12:13:55.302Z"
+  },
+  {
+    "academie": "Orléans-Tours",
+    "genre": "M.",
+    "nom": "Jean-Philippe Agresti",
+    "url": "https://www.education.gouv.fr/academie-d-orleans-tours-100070",
+    "updated_at": "2025-11-20T12:13:57.701Z"
+  },
+  {
+    "academie": "Paris",
+    "genre": "Mme",
+    "nom": "Julie Benetti",
+    "url": "https://www.education.gouv.fr/academie-de-paris-100049",
+    "updated_at": "2025-11-20T12:14:00.738Z"
+  },
+  {
+    "academie": "Poitiers",
+    "genre": "M.",
+    "nom": "Frédéric Périssat",
+    "url": "https://www.education.gouv.fr/academie-de-poitiers-100091",
+    "updated_at": "2025-11-20T12:14:03.695Z"
+  },
+  {
+    "academie": "Polynésie Française",
+    "genre": "M.",
+    "nom": "Thierry Terret",
+    "url": "https://www.education.gouv.fr/vice-rectorat-de-la-polynesie-francaise-100130",
+    "updated_at": "2025-11-20T12:14:05.235Z"
+  },
+  {
+    "academie": "Reims",
+    "genre": "M.",
+    "nom": "Vincent Stanek",
+    "url": "https://www.education.gouv.fr/academie-de-reims-100055",
+    "updated_at": "2025-11-20T12:14:07.794Z"
+  },
+  {
+    "academie": "Rennes",
+    "genre": "Mme",
+    "nom": "Hélène Insel",
+    "url": "https://www.education.gouv.fr/academie-de-rennes-100064",
+    "updated_at": "2025-11-20T12:14:09.585Z"
+  },
+  {
+    "academie": "Saint-Pierre et Miquelon (Services de l’EN)",
+    "genre": "M.",
+    "nom": "Jean-Pierre Tegon est nommé chef du Service de l'Éducation nationale de Saint-Pierre et Miquelon. Page à consulter Les rectorats et services départementaux de l'éducation nationale Les services déconcentrés de l'Éducation nationale La représentation du ministère au niveau de l'académie La mise en oeuvre de la stratégie académique au niveau du département Les coordonnées des rectorats et des services départementaux de l'Éducation nationale Les rectorats et services départementaux de l'Éducation nationale L'annuaire de l'éducation Recherchez une école",
+    "url": "https://www.education.gouv.fr/service-de-l-education-nationale-de-saint-pierre-et-miquelon-100136",
+    "updated_at": "2025-11-20T12:14:12.966Z"
+  },
+  {
+    "academie": "Strasbourg",
+    "genre": "M.",
+    "nom": "Olivier Klein est nommé recteur de l’académie de Strasbourg. Décret du 26 juin 2024 (JO du 27 juin 2024) Accès aux sites : Académies et Directions des services départementaux de l'Éducation nationale Académie de StrasbourgDSDEN du Bas-Rhin (67)DSDEN du Haut-Rhin (68) Directions des services départementaux de l'Éducation nationale de l'académie de Strasbourg Bas-Rhin [67]www.ac-strasbourg.fr/dsden67/ 65",
+    "url": "https://www.education.gouv.fr/academie-de-strasbourg-100061",
+    "updated_at": "2025-11-20T12:14:16.390Z"
+  },
+  {
+    "academie": "Toulouse",
+    "genre": "M.",
+    "nom": "Karim Benmiloud",
+    "url": "https://www.education.gouv.fr/academie-de-toulouse-100097",
+    "updated_at": "2025-11-20T12:14:18.855Z"
+  },
+  {
+    "academie": "Versailles",
+    "genre": "M.",
+    "nom": "Étienne Champion",
+    "url": "https://www.education.gouv.fr/academie-de-versailles-100046",
+    "updated_at": "2025-11-20T12:14:21.463Z"
+  },
+  {
+    "academie": "Wallis et Futuna",
+    "genre": "Mme",
+    "nom": "Régine Vigier",
+    "url": "https://www.education.gouv.fr/vice-rectorat-de-wallis-et-futuna-100127",
+    "updated_at": "2025-11-20T12:14:24.545Z"
+  }
+]
