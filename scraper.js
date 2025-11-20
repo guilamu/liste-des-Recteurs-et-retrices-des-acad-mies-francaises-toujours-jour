@@ -22,7 +22,7 @@ const ACADEMIES = [
     "Toulouse", "Versailles", "Wallis et Futuna"
 ];
 
-const RECTOR_REGEX = /\b(M\.|Mme)\s+([^,]+),/;
+const RECTOR_REGEX = /\b(M\.|Mme)\s+(.+?)(?=,|est nomm)/i;
 
 async function scrape() {
     console.log("🚀 Lancement du navigateur (Mode Stealth)...");
@@ -110,3 +110,4 @@ async function scrape() {
 }
 
 scrape();
+
