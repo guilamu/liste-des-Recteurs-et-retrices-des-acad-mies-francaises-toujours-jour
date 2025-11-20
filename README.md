@@ -14,7 +14,7 @@ Les recteurs d'académie sont des hauts fonctionnaires nommés par décret du Pr
 
 ### Format JSON
 
-Les données sont disponibles au format JSON dans le fichier [`recteurs.json`](./recteurs.json)[web:26].
+Les données sont disponibles au format JSON dans le fichier [`recteurs.json`](./recteurs.json).
 
 **Structure des données :**
 
