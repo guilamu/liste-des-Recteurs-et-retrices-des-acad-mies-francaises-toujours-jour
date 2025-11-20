@@ -26,7 +26,7 @@ const ACADEMIES = [
 // Regex standard
 const RECTOR_REGEX = /\b(M\.|Mme)\s+(.+?)(?=,|est nomm)/i;
 
-// --- FONCTION FALLBACK CORSE ---
+// --- FONCTION FALLBACK CORSE CORRIGÉE ---
 async function scrapeCorseFallback(browser) {
     console.log("   🚑 Activation du fallback Corse...");
     const page = await browser.newPage();
@@ -36,47 +36,46 @@ async function scrapeCorseFallback(browser) {
         // 1. Aller sur la page annuaire
         await page.goto(CORSE_FALLBACK_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
         
-        // 2. Cliquer sur "Rectorat - Académie de Corse"
-        // On cherche un lien qui contient ce texte exact ou partiel
-        const linkSelector = 'a[href*="rectorat-academie-de-corse"], a:contains("Rectorat - Académie de Corse")';
-        
-        // Si on ne trouve pas par sélecteur CSS simple, on cherche par texte XPath
-        const [linkElement] = await page.$x("//a[contains(., 'Rectorat - Académie de Corse')]");
-        
-        if (linkElement) {
+        // 2. Chercher le lien contenant le texte "Rectorat - Académie de Corse"
+        // CORRECTION: On utilise page.$$eval ou une boucle sur les éléments car $x est obsolète
+        const linkElement = await page.evaluateHandle(() => {
+            const links = Array.from(document.querySelectorAll('a'));
+            return links.find(a => a.textContent.includes('Rectorat - Académie de Corse'));
+        });
+
+        if (linkElement && (await linkElement.jsonValue()) !== undefined) {
             console.log("   -> Lien annuaire trouvé, clic...");
+            
             await Promise.all([
                 page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
                 linkElement.click()
             ]);
             
-            // 3. Sur la page finale, chercher le nom avant "Recteur d'académie..."
-            // La structure est souvent : "Jean-Pierre DUPONT, Recteur d'académie..."
+            // 3. Sur la page finale, extraction
             const content = await page.content();
             const $ = cheerio.load(content);
             const text = $('body').text().replace(/\s+/g, ' ');
             
-            // Regex inversée : On cherche Nom + ", Recteur d'académie"
-            // On suppose que le nom est précédé de "M." ou "Mme" ou juste en début de ligne dans un bloc contact
-            // Mais souvent sur service-public.fr c'est structuré. 
-            // On tente une regex large qui cherche le nom juste avant le titre.
-            
+            // Regex spécifique pour service-public.fr : cherche Nom avant "Recteur d'académie"
+            // Ex: "M. Jean DUPONT, Recteur d'académie..."
             const fallbackRegex = /([A-Z][a-zA-ZÀ-ÿ\s-]+?),\s*Recteur d'académie/i;
             const match = text.match(fallbackRegex);
 
             if (match) {
                 let fullName = match[1].trim();
-                let genre = "M./Mme"; // Par défaut car service-public ne met pas toujours la civilité ici
+                let genre = "M./Mme"; 
                 
-                // Petite détection basique si possible, sinon on laisse générique
                 if (fullName.startsWith("M. ")) { genre = "M."; fullName = fullName.replace("M. ", ""); }
                 if (fullName.startsWith("Mme ")) { genre = "Mme"; fullName = fullName.replace("Mme ", ""); }
 
                 console.log(`   ★ Trouvé via Fallback : ${fullName}`);
                 return { genre, nom: fullName, url: page.url() };
+            } else {
+                 console.log("   ⚠️ Regex fallback échouée sur la page finale.");
             }
+        } else {
+            console.log("   ⚠️ Lien 'Rectorat - Académie de Corse' introuvable.");
         }
-        console.log("   ⚠️ Fallback échoué (lien ou regex non trouvé).");
         return null;
 
     } catch (e) {
@@ -128,7 +127,9 @@ async function scrape() {
             
             // --- ESSAI 1 : METHODE STANDARD ---
             try {
-                await new Promise(r => setTimeout(r, 1000 + Math.random() * 2000));
+                // Petit délai humain
+                await new Promise(r => setTimeout(r, 1000 + Math.random() * 1500));
+                
                 await page.goto(item.url, { waitUntil: 'domcontentloaded', timeout: 45000 });
                 
                 const pageHtml = await page.content();
@@ -163,7 +164,7 @@ async function scrape() {
                         academie: item.name,
                         genre: fallbackResult.genre,
                         nom: fallbackResult.nom,
-                        url: fallbackResult.url, // On met l'URL de service-public ou celle d'origine ? Ici celle du résultat.
+                        url: fallbackResult.url, 
                         updated_at: new Date().toISOString()
                     });
                     found = true;
