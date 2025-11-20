@@ -5,17 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des Recteurs et Rectrices</title>
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f4f4f4; }
+        body { font-family: sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+        h1 { margin-bottom: 0.5rem; }
+        /* Style pour le sous-titre de mise à jour */
+        #last-update { color: #666; font-style: italic; margin-bottom: 2rem; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f4f4f4; font-weight: bold; }
         tr:nth-child(even) { background-color: #f9f9f9; }
-        .badge { font-size: 0.8em; color: #666; }
+        tr:hover { background-color: #f1f1f1; }
+        a { color: #0056b3; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .error-text { color: #d9534f; font-size: 0.9em; }
     </style>
 </head>
 <body>
     <h1>🎓 Recteurs et Rectrices d'Académie</h1>
-    <p>Mise à jour quotidienne automatique.</p>
+    
+    <!-- Ajout d'un ID pour cibler ce paragraphe en JS -->
+    <p id="last-update">Mise à jour quotidienne automatique.</p>
     
     <table id="rectors-table">
         <thead>
@@ -26,7 +35,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr><td colspan="3">Chargement...</td></tr>
+            <tr><td colspan="3" style="text-align:center; color:#888;">Chargement des données...</td></tr>
         </tbody>
     </table>
 
@@ -35,19 +44,48 @@
             .then(response => response.json())
             .then(data => {
                 const tbody = document.querySelector('#rectors-table tbody');
-                tbody.innerHTML = '';
+                const updateText = document.querySelector('#last-update');
+                
+                // 1. Gestion de la date de mise à jour
+                if (data.length > 0 && data[0].updated_at) {
+                    const rawDate = new Date(data[0].updated_at);
+                    // Formatage en français : jour/mois/année
+                    const formattedDate = rawDate.toLocaleDateString('fr-FR', {
+                        day: 'numeric', 
+                        month: 'long', 
+                        year: 'numeric'
+                    });
+                    updateText.innerText = `Mise à jour quotidienne automatique (Dernière mise à jour : ${formattedDate})`;
+                }
+
+                // 2. Remplissage du tableau
+                tbody.innerHTML = ''; // On vide le message de chargement
+                
                 data.forEach(row => {
-                    if(row.error) return; 
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><a href="${row.url}" target="_blank">${row.academie}</a></td>
-                        <td>${row.genre}</td>
-                        <td><strong>${row.nom}</strong></td>
-                    `;
+                    
+                    if (row.error) {
+                        // Cas où le scraping a échoué pour une ligne
+                        tr.innerHTML = `
+                            <td><a href="${row.url}" target="_blank">${row.academie}</a></td>
+                            <td colspan="2" class="error-text"><em>${row.error} (Vérifier manuellement)</em></td>
+                        `;
+                    } else {
+                        // Cas normal
+                        tr.innerHTML = `
+                            <td><a href="${row.url}" target="_blank">${row.academie}</a></td>
+                            <td>${row.genre}</td>
+                            <td><strong>${row.nom}</strong></td>
+                        `;
+                    }
                     tbody.appendChild(tr);
                 });
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                console.error(err);
+                document.querySelector('#rectors-table tbody').innerHTML = 
+                    `<tr><td colspan="3" style="color:red; text-align:center;">Erreur lors du chargement des données.</td></tr>`;
+            });
     </script>
 </body>
 </html>
