@@ -1,6 +1,6 @@
 # Liste des Recteurs et Rectrices des Académies Françaises 🇫🇷
 
-[![Mise à jour automatique](https://github.com/guilamu/liste-des-Recteurs-et-retrices-des-acad-mies-francaises-toujours-jour/actions/workflows/update.yml/badge.svg)](https://github.com/guilamu/liste-des-Recteurs-et-retrices-des-acad-mies-francaises-toujours-jour/actions)
+[![Accéder à la liste](https://guilamu.github.io/liste-des-Recteurs-et-retrices-des-acad-mies-francaises-toujours-jour/)
 
 Une liste actualisée quotidiennement des recteurs et rectrices des académies françaises, générée automatiquement depuis le site du Ministère de l'Éducation nationale.
 
