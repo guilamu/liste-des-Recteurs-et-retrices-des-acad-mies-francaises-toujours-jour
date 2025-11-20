@@ -26,18 +26,15 @@ const ACADEMIES = [
 // Regex standard
 const RECTOR_REGEX = /\b(M\.|Mme)\s+(.+?)(?=,|est nomm)/i;
 
-// --- FONCTION FALLBACK CORSE CORRIGÉE ---
+// --- FONCTION FALLBACK CORSE (GENRE PAR DÉFAUT = M.) ---
 async function scrapeCorseFallback(browser) {
     console.log("   🚑 Activation du fallback Corse...");
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 800 });
     
     try {
-        // 1. Aller sur la page annuaire
         await page.goto(CORSE_FALLBACK_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
         
-        // 2. Chercher le lien contenant le texte "Rectorat - Académie de Corse"
-        // CORRECTION: On utilise page.$$eval ou une boucle sur les éléments car $x est obsolète
         const linkElement = await page.evaluateHandle(() => {
             const links = Array.from(document.querySelectorAll('a'));
             return links.find(a => a.textContent.includes('Rectorat - Académie de Corse'));
@@ -45,36 +42,56 @@ async function scrapeCorseFallback(browser) {
 
         if (linkElement && (await linkElement.jsonValue()) !== undefined) {
             console.log("   -> Lien annuaire trouvé, clic...");
-            
             await Promise.all([
                 page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
                 linkElement.click()
             ]);
             
-            // 3. Sur la page finale, extraction
             const content = await page.content();
             const $ = cheerio.load(content);
-            const text = $('body').text().replace(/\s+/g, ' ');
             
-            // Regex spécifique pour service-public.fr : cherche Nom avant "Recteur d'académie"
-            // Ex: "M. Jean DUPONT, Recteur d'académie..."
-            const fallbackRegex = /([A-Z][a-zA-ZÀ-ÿ\s-]+?),\s*Recteur d'académie/i;
-            const match = text.match(fallbackRegex);
+            let genre = null;
+            let fullName = null;
 
-            if (match) {
-                let fullName = match[1].trim();
-                let genre = "M./Mme"; 
+            const elementsRecteur = $('*').filter((i, el) => {
+                return $(el).text().includes("Recteur d'académie");
+            });
+
+            elementsRecteur.each((i, el) => {
+                if (fullName) return; 
+
+                const parentText = $(el).parent().text().replace(/\s+/g, ' ');
                 
-                if (fullName.startsWith("M. ")) { genre = "M."; fullName = fullName.replace("M. ", ""); }
-                if (fullName.startsWith("Mme ")) { genre = "Mme"; fullName = fullName.replace("Mme ", ""); }
+                // NOUVELLE REGEX :
+                // 1. (?:(M\.|Mme)\s+)? -> Groupe 1 (Genre) rendu OPTIONNEL avec '?' à la fin
+                // 2. ([A-ZÀ-ÿ][^,]+)   -> Groupe 2 (Nom) Obligatoire (commence par majuscule)
+                const regexLigneSuivante = /Recteur.*?(?:(M\.|Mme)\s+)?([A-ZÀ-ÿ][a-zA-ZÀ-ÿ\s-]+?)(?:,|$)/i;
+                
+                const match = parentText.match(regexLigneSuivante);
 
-                console.log(`   ★ Trouvé via Fallback : ${fullName}`);
+                if (match) {
+                    // Si match[1] (Genre) est undefined, on met "M." par défaut
+                    genre = match[1] || "M.";
+                    
+                    // match[2] est le nom
+                    fullName = match[2].trim();
+                    
+                    // Protection anti-bruit : si le "nom" extrait est un mot parasite commun comme "De" ou "La"
+                    if (fullName.length < 3 && !fullName.includes('.')) {
+                        fullName = null; // Faux positif probable
+                    }
+                }
+            });
+
+            if (fullName) {
+                console.log(`   ★ Trouvé via Fallback (Genre: ${genre}, Nom: ${fullName})`);
                 return { genre, nom: fullName, url: page.url() };
             } else {
-                 console.log("   ⚠️ Regex fallback échouée sur la page finale.");
+                console.log("   ⚠️ Échec extraction nom après 'Recteur'.");
             }
+
         } else {
-            console.log("   ⚠️ Lien 'Rectorat - Académie de Corse' introuvable.");
+            console.log("   ⚠️ Lien 'Rectorat' introuvable.");
         }
         return null;
 
@@ -85,6 +102,7 @@ async function scrapeCorseFallback(browser) {
         await page.close();
     }
 }
+
 
 
 async function scrape() {
@@ -195,3 +213,4 @@ async function scrape() {
 }
 
 scrape();
+
