@@ -17,7 +17,7 @@ Les recteurs d'académie sont des hauts fonctionnaires nommés par décret du Pr
 Les données sont disponibles au format JSON dans le fichier [`recteurs.json`](./recteurs.json).
 
 **Structure des données :**
-
+```
 {
 "academie": "Aix-Marseille",
 "genre": "M.",
@@ -25,7 +25,7 @@ Les données sont disponibles au format JSON dans le fichier [`recteurs.json`](.
 "url": "https://www.education.gouv.fr/academie-d-aix-marseille-100103",
 "updated_at": "2025-11-20T12:46:39.758Z"
 }
-
+```
 ### Accès direct
 
 **URL du fichier JSON :**
