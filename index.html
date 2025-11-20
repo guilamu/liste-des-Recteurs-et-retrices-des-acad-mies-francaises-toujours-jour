@@ -5,26 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des Recteurs et Rectrices</title>
     <style>
-        body { font-family: sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-        h1 { margin-bottom: 0.5rem; }
-        /* Style pour le sous-titre de mise à jour */
-        #last-update { color: #666; font-style: italic; margin-bottom: 2rem; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            max-width: 900px; 
+            margin: 2rem auto; 
+            padding: 0 1rem; 
+            color: #333;
+            line-height: 1.6;
+        }
+        h1 { margin-bottom: 0.5rem; color: #2c3e50; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #f4f4f4; font-weight: bold; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        tr:hover { background-color: #f1f1f1; }
-        a { color: #0056b3; text-decoration: none; }
+        /* Style pour le sous-titre de mise à jour */
+        #last-update { 
+            color: #666; 
+            font-style: italic; 
+            margin-bottom: 2rem; 
+            font-size: 0.95rem;
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 1rem; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            border-radius: 8px;
+            overflow: hidden; /* Pour les coins arrondis */
+        }
+        
+        th, td { 
+            border-bottom: 1px solid #eee; 
+            padding: 12px 15px; 
+            text-align: left; 
+        }
+        
+        th { 
+            background-color: #f8f9fa; 
+            font-weight: 600; 
+            color: #444;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+        
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) { background-color: #fafafa; }
+        tr:hover { background-color: #f1f8ff; }
+        
+        a { 
+            color: #0366d6; 
+            text-decoration: none; 
+            font-weight: 500;
+        }
         a:hover { text-decoration: underline; }
-        .error-text { color: #d9534f; font-size: 0.9em; }
+        
+        .error-text { 
+            color: #d73a49; 
+            font-size: 0.9em; 
+            background-color: #ffeef0;
+            border-radius: 4px;
+            padding: 2px 6px;
+        }
+        
+        /* Responsive pour mobile */
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr { display: block; }
+            thead tr { position: absolute; top: -9999px; left: -9999px; }
+            tr { margin-bottom: 1rem; border: 1px solid #eee; border-radius: 8px; }
+            td { border: none; position: relative; padding-left: 50%; }
+            td:before { position: absolute; top: 12px; left: 15px; width: 45%; padding-right: 10px; white-space: nowrap; font-weight: bold; color: #999; }
+            td:nth-of-type(1):before { content: "Académie"; }
+            td:nth-of-type(2):before { content: "Genre"; }
+            td:nth-of-type(3):before { content: "Nom"; }
+        }
     </style>
 </head>
 <body>
     <h1>🎓 Recteurs et Rectrices d'Académie</h1>
     
-    <!-- Ajout d'un ID pour cibler ce paragraphe en JS -->
-    <p id="last-update">Mise à jour quotidienne automatique.</p>
+    <p id="last-update">Chargement de la date de mise à jour...</p>
     
     <table id="rectors-table">
         <thead>
@@ -35,7 +93,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr><td colspan="3" style="text-align:center; color:#888;">Chargement des données...</td></tr>
+            <tr><td colspan="3" style="text-align:center; color:#888; padding: 2rem;">Chargement des données en cours...</td></tr>
         </tbody>
     </table>
 
@@ -49,31 +107,36 @@
                 // 1. Gestion de la date de mise à jour
                 if (data.length > 0 && data[0].updated_at) {
                     const rawDate = new Date(data[0].updated_at);
-                    // Formatage en français : jour/mois/année
                     const formattedDate = rawDate.toLocaleDateString('fr-FR', {
+                        weekday: 'long',
                         day: 'numeric', 
                         month: 'long', 
                         year: 'numeric'
                     });
-                    updateText.innerText = `Mise à jour quotidienne automatique (Dernière mise à jour : ${formattedDate})`;
+                    // Capitalize la première lettre du jour
+                    const finalDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+                    updateText.innerText = `Mise à jour quotidienne automatique (Dernière mise à jour : ${finalDate})`;
+                } else {
+                    updateText.innerText = "Mise à jour quotidienne automatique.";
                 }
 
                 // 2. Remplissage du tableau
-                tbody.innerHTML = ''; // On vide le message de chargement
+                tbody.innerHTML = ''; // Vide le loader
                 
                 data.forEach(row => {
                     const tr = document.createElement('tr');
                     
+                    // NETTOYAGE DU NOM : Supprime tout texte entre parenthèses
+                    const cleanAcademieName = row.academie.replace(/\s*\(.*?\)/g, '').trim();
+                    
                     if (row.error) {
-                        // Cas où le scraping a échoué pour une ligne
                         tr.innerHTML = `
-                            <td><a href="${row.url}" target="_blank">${row.academie}</a></td>
-                            <td colspan="2" class="error-text"><em>${row.error} (Vérifier manuellement)</em></td>
+                            <td><a href="${row.url}" target="_blank">${cleanAcademieName}</a></td>
+                            <td colspan="2"><span class="error-text">⚠️ ${row.error} (Vérifier manuellement)</span></td>
                         `;
                     } else {
-                        // Cas normal
                         tr.innerHTML = `
-                            <td><a href="${row.url}" target="_blank">${row.academie}</a></td>
+                            <td><a href="${row.url}" target="_blank">${cleanAcademieName}</a></td>
                             <td>${row.genre}</td>
                             <td><strong>${row.nom}</strong></td>
                         `;
@@ -84,7 +147,10 @@
             .catch(err => {
                 console.error(err);
                 document.querySelector('#rectors-table tbody').innerHTML = 
-                    `<tr><td colspan="3" style="color:red; text-align:center;">Erreur lors du chargement des données.</td></tr>`;
+                    `<tr><td colspan="3" style="color:#d73a49; text-align:center; padding:2rem;">
+                        <strong>Erreur lors du chargement du fichier JSON.</strong><br>
+                        Vérifiez que le fichier recteurs.json a bien été généré.
+                    </td></tr>`;
             });
     </script>
 </body>
