@@ -2,13 +2,13 @@
 
 [![Mise à jour automatique](https://github.com/guilamu/liste-des-Recteurs-et-retrices-des-acad-mies-francaises-toujours-jour/actions/workflows/update.yml/badge.svg)](https://github.com/guilamu/liste-des-Recteurs-et-retrices-des-acad-mies-francaises-toujours-jour/actions)
 
-Une liste actualisée quotidiennement des recteurs et rectrices des académies françaises, générée automatiquement depuis le site du Ministère de l'Éducation nationale[web:31][web:35].
+Une liste actualisée quotidiennement des recteurs et rectrices des académies françaises, générée automatiquement depuis le site du Ministère de l'Éducation nationale.
 
 ## 📋 À propos
 
-Ce projet maintient une liste à jour de tous les recteurs et rectrices d'académie en France[web:31]. Les données sont automatiquement extraites et mises à jour chaque jour via GitHub Actions, garantissant que les informations sont toujours actuelles[web:28][web:32].
+Ce projet maintient une liste à jour de tous les recteurs et rectrices d'académie en France. Les données sont automatiquement extraites et mises à jour chaque jour via GitHub Actions, garantissant que les informations sont toujours actuelles.
 
-Les recteurs d'académie sont des hauts fonctionnaires nommés par décret du Président de la République, responsables de la mise en œuvre de la politique éducative dans leur académie, de la maternelle à l'enseignement supérieur[web:31][web:35].
+Les recteurs d'académie sont des hauts fonctionnaires nommés par décret du Président de la République, responsables de la mise en œuvre de la politique éducative dans leur académie, de la maternelle à l'enseignement supérieur.
 
 ## 🎯 Utilisation
 
@@ -34,7 +34,7 @@ https://raw.githubusercontent.com/guilamu/liste-des-Recteurs-et-retrices-des-aca
 
 ## 🔄 Mise à jour automatique
 
-Les données sont automatiquement mises à jour **tous les jours** grâce à GitHub Actions[web:32]:
+Les données sont automatiquement mises à jour **tous les jours** grâce à GitHub Actions:
 
 - **Fréquence :** Quotidienne (chaque jour à midi UTC)
 - **Source :** Pages officielles du Ministère de l'Éducation nationale
@@ -42,7 +42,7 @@ Les données sont automatiquement mises à jour **tous les jours** grâce à Git
 
 ## 📂 Structure du projet
 
-.
+```
 ├── recteurs.json # Liste des recteurs au format JSON
 ├── index.html # Tableau HTML des recteurs
 ├── scraper.js # Script de scraping Node.js
@@ -51,8 +51,7 @@ Les données sont automatiquement mises à jour **tous les jours** grâce à Git
 │ └── update.yml # Configuration GitHub Actions
 ├── package.json # Dépendances Node.js
 └── README.md # Documentation
-
-[web:28][web:30]
+```
 
 ## 📊 Données disponibles
 
@@ -66,7 +65,7 @@ Pour chaque académie, les informations suivantes sont disponibles[web:31][web:3
 
 ## 🤝 Contribution
 
-Les contributions sont les bienvenues ! N'hésitez pas à[web:27][web:32] :
+Les contributions sont les bienvenues ! N'hésitez pas à :
 
 - Signaler des erreurs via les [Issues](https://github.com/guilamu/liste-des-Recteurs-et-retrices-des-acad-mies-francaises-toujours-jour/issues)
 - Proposer des améliorations via des Pull Requests
@@ -80,4 +79,4 @@ Les contributions sont les bienvenues ! N'hésitez pas à[web:27][web:32] :
 
 ## 📧 Contact
 
-Pour toute question ou suggestion, n'hésitez pas à ouvrir une issue sur ce dépôt[web:27][web:28].
+Pour toute question ou suggestion, n'hésitez pas à ouvrir une issue sur ce dépôt.
