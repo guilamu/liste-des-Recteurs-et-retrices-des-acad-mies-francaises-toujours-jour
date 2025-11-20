@@ -26,7 +26,7 @@ const ACADEMIES = [
 // Regex standard
 const RECTOR_REGEX = /\b(M\.|Mme)\s+(.+?)(?=,|est nomm)/i;
 
-// --- FONCTION FALLBACK CORSE (GENRE PAR DÉFAUT = M.) ---
+// --- FONCTION FALLBACK CORSE (CORRECTION CAPTURE NOM) ---
 async function scrapeCorseFallback(browser) {
     console.log("   🚑 Activation du fallback Corse...");
     const page = await browser.newPage();
@@ -54,6 +54,7 @@ async function scrapeCorseFallback(browser) {
             let fullName = null;
 
             const elementsRecteur = $('*').filter((i, el) => {
+                // On cible le bloc qui contient le titre
                 return $(el).text().includes("Recteur d'académie");
             });
 
@@ -62,29 +63,32 @@ async function scrapeCorseFallback(browser) {
 
                 const parentText = $(el).parent().text().replace(/\s+/g, ' ');
                 
-                // NOUVELLE REGEX :
-                // 1. (?:(M\.|Mme)\s+)? -> Groupe 1 (Genre) rendu OPTIONNEL avec '?' à la fin
-                // 2. ([A-ZÀ-ÿ][^,]+)   -> Groupe 2 (Nom) Obligatoire (commence par majuscule)
-                const regexLigneSuivante = /Recteur.*?(?:(M\.|Mme)\s+)?([A-ZÀ-ÿ][a-zA-ZÀ-ÿ\s-]+?)(?:,|$)/i;
+                // NOUVELLE REGEX PLUS STRICTE SUR LE TITRE
+                // 1. Recteur : le point de départ
+                // 2. [^A-Z]* : On ignore tout ce qui suit TANT QUE ce n'est pas une majuscule (pour sauter "d'académie, recteur de région académique")
+                // 3. (?:(M\.|Mme)\s+)? : Genre optionnel
+                // 4. ([A-Z][A-Z\s-]{3,}) : Le Nom (au moins 3 lettres majuscules/espaces/tirets pour éviter de chopper juste "A")
+                // 5. (?=,) : S'arrête obligatoirement à la virgule (présente dans "Rémi ..., conseiller")
+                
+                // Version simplifiée qui marche avec l'image fournie :
+                // Cherche "Recteur...académique" puis capture ce qui suit
+                const regexLigneSuivante = /Recteur d'académie.*?académique\s*(?:(M\.|Mme)\s+)?([A-ZÀ-ÿ][a-zA-ZÀ-ÿ\s-]+?)(?=,)/i;
                 
                 const match = parentText.match(regexLigneSuivante);
 
                 if (match) {
-                    // Si match[1] (Genre) est undefined, on met "M." par défaut
                     genre = match[1] || "M.";
-                    
-                    // match[2] est le nom
                     fullName = match[2].trim();
                     
-                    // Protection anti-bruit : si le "nom" extrait est un mot parasite commun comme "De" ou "La"
-                    if (fullName.length < 3 && !fullName.includes('.')) {
-                        fullName = null; // Faux positif probable
+                    // Sécurité : si on a capturé "Recteur" ou "Académie" par erreur
+                    if (fullName.toLowerCase().includes('académie') || fullName.toLowerCase().includes('recteur')) {
+                        fullName = null; 
                     }
                 }
             });
 
             if (fullName) {
-                console.log(`   ★ Trouvé via Fallback (Genre: ${genre}, Nom: ${fullName})`);
+                console.log(`   ★ Trouvé via Fallback : ${fullName} (${genre})`);
                 return { genre, nom: fullName, url: page.url() };
             } else {
                 console.log("   ⚠️ Échec extraction nom après 'Recteur'.");
@@ -102,7 +106,6 @@ async function scrapeCorseFallback(browser) {
         await page.close();
     }
 }
-
 
 
 async function scrape() {
@@ -213,4 +216,5 @@ async function scrape() {
 }
 
 scrape();
+
 
