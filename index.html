@@ -14,7 +14,7 @@
             line-height: 1.6;
         }
         h1 { margin-bottom: 0.5rem; color: #2c3e50; }
-        
+
         /* Style pour le sous-titre de mise à jour */
         #last-update { 
             color: #666; 
@@ -22,7 +22,7 @@
             margin-bottom: 2rem; 
             font-size: 0.95rem;
         }
-        
+
         table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -31,41 +31,41 @@
             border-radius: 8px;
             overflow: hidden; /* Pour les coins arrondis */
         }
-        
+
         th, td { 
             border-bottom: 1px solid #eee; 
             padding: 12px 15px; 
             text-align: left; 
         }
-        
+
         th { 
             background-color: #f8f9fa; 
             font-weight: 600; 
             color: #444;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.05em;
+            text-transform: uppercase; 
+            font-size: 0.85rem; 
+            letter-spacing: 0.05em; 
         }
-        
+
         tr:last-child td { border-bottom: none; }
         tr:nth-child(even) { background-color: #fafafa; }
         tr:hover { background-color: #f1f8ff; }
-        
+
         a { 
             color: #0366d6; 
             text-decoration: none; 
             font-weight: 500;
         }
         a:hover { text-decoration: underline; }
-        
+
         .error-text { 
             color: #d73a49; 
             font-size: 0.9em; 
-            background-color: #ffeef0;
-            border-radius: 4px;
-            padding: 2px 6px;
+            background-color: #ffeef0; 
+            border-radius: 4px; 
+            padding: 2px 6px; 
         }
-        
+
         /* Responsive pour mobile */
         @media (max-width: 600px) {
             table, thead, tbody, th, td, tr { display: block; }
@@ -76,24 +76,26 @@
             td:nth-of-type(1):before { content: "Académie"; }
             td:nth-of-type(2):before { content: "Genre"; }
             td:nth-of-type(3):before { content: "Nom"; }
+            td:nth-of-type(4):before { content: "Mise à jour"; }
         }
     </style>
 </head>
 <body>
     <h1>🎓 Recteurs et Rectrices d'Académie</h1>
-    
+
     <p id="last-update">Chargement de la date de mise à jour...</p>
-    
+
     <table id="rectors-table">
         <thead>
             <tr>
                 <th>Académie</th>
                 <th>Genre</th>
                 <th>Nom</th>
+                <th>Mise à jour</th>
             </tr>
         </thead>
         <tbody>
-            <tr><td colspan="3" style="text-align:center; color:#888; padding: 2rem;">Chargement des données en cours...</td></tr>
+            <tr><td colspan="4" style="text-align:center; color:#888; padding: 2rem;">Chargement des données en cours...</td></tr>
         </tbody>
     </table>
 
@@ -103,7 +105,7 @@
             .then(data => {
                 const tbody = document.querySelector('#rectors-table tbody');
                 const updateText = document.querySelector('#last-update');
-                
+
                 // 1. Gestion de la date de mise à jour
                 if (data.length > 0 && data[0].updated_at) {
                     const rawDate = new Date(data[0].updated_at);
@@ -115,30 +117,38 @@
                     });
                     // Capitalize la première lettre du jour
                     const finalDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
-                    updateText.innerText = `Mise à jour quotidienne automatique (Dernière mise à jour : ${finalDate})`;
+                    updateText.innerText = `Mise à jour quotidienne automatique (Dernière exécution : ${finalDate})`;
                 } else {
                     updateText.innerText = "Mise à jour quotidienne automatique.";
                 }
 
                 // 2. Remplissage du tableau
                 tbody.innerHTML = ''; // Vide le loader
-                
+
                 data.forEach(row => {
                     const tr = document.createElement('tr');
-                    
+
                     // NETTOYAGE DU NOM : Supprime tout texte entre parenthèses
                     const cleanAcademieName = row.academie.replace(/\s*\(.*?\)/g, '').trim();
-                    
+
+                    // FORMATAGE DATE
+                    let dateStr = '';
+                    if (row.updated_at) {
+                        const d = new Date(row.updated_at);
+                        dateStr = d.toLocaleDateString('fr-FR');
+                    }
+
                     if (row.error) {
                         tr.innerHTML = `
                             <td><a href="${row.url}" target="_blank">${cleanAcademieName}</a></td>
-                            <td colspan="2"><span class="error-text">⚠️ ${row.error} (Vérifier manuellement)</span></td>
+                            <td colspan="3"><span class="error-text">⚠️ ${row.error} (Vérifier manuellement)</span></td>
                         `;
                     } else {
                         tr.innerHTML = `
                             <td><a href="${row.url}" target="_blank">${cleanAcademieName}</a></td>
                             <td>${row.genre}</td>
                             <td><strong>${row.nom}</strong></td>
+                            <td style="color: #666; font-size: 0.9em;">${dateStr}</td>
                         `;
                     }
                     tbody.appendChild(tr);
@@ -147,7 +157,7 @@
             .catch(err => {
                 console.error(err);
                 document.querySelector('#rectors-table tbody').innerHTML = 
-                    `<tr><td colspan="3" style="color:#d73a49; text-align:center; padding:2rem;">
+                    `<tr><td colspan="4" style="color:#d73a49; text-align:center; padding:2rem;">
                         <strong>Erreur lors du chargement du fichier JSON.</strong><br>
                         Vérifiez que le fichier recteurs.json a bien été généré.
                     </td></tr>`;
