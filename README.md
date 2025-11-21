@@ -81,6 +81,6 @@ Les contributions sont les bienvenues ! N'hésitez pas à :
 
 Pour toute question ou suggestion, n'hésitez pas à ouvrir une issue sur ce dépôt.
 
-## ⚖️Licence
+## ⚖️ Licence
 
 Ce projet est publié sous licence GNU AGPL.
