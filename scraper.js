@@ -45,7 +45,7 @@ async function findUrls() {
     // Pour chaque académie, simuler la sélection et capturer l'URL
     for (let i = 0; i < academies.length; i++) {
       const academie = academies[i];
-      console.log(`${i + 1}/${academies.length} - Test de ${academie.name}...`);
+      console.log(`${i + 1}/${academies.length} - ${academie.name}...`);
 
       try {
         // Recharger la page pour chaque test
@@ -54,13 +54,13 @@ async function findUrls() {
           timeout: 60000 
         });
 
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 1500));
 
         // Sélectionner l'académie dans le select
         await page.select('.svg-select', academie.slug);
 
-        // Attendre un peu pour voir si quelque chose se passe
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Attendre un peu
+        await new Promise(resolve => setTimeout(resolve, 800));
 
         // Cliquer sur le bouton de soumission
         const buttonClicked = await page.evaluate(() => {
@@ -73,18 +73,17 @@ async function findUrls() {
         });
 
         if (buttonClicked) {
-          // Attendre la navigation ou un changement
+          // Attendre la navigation
           await new Promise(resolve => setTimeout(resolve, 2000));
 
           // Vérifier si on a été redirigé
           const currentUrl = page.url();
           if (currentUrl !== INDEX_URL) {
-            console.log(`  ✓ Redirigé vers : ${currentUrl}`);
+            console.log(`  ✓ ${currentUrl}`);
             academieUrls[academie.slug] = currentUrl;
           } else {
-            // Peut-être un popup ou un panneau qui s'ouvre ?
+            // Chercher un popup
             const popupUrl = await page.evaluate(() => {
-              // Chercher un lien dans un popup
               const popup = document.querySelector('.svg-block-popup, .popup');
               if (popup) {
                 const link = popup.querySelector('a[href*="academie"]');
@@ -94,10 +93,10 @@ async function findUrls() {
             });
 
             if (popupUrl) {
-              console.log(`  ✓ URL dans popup : ${popupUrl}`);
+              console.log(`  ✓ ${popupUrl} (popup)`);
               academieUrls[academie.slug] = popupUrl;
             } else {
-              console.log(`  ⚠️ Pas de redirection détectée`);
+              console.log(`  ⚠️ Pas d'URL trouvée`);
             }
           }
         } else {
@@ -107,24 +106,21 @@ async function findUrls() {
       } catch (e) {
         console.error(`  ❌ Erreur : ${e.message}`);
       }
-
-      // Limiter aux 5 premières pour le test
-      if (i >= 4) {
-        console.log("\n⏸️ Arrêt après 5 tests (pour debug)");
-        break;
-      }
     }
 
-    console.log("\n" + "=".repeat(60));
-    console.log("📋 URLs trouvées :");
-    console.log("=".repeat(60));
+    console.log("\n" + "=".repeat(70));
+    console.log("📋 MAPPING COMPLET (à copier dans le scraper) :");
+    console.log("=".repeat(70));
+    console.log("const ACADEMIE_URLS = {");
     Object.entries(academieUrls).forEach(([slug, url]) => {
-      console.log(`'${slug}': '${url}',`);
+      console.log(`  '${slug}': '${url}',`);
     });
+    console.log("};");
 
     // Sauvegarder
-    fs.writeFileSync('academie_urls.json', JSON.stringify(academieUrls, null, 2));
-    console.log("\n💾 Sauvegardé dans academie_urls.json");
+    fs.writeFileSync('academie_urls_complete.json', JSON.stringify(academieUrls, null, 2));
+    console.log("\n💾 Sauvegardé dans academie_urls_complete.json");
+    console.log(`✅ ${Object.keys(academieUrls).length}/${academies.length} URLs découvertes`);
 
   } catch (error) {
     console.error("🚨 Erreur globale:", error);
