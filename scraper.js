@@ -96,15 +96,15 @@ async function scrape() {
 
     console.log(`🔍 Navigation vers l'index : ${INDEX_URL}`);
 
-    // MÉTHODE 2 : Attendre le chargement complet du JavaScript
+    // Attendre le chargement complet du JavaScript
     await page.goto(INDEX_URL, { 
       waitUntil: 'networkidle2', 
       timeout: 60000 
     });
 
-    // Attendre que le JavaScript s'exécute et peuple la page
+    // Attendre que le JavaScript s'exécute (remplace page.waitForTimeout)
     console.log("⏳ Attente du chargement JavaScript...");
-    await page.waitForTimeout(5000);
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
     // Extraire tous les liens vers les académies après le rendu JS
     const linksToVisit = await page.evaluate(() => {
@@ -147,7 +147,7 @@ async function scrape() {
 
       // --- ESSAI 1 : METHODE STANDARD ---
       try {
-        await new Promise(r => setTimeout(r, 1000 + Math.random() * 1500));
+        await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1500));
         await page.goto(item.url, { waitUntil: 'domcontentloaded', timeout: 45000 });
 
         const pageHtml = await page.content();
