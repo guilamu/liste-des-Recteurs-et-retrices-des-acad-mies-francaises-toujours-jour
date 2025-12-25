@@ -1,215 +1,240 @@
 [
   {
     "academie": "Aix-Marseille",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-d-aix-marseille-100064",
-    "updated_at": "2025-12-25T21:24:02.888Z"
+    "genre": "M.",
+    "nom": "Benoît Delaunay",
+    "url": "https://www.education.gouv.fr/academie-d-aix-marseille-100103",
+    "updated_at": "2025-12-25T21:39:52.951Z"
   },
   {
     "academie": "Amiens",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-d-amiens-100055",
-    "updated_at": "2025-12-25T21:24:05.596Z"
+    "genre": "M.",
+    "nom": "Pierre Moya",
+    "url": "https://www.education.gouv.fr/academie-d-amiens-253",
+    "updated_at": "2025-12-25T21:39:59.547Z"
   },
   {
     "academie": "Besançon",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-besancon-100088",
-    "updated_at": "2025-12-25T21:24:08.759Z"
+    "genre": "Mme",
+    "nom": "Nathalie Albert-Moretti",
+    "url": "https://www.education.gouv.fr/academie-de-besancon-100076",
+    "updated_at": "2025-12-25T21:40:06.142Z"
   },
   {
     "academie": "Bordeaux",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-bordeaux-100079",
-    "updated_at": "2025-12-25T21:24:11.797Z"
+    "genre": "M.",
+    "nom": "Jean-Marc Huart",
+    "url": "https://www.education.gouv.fr/academie-de-bordeaux-100094",
+    "updated_at": "2025-12-25T21:40:12.758Z"
   },
   {
     "academie": "Clermont-Ferrand",
     "genre": "Mme",
     "nom": "Virginie Dupont",
     "url": "https://www.education.gouv.fr/academie-de-clermont-ferrand-100085",
-    "updated_at": "2025-12-25T21:24:14.335Z"
+    "updated_at": "2025-12-25T21:40:19.352Z"
   },
   {
     "academie": "Corse",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-corse-100091",
-    "updated_at": "2025-12-25T21:24:17.085Z"
+    "genre": "M.",
+    "nom": "Rémi DECOUT-PAOLINI",
+    "url": "https://lannuaire.service-public.gouv.fr/corse/corse-du-sud/56ef3fdb-7a64-4d5c-b33c-4434148b3a4a",
+    "updated_at": "2025-12-25T21:40:28.459Z"
   },
   {
     "academie": "Créteil",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-creteil-100043",
-    "updated_at": "2025-12-25T21:24:19.380Z"
+    "genre": "M.",
+    "nom": "Jean-François Chanet",
+    "url": "https://www.education.gouv.fr/academie-de-creteil-100052",
+    "updated_at": "2025-12-25T21:40:35.004Z"
   },
   {
     "academie": "Dijon",
     "genre": "Mme",
     "nom": "Mathilde Gollety",
     "url": "https://www.education.gouv.fr/academie-de-dijon-100073",
-    "updated_at": "2025-12-25T21:24:21.701Z"
+    "updated_at": "2025-12-25T21:40:41.753Z"
   },
   {
     "academie": "Grenoble",
     "genre": "M.",
     "nom": "Philippe Dulbecco",
     "url": "https://www.education.gouv.fr/academie-de-grenoble-100082",
-    "updated_at": "2025-12-25T21:24:24.406Z"
+    "updated_at": "2025-12-25T21:40:48.356Z"
   },
   {
     "academie": "Guadeloupe",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-guadeloupe-100103",
-    "updated_at": "2025-12-25T21:24:27.485Z"
+    "genre": "M.",
+    "nom": "Gabriele FIONI",
+    "url": "https://www.education.gouv.fr/academie-de-guadeloupe-100115",
+    "updated_at": "2025-12-25T21:40:54.947Z"
   },
   {
     "academie": "Guyane",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-guyane-100106",
-    "updated_at": "2025-12-25T21:24:30.334Z"
+    "genre": "M.",
+    "nom": "Guillaume Gellé",
+    "url": "https://www.education.gouv.fr/academie-de-guyane-100121",
+    "updated_at": "2025-12-25T21:41:01.543Z"
   },
   {
     "academie": "La Réunion",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-la-reunion-100109",
-    "updated_at": "2025-12-25T21:24:32.768Z"
+    "genre": "M.",
+    "nom": "Rostane Mehdi",
+    "url": "https://www.education.gouv.fr/academie-de-la-reunion-100118",
+    "updated_at": "2025-12-25T21:41:08.161Z"
   },
   {
     "academie": "Lille",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-lille-100034",
-    "updated_at": "2025-12-25T21:24:35.079Z"
+    "genre": "Mme",
+    "nom": "Sophie Béjean",
+    "url": "https://www.education.gouv.fr/academie-de-lille-100043",
+    "updated_at": "2025-12-25T21:41:14.671Z"
   },
   {
     "academie": "Limoges",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-limoges-100076",
-    "updated_at": "2025-12-25T21:24:38.040Z"
+    "genre": "Mme",
+    "nom": "Valérie Baglin-Le Goff",
+    "url": "https://www.education.gouv.fr/academie-de-limoges-100088",
+    "updated_at": "2025-12-25T21:41:21.071Z"
   },
   {
     "academie": "Lyon",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-lyon-100067",
-    "updated_at": "2025-12-25T21:24:40.454Z"
+    "genre": "Mme",
+    "nom": "Anne Bisagni-Faure",
+    "url": "https://www.education.gouv.fr/academie-de-lyon-100079",
+    "updated_at": "2025-12-25T21:41:27.647Z"
   },
   {
     "academie": "Martinique",
     "genre": "Mme",
     "nom": "Nathalie Mons",
     "url": "https://www.education.gouv.fr/academie-de-martinique-100112",
-    "updated_at": "2025-12-25T21:24:42.737Z"
+    "updated_at": "2025-12-25T21:41:34.171Z"
   },
   {
     "academie": "Mayotte",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-mayotte-100115",
-    "updated_at": "2025-12-25T21:24:45.223Z"
+    "genre": "M.",
+    "nom": "Jacques Mikulovic",
+    "url": "https://www.education.gouv.fr/academie-de-mayotte-100124",
+    "updated_at": "2025-12-25T21:41:40.701Z"
   },
   {
     "academie": "Montpellier",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-montpellier-100094",
-    "updated_at": "2025-12-25T21:24:48.236Z"
+    "genre": "Mme",
+    "nom": "Carole Drucker-Godard",
+    "url": "https://www.education.gouv.fr/academie-de-montpellier-100100",
+    "updated_at": "2025-12-25T21:41:47.282Z"
   },
   {
     "academie": "Nancy-Metz",
     "genre": "M.",
     "nom": "Pierre-François Mourier",
     "url": "https://www.education.gouv.fr/academie-de-nancy-metz-100058",
-    "updated_at": "2025-12-25T21:24:50.092Z"
+    "updated_at": "2025-12-25T21:41:53.861Z"
   },
   {
     "academie": "Nantes",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-nantes-100037",
-    "updated_at": "2025-12-25T21:24:52.139Z"
+    "genre": "Mme",
+    "nom": "Katia Béguin",
+    "url": "https://www.education.gouv.fr/academie-de-nantes-100067",
+    "updated_at": "2025-12-25T21:42:00.440Z"
   },
   {
     "academie": "Nice",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-nice-100100",
-    "updated_at": "2025-12-25T21:24:54.552Z"
+    "genre": "Mme",
+    "nom": "Natacha Chicot",
+    "url": "https://www.education.gouv.fr/academie-de-nice-100106",
+    "updated_at": "2025-12-25T21:42:07.010Z"
   },
   {
     "academie": "Normandie",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-normandie-100040",
-    "updated_at": "2025-12-25T21:24:58.170Z"
+    "genre": "Mme",
+    "nom": "Valérie Cabuil",
+    "url": "https://www.education.gouv.fr/academie-de-normandie-101186",
+    "updated_at": "2025-12-25T21:42:13.583Z"
   },
   {
     "academie": "Nouvelle-Calédonie",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/vice-rectorat-de-nouvelle-caledonie-100118",
-    "updated_at": "2025-12-25T21:25:00.281Z"
+    "genre": "M.",
+    "nom": "Didier VIN-DATICHE",
+    "url": "https://www.education.gouv.fr/vice-rectorat-de-nouvelle-caledonie-100133",
+    "updated_at": "2025-12-25T21:42:20.137Z"
   },
   {
     "academie": "Orléans-Tours",
     "genre": "M.",
     "nom": "Jean-Philippe Agresti",
     "url": "https://www.education.gouv.fr/academie-d-orleans-tours-100070",
-    "updated_at": "2025-12-25T21:25:02.591Z"
+    "updated_at": "2025-12-25T21:42:26.717Z"
   },
   {
     "academie": "Paris",
     "genre": "Mme",
     "nom": "Julie Benetti",
     "url": "https://www.education.gouv.fr/academie-de-paris-100049",
-    "updated_at": "2025-12-25T21:25:04.540Z"
+    "updated_at": "2025-12-25T21:42:33.258Z"
   },
   {
     "academie": "Poitiers",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-poitiers-100052",
-    "updated_at": "2025-12-25T21:25:06.807Z"
+    "genre": "M.",
+    "nom": "Frédéric Périssat",
+    "url": "https://www.education.gouv.fr/academie-de-poitiers-100091",
+    "updated_at": "2025-12-25T21:42:39.739Z"
   },
   {
     "academie": "Polynésie française",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/vice-rectorat-de-polynesie-francaise-100121",
-    "updated_at": "2025-12-25T21:25:09.870Z"
+    "genre": "M.",
+    "nom": "Thierry Terret",
+    "url": "https://www.education.gouv.fr/vice-rectorat-de-la-polynesie-francaise-100130",
+    "updated_at": "2025-12-25T21:42:46.318Z"
   },
   {
     "academie": "Reims",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-reims-100061",
-    "updated_at": "2025-12-25T21:25:12.472Z"
+    "genre": "M.",
+    "nom": "Vincent Stanek",
+    "url": "https://www.education.gouv.fr/academie-de-reims-100055",
+    "updated_at": "2025-12-25T21:42:52.890Z"
   },
   {
     "academie": "Rennes",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-rennes-100046",
-    "updated_at": "2025-12-25T21:25:15.505Z"
+    "genre": "Mme",
+    "nom": "Hélène Insel",
+    "url": "https://www.education.gouv.fr/academie-de-rennes-100064",
+    "updated_at": "2025-12-25T21:42:59.349Z"
   },
   {
     "academie": "Saint-Pierre-et-Miquelon",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/services-de-l-education-nationale-de-saint-pierre-et-miquelon-100124",
-    "updated_at": "2025-12-25T21:25:18.810Z"
+    "genre": "M.",
+    "nom": "Jean-Pierre Tegon",
+    "url": "https://www.education.gouv.fr/service-de-l-education-nationale-de-saint-pierre-et-miquelon-100136",
+    "updated_at": "2025-12-25T21:43:05.921Z"
   },
   {
     "academie": "Strasbourg",
     "genre": "M.",
     "nom": "Olivier Klein",
     "url": "https://www.education.gouv.fr/academie-de-strasbourg-100061",
-    "updated_at": "2025-12-25T21:25:20.292Z"
+    "updated_at": "2025-12-25T21:43:12.497Z"
   },
   {
     "academie": "Toulouse",
     "genre": "M.",
     "nom": "Karim Benmiloud",
     "url": "https://www.education.gouv.fr/academie-de-toulouse-100097",
-    "updated_at": "2025-12-25T21:25:23.003Z"
+    "updated_at": "2025-12-25T21:43:19.108Z"
   },
   {
     "academie": "Versailles",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-versailles-100028",
-    "updated_at": "2025-12-25T21:25:25.907Z"
+    "genre": "M.",
+    "nom": "Étienne Champion",
+    "url": "https://www.education.gouv.fr/academie-de-versailles-100046",
+    "updated_at": "2025-12-25T21:43:25.731Z"
   },
   {
     "academie": "Wallis-et-Futuna",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/services-de-l-education-nationale-de-wallis-et-futuna-100127",
-    "updated_at": "2025-12-25T21:25:28.579Z"
+    "genre": "Mme",
+    "nom": "Régine Vigier",
+    "url": "https://www.education.gouv.fr/vice-rectorat-de-wallis-et-futuna-100127",
+    "updated_at": "2025-12-25T21:43:32.312Z"
   }
 ]
