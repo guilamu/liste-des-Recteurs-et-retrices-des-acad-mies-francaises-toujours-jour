@@ -1,216 +1,113 @@
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const cheerio = require('cheerio');
 const fs = require('fs');
-const path = require('path');
 
 puppeteer.use(StealthPlugin());
 
-// --- URLs ---
 const INDEX_URL = "https://www.education.gouv.fr/les-regions-academiques-academies-et-services-departementaux-de-l-education-nationale-6557";
-const BASE_URL = "https://www.education.gouv.fr";
-const CORSE_FALLBACK_URL = "https://lannuaire.service-public.gouv.fr/navigation/corse/corse-du-sud/rectorat";
-const OUTPUT_FILE = path.join(__dirname, 'recteurs.json');
 
-// Regex pour extraire le nom du recteur
-const RECTOR_REGEX = /\b(M\.|Mme)\s+(.+?)(?=,|est nomm)/i;
-
-// --- FONCTION FALLBACK CORSE ---
-async function scrapeCorseFallback(browser) {
-  console.log(" 🚑 Activation du fallback Corse...");
-  const page = await browser.newPage();
-  await page.setViewport({ width: 1280, height: 800 });
-
-  try {
-    await page.goto(CORSE_FALLBACK_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
-
-    const linkElement = await page.evaluateHandle(() => {
-      const links = Array.from(document.querySelectorAll('a'));
-      return links.find(a => a.textContent.includes('Rectorat - Académie de Corse'));
-    });
-
-    if (linkElement && (await linkElement.jsonValue()) !== undefined) {
-      console.log(" -> Lien annuaire trouvé, clic...");
-      await Promise.all([
-        page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
-        linkElement.click()
-      ]);
-
-      const content = await page.content();
-      const $ = cheerio.load(content);
-
-      let genre = null;
-      let fullName = null;
-
-      const elementsRecteur = $('*').filter((i, el) => {
-        return $(el).text().includes("Recteur d'académie");
-      });
-
-      elementsRecteur.each((i, el) => {
-        if (fullName) return;
-        const parentText = $(el).parent().text().replace(/\s+/g, ' ');
-        const regexLigneSuivante = /Recteur d'académie.*?académique\s*(?:(M\.|Mme)\s+)?([A-ZÀ-ÿ][a-zA-ZÀ-ÿ\s-]+?)(?=,)/i;
-        const match = parentText.match(regexLigneSuivante);
-
-        if (match) {
-          genre = match[1] || "M.";
-          fullName = match[2].trim();
-
-          if (fullName.toLowerCase().includes('académie') || fullName.toLowerCase().includes('recteur')) {
-            fullName = null;
-          }
-        }
-      });
-
-      if (fullName) {
-        console.log(` ★ Trouvé via Fallback : ${fullName} (${genre})`);
-        return { genre, nom: fullName, url: page.url() };
-      } else {
-        console.log(" ⚠️ Échec extraction nom après 'Recteur'.");
-      }
-    } else {
-      console.log(" ⚠️ Lien 'Rectorat' introuvable.");
-    }
-
-    return null;
-  } catch (e) {
-    console.error(` ❌ Erreur Fallback Corse: ${e.message}`);
-    return null;
-  } finally {
-    await page.close();
-  }
-}
-
-async function scrape() {
+async function debug() {
   console.log("🚀 Lancement du navigateur...");
   const browser = await puppeteer.launch({
     headless: "new",
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
-  const results = [];
-
   try {
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 800 });
 
-    console.log(`🔍 Navigation vers l'index : ${INDEX_URL}`);
-
-    // Attendre le chargement complet du JavaScript
+    console.log(`🔍 Navigation vers : ${INDEX_URL}`);
     await page.goto(INDEX_URL, { 
       waitUntil: 'networkidle2', 
       timeout: 60000 
     });
 
-    // Attendre que le JavaScript s'exécute (remplace page.waitForTimeout)
-    console.log("⏳ Attente du chargement JavaScript...");
+    console.log("⏳ Attente 5 secondes...");
     await new Promise(resolve => setTimeout(resolve, 5000));
 
-    // Extraire tous les liens vers les académies après le rendu JS
-    const linksToVisit = await page.evaluate(() => {
-      const links = Array.from(document.querySelectorAll('a[href*="/academie-"]'));
-      return links
-        .map(link => ({
-          name: link.textContent.trim().replace(/\s+/g, ' '),
-          url: link.href
-        }))
-        .filter((item, index, self) => 
-          item.url && 
-          item.name && 
-          // Éliminer les doublons
-          index === self.findIndex(t => t.url === item.url)
-        );
+    // Sauvegarder le HTML complet après JS
+    const html = await page.content();
+    fs.writeFileSync('page_after_js.html', html);
+    console.log("✅ HTML sauvegardé dans page_after_js.html");
+
+    // Debug : compter les différents types d'éléments
+    const debugInfo = await page.evaluate(() => {
+      return {
+        totalLinks: document.querySelectorAll('a').length,
+        linksWithAcademie: document.querySelectorAll('a[href*="academie"]').length,
+        linksWithSlashAcademie: document.querySelectorAll('a[href*="/academie-"]').length,
+        allSelects: document.querySelectorAll('select').length,
+        selectOptions: document.querySelectorAll('select option').length,
+        svgElements: document.querySelectorAll('svg').length,
+        svgLinks: document.querySelectorAll('svg a').length,
+        divWithDataUrl: document.querySelectorAll('div[data-api-url]').length,
+
+        // Chercher des patterns spécifiques
+        regionsAcademiques: document.querySelectorAll('[class*="region"], [class*="academie"]').length,
+
+        // Extraire quelques exemples de liens
+        sampleLinks: Array.from(document.querySelectorAll('a'))
+          .slice(0, 20)
+          .map(a => ({
+            text: a.textContent.trim().substring(0, 50),
+            href: a.href.substring(0, 100)
+          }))
+      };
     });
 
-    console.log(`✅ ${linksToVisit.length} académies trouvées.`);
+    console.log("\n📊 Analyse de la page :");
+    console.log("========================");
+    console.log(`Total de liens <a> : ${debugInfo.totalLinks}`);
+    console.log(`Liens contenant "academie" : ${debugInfo.linksWithAcademie}`);
+    console.log(`Liens contenant "/academie-" : ${debugInfo.linksWithSlashAcademie}`);
+    console.log(`Éléments <select> : ${debugInfo.allSelects}`);
+    console.log(`Éléments <option> : ${debugInfo.selectOptions}`);
+    console.log(`Éléments SVG : ${debugInfo.svgElements}`);
+    console.log(`Liens dans SVG : ${debugInfo.svgLinks}`);
+    console.log(`Div avec data-api-url : ${debugInfo.divWithDataUrl}`);
+    console.log(`Éléments région/académie : ${debugInfo.regionsAcademiques}`);
 
-    if (linksToVisit.length === 0) {
-      console.log("⚠️ Aucune académie détectée. Tentative alternative...");
+    console.log("\n📝 Exemples de liens trouvés :");
+    debugInfo.sampleLinks.forEach((link, i) => {
+      console.log(`  ${i + 1}. [${link.text}] -> ${link.href}`);
+    });
 
-      // Alternative : chercher dans les select/option
-      const selectOptions = await page.evaluate(() => {
-        const selects = Array.from(document.querySelectorAll('select option[value*="/academie-"]'));
-        return selects.map(opt => ({
-          name: opt.textContent.trim(),
-          url: opt.value.startsWith('http') ? opt.value : 'https://www.education.gouv.fr' + opt.value
-        }));
-      });
+    // Chercher spécifiquement les académies dans le texte
+    const academieTexts = await page.evaluate(() => {
+      const bodyText = document.body.innerText;
+      const academies = [
+        "Paris", "Versailles", "Créteil", "Lyon", "Grenoble", "Clermont-Ferrand",
+        "Toulouse", "Montpellier", "Bordeaux", "Nantes", "Rennes", "Lille",
+        "Amiens", "Reims", "Nancy-Metz", "Strasbourg", "Dijon", "Besançon"
+      ];
 
-      console.log(`✅ ${selectOptions.length} académies trouvées via select.`);
-      linksToVisit.push(...selectOptions);
-    }
+      return academies.filter(name => bodyText.includes(name));
+    });
 
-    // Parcourir chaque académie
-    for (const item of linksToVisit) {
-      console.log(`➳ Visite : ${item.name}`);
-      let found = false;
+    console.log("\n🎯 Académies mentionnées dans la page :");
+    console.log(academieTexts.join(", "));
 
-      // --- ESSAI 1 : METHODE STANDARD ---
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1500));
-        await page.goto(item.url, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    // Chercher les divs de carte SVG
+    const svgMapInfo = await page.evaluate(() => {
+      const svgMaps = Array.from(document.querySelectorAll('.svg-map, [class*="svg"], [class*="carte"]'));
+      return svgMaps.map(el => ({
+        class: el.className,
+        hasChildren: el.children.length,
+        html: el.innerHTML.substring(0, 200)
+      }));
+    });
 
-        const pageHtml = await page.content();
-        const $page = cheerio.load(pageHtml);
-        const textContent = $page('body').text().replace(/\s+/g, ' ');
-
-        const match = textContent.match(RECTOR_REGEX);
-
-        if (match) {
-          const genre = match[1];
-          const nom = match[2].trim();
-          console.log(` ★ Trouvé : ${genre} ${nom}`);
-
-          results.push({
-            academie: item.name,
-            genre: genre,
-            nom: nom,
-            url: item.url,
-            updated_at: new Date().toISOString()
-          });
-          found = true;
-        }
-      } catch (e) {
-        console.error(` ❌ Erreur page standard: ${e.message}`);
-      }
-
-      // --- ESSAI 2 : FALLBACK CORSE ---
-      if (!found && item.name.toLowerCase().includes('corse')) {
-        const fallbackResult = await scrapeCorseFallback(browser);
-        if (fallbackResult) {
-          results.push({
-            academie: item.name,
-            genre: fallbackResult.genre,
-            nom: fallbackResult.nom,
-            url: fallbackResult.url,
-            updated_at: new Date().toISOString()
-          });
-          found = true;
-        }
-      }
-
-      // --- ECHEC TOTAL ---
-      if (!found) {
-        console.log(` ⚠️ Aucun recteur trouvé pour ${item.name}.`);
-        results.push({
-          academie: item.name,
-          error: "Non trouvé",
-          url: item.url,
-          updated_at: new Date().toISOString()
-        });
-      }
-    }
-
-    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(results, null, 2));
-    console.log(`\n💾 Sauvegardé dans ${OUTPUT_FILE}`);
-    console.log(`\n📊 Résumé : ${results.filter(r => !r.error).length}/${results.length} recteurs trouvés`);
+    console.log("\n🗺️ Éléments de carte trouvés :");
+    svgMapInfo.forEach((map, i) => {
+      console.log(`  ${i + 1}. class="${map.class}", children=${map.hasChildren}`);
+    });
 
   } catch (error) {
-    console.error("🚨 Erreur globale:", error);
-    process.exit(1);
+    console.error("🚨 Erreur:", error);
   } finally {
     await browser.close();
   }
 }
 
-scrape();
+debug();
