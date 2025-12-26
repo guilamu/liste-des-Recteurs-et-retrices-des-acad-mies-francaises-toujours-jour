@@ -2,8 +2,13 @@ name: Update Rectors Data
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # Tous les jours à 6h
+    - cron: '0 6 * * *'
   workflow_dispatch:
+
+# AJOUTEZ CETTE SECTION
+permissions:
+  contents: write    # Pour commit/push
+  issues: write      # Pour créer des issues
 
 jobs:
   scrape:
