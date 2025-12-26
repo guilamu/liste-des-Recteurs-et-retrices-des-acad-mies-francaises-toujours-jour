@@ -5,10 +5,9 @@ on:
     - cron: '0 6 * * *'
   workflow_dispatch:
 
-# AJOUTEZ CETTE SECTION
 permissions:
-  contents: write    # Pour commit/push
-  issues: write      # Pour créer des issues
+  contents: write
+  issues: write
 
 jobs:
   scrape:
@@ -19,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'  # ← Changez de '18' à '20'
       
       - name: Install dependencies
         run: npm install
