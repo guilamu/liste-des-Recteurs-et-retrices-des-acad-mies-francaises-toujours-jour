@@ -75,7 +75,6 @@ Les contributions sont les bienvenues ! N'hésitez pas à :
 
 - [Site officiel du Ministère de l'Éducation nationale](https://www.education.gouv.fr/)
 - [Liste des académies françaises](https://www.education.gouv.fr/les-regions-academiques-academies-et-services-departementaux-de-l-education-nationale-6557)
-- [Documentation GitHub Actions](https://docs.github.com/actions)
 
 ## 📧 Contact
 
