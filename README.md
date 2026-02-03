@@ -61,6 +61,7 @@ Pour chaque académie, les informations suivantes sont disponibles[web:31][web:3
 - **Genre** : Civilité (M. ou Mme)
 - **Nom** : Nom complet du recteur ou de la rectrice
 - **URL** : Lien vers la page officielle de l'académie
+- **Nomination** : Date de nomination sur le poste
 - **Date de mise à jour** : Timestamp de la dernière vérification
 
 ## 🤝 Contribution
