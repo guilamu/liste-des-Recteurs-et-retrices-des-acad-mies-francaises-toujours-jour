@@ -76,7 +76,8 @@
             td:nth-of-type(1):before { content: "Académie"; }
             td:nth-of-type(2):before { content: "Genre"; }
             td:nth-of-type(3):before { content: "Nom"; }
-            td:nth-of-type(4):before { content: "Mise à jour"; }
+            td:nth-of-type(4):before { content: "Date nomination"; }
+            td:nth-of-type(5):before { content: "Mise à jour"; }
         }
     </style>
 </head>
@@ -91,11 +92,12 @@
                 <th>Académie</th>
                 <th>Genre</th>
                 <th>Nom</th>
+                <th>Date de nomination</th>
                 <th>Mise à jour</th>
             </tr>
         </thead>
         <tbody>
-            <tr><td colspan="4" style="text-align:center; color:#888; padding: 2rem;">Chargement des données en cours...</td></tr>
+            <tr><td colspan="5" style="text-align:center; color:#888; padding: 2rem;">Chargement des données en cours...</td></tr>
         </tbody>
     </table>
 
@@ -141,13 +143,15 @@
                     if (row.error) {
                         tr.innerHTML = `
                             <td><a href="${row.url}" target="_blank">${cleanAcademieName}</a></td>
-                            <td colspan="3"><span class="error-text">⚠️ ${row.error} (Vérifier manuellement)</span></td>
+                            <td colspan="4"><span class="error-text">⚠️ ${row.error} (Vérifier manuellement)</span></td>
                         `;
                     } else {
+                        const dateNomination = row.date_nomination || 'Inconnue';
                         tr.innerHTML = `
                             <td><a href="${row.url}" target="_blank">${cleanAcademieName}</a></td>
                             <td>${row.genre}</td>
                             <td><strong>${row.nom}</strong></td>
+                            <td style="color: #555; font-size: 0.9em;">${dateNomination}</td>
                             <td style="color: #666; font-size: 0.9em;">${dateStr}</td>
                         `;
                     }
@@ -157,7 +161,7 @@
             .catch(err => {
                 console.error(err);
                 document.querySelector('#rectors-table tbody').innerHTML = 
-                    `<tr><td colspan="4" style="color:#d73a49; text-align:center; padding:2rem;">
+                    `<tr><td colspan="5" style="color:#d73a49; text-align:center; padding:2rem;">
                         <strong>Erreur lors du chargement du fichier JSON.</strong><br>
                         Vérifiez que le fichier recteurs.json a bien été généré.
                     </td></tr>`;

@@ -16,6 +16,32 @@ const RECTOR_REGEX = /\b(M\.|Mme)\s+(.+?)(?=,|est nomm)/i;
 // Fallback regex quand M./Mme est absent - capture le nom avant un titre professionnel
 const RECTOR_FALLBACK_REGEX = /([A-ZÀ-ÿ][a-zA-ZÀ-ÿ\-]+(?:\s+[A-ZÀ-ÿ][a-zA-ZÀ-ÿ\-]+)+)\s*,\s*(?:administrateur|administratrice|conseiller|conseillère|recteur|rectrice|maître|maîtresse|professeur|professeure|chancelier|chancelière|inspecteur|inspectrice)/i;
 
+// Regex pour extraire la date de nomination après "Décret du"
+const DECREE_DATE_REGEX = /Décret du\s+(\d{1,2})\s+(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s+(\d{4})/i;
+
+// Conversion des mois français en numéros
+const FRENCH_MONTHS = {
+  'janvier': '01', 'février': '02', 'mars': '03', 'avril': '04',
+  'mai': '05', 'juin': '06', 'juillet': '07', 'août': '08',
+  'septembre': '09', 'octobre': '10', 'novembre': '11', 'décembre': '12'
+};
+
+/**
+ * Extrait et formate la date de nomination depuis le texte
+ * @param {string} text - Le texte à analyser
+ * @returns {string} - Date au format DD/MM/YYYY ou "Inconnue"
+ */
+function extractDecreeDate(text) {
+  const match = text.match(DECREE_DATE_REGEX);
+  if (match) {
+    const day = match[1].padStart(2, '0');
+    const month = FRENCH_MONTHS[match[2].toLowerCase()];
+    const year = match[3];
+    return `${day}/${month}/${year}`;
+  }
+  return 'Inconnue';
+}
+
 async function scrapeCorseFallback(browser) {
   console.log(" 🚑 Activation du fallback Corse...");
   const page = await browser.newPage();
@@ -172,9 +198,15 @@ async function scrape() {
 
         const pageHtml = await page.content();
         const $page = cheerio.load(pageHtml);
-        const textContent = $page('body').text().replace(/\s+/g, ' ');
+        
+        // Extraire le texte uniquement des blockquotes (où se trouvent les nominations)
+        const blockquoteText = $page('blockquote').text().replace(/\s+/g, ' ');
+        const fullTextContent = $page('body').text().replace(/\s+/g, ' ');
+        
+        // Utiliser le texte des blockquotes pour l'extraction du nom
+        const textForName = blockquoteText || fullTextContent;
 
-        let match = textContent.match(RECTOR_REGEX);
+        let match = textForName.match(RECTOR_REGEX);
         let genre, nom;
 
         if (match) {
@@ -182,7 +214,7 @@ async function scrape() {
           nom = match[2].trim();
         } else {
           // Fallback: essayer de trouver un nom sans M./Mme
-          const fallbackMatch = textContent.match(RECTOR_FALLBACK_REGEX);
+          const fallbackMatch = textForName.match(RECTOR_FALLBACK_REGEX);
           if (fallbackMatch) {
             genre = 'M.'; // Défaut à M. si pas de préfixe
             nom = fallbackMatch[1].trim();
@@ -191,12 +223,16 @@ async function scrape() {
         }
 
         if (nom) {
+          // Utiliser le texte complet pour la date (peut être en dehors du blockquote)
+          const dateNomination = extractDecreeDate(fullTextContent);
           console.log(` ★ Trouvé : ${genre} ${nom}`);
+          console.log(` 📅 Date de nomination : ${dateNomination}`);
 
           results.push({
             academie: academie.name,
             genre: genre,
             nom: nom,
+            date_nomination: dateNomination,
             url: academieUrl,
             updated_at: new Date().toISOString()
           });
