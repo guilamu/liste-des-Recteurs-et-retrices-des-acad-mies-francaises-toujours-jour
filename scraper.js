@@ -42,6 +42,22 @@ function extractDecreeDate(text) {
   return 'Inconnue';
 }
 
+/**
+ * Normalise un nom : première lettre de chaque mot en majuscule, reste en minuscule
+ * Gère les noms composés avec tirets (ex: DECOUT-PAOLINI -> Decout-Paolini)
+ * @param {string} name - Le nom à normaliser
+ * @returns {string} - Le nom normalisé
+ */
+function normalizeName(name) {
+  return name
+    .split(/(\s+|-)/) // Sépare par espaces ou tirets, garde les séparateurs
+    .map(part => {
+      if (part.match(/^[\s-]+$/)) return part; // Garde les séparateurs tels quels
+      return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+    })
+    .join('');
+}
+
 async function scrapeCorseFallback(browser) {
   console.log(" 🚑 Activation du fallback Corse...");
   const page = await browser.newPage();
@@ -81,7 +97,7 @@ async function scrapeCorseFallback(browser) {
 
         if (match) {
           genre = match[1] || "M.";
-          fullName = match[2].trim();
+          fullName = normalizeName(match[2].trim());
 
           if (fullName.toLowerCase().includes('académie') || fullName.toLowerCase().includes('recteur')) {
             fullName = null;
@@ -211,13 +227,13 @@ async function scrape() {
 
         if (match) {
           genre = match[1];
-          nom = match[2].trim();
+          nom = normalizeName(match[2].trim());
         } else {
           // Fallback: essayer de trouver un nom sans M./Mme
           const fallbackMatch = textForName.match(RECTOR_FALLBACK_REGEX);
           if (fallbackMatch) {
             genre = 'M.'; // Défaut à M. si pas de préfixe
-            nom = fallbackMatch[1].trim();
+            nom = normalizeName(fallbackMatch[1].trim());
             console.log(` ℹ️  Fallback regex utilisé (pas de M./Mme détecté)`);
           }
         }
