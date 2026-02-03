@@ -13,6 +13,9 @@ const OUTPUT_FILE = path.join(__dirname, 'recteurs.json');
 // Regex pour extraire le nom du recteur
 const RECTOR_REGEX = /\b(M\.|Mme)\s+(.+?)(?=,|est nomm)/i;
 
+// Fallback regex quand M./Mme est absent - capture le nom avant un titre professionnel
+const RECTOR_FALLBACK_REGEX = /([A-ZÀ-ÿ][a-zA-ZÀ-ÿ\-]+(?:\s+[A-ZÀ-ÿ][a-zA-ZÀ-ÿ\-]+)+)\s*,\s*(?:administrateur|administratrice|conseiller|conseillère|recteur|rectrice|maître|maîtresse|professeur|professeure|chancelier|chancelière|inspecteur|inspectrice)/i;
+
 async function scrapeCorseFallback(browser) {
   console.log(" 🚑 Activation du fallback Corse...");
   const page = await browser.newPage();
@@ -171,11 +174,23 @@ async function scrape() {
         const $page = cheerio.load(pageHtml);
         const textContent = $page('body').text().replace(/\s+/g, ' ');
 
-        const match = textContent.match(RECTOR_REGEX);
+        let match = textContent.match(RECTOR_REGEX);
+        let genre, nom;
 
         if (match) {
-          const genre = match[1];
-          const nom = match[2].trim();
+          genre = match[1];
+          nom = match[2].trim();
+        } else {
+          // Fallback: essayer de trouver un nom sans M./Mme
+          const fallbackMatch = textContent.match(RECTOR_FALLBACK_REGEX);
+          if (fallbackMatch) {
+            genre = 'M.'; // Défaut à M. si pas de préfixe
+            nom = fallbackMatch[1].trim();
+            console.log(` ℹ️  Fallback regex utilisé (pas de M./Mme détecté)`);
+          }
+        }
+
+        if (nom) {
           console.log(` ★ Trouvé : ${genre} ${nom}`);
 
           results.push({
