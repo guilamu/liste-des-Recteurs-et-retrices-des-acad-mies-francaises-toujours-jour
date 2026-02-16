@@ -5,7 +5,7 @@
     "nom": "Benoît Delaunay",
     "date_nomination": "31/05/2024",
     "url": "https://www.education.gouv.fr/academie-d-aix-marseille-100103",
-    "updated_at": "2026-02-15T06:45:17.127Z"
+    "updated_at": "2026-02-16T06:58:04.009Z"
   },
   {
     "academie": "Amiens",
@@ -13,7 +13,7 @@
     "nom": "Pierre Moya",
     "date_nomination": "13/07/2023",
     "url": "https://www.education.gouv.fr/academie-d-amiens-253",
-    "updated_at": "2026-02-15T06:45:23.700Z"
+    "updated_at": "2026-02-16T06:58:10.639Z"
   },
   {
     "academie": "Besançon",
@@ -21,7 +21,7 @@
     "nom": "Nathalie Albert-Moretti",
     "date_nomination": "16/03/2022",
     "url": "https://www.education.gouv.fr/academie-de-besancon-100076",
-    "updated_at": "2026-02-15T06:45:30.248Z"
+    "updated_at": "2026-02-16T06:58:17.195Z"
   },
   {
     "academie": "Bordeaux",
@@ -29,7 +29,7 @@
     "nom": "Jean-Marc Huart",
     "date_nomination": "12/03/2025",
     "url": "https://www.education.gouv.fr/academie-de-bordeaux-100094",
-    "updated_at": "2026-02-15T06:45:36.791Z"
+    "updated_at": "2026-02-16T06:58:23.758Z"
   },
   {
     "academie": "Clermont-Ferrand",
@@ -37,14 +37,14 @@
     "nom": "Virginie Dupont",
     "date_nomination": "12/03/2025",
     "url": "https://www.education.gouv.fr/academie-de-clermont-ferrand-100085",
-    "updated_at": "2026-02-15T06:45:43.322Z"
+    "updated_at": "2026-02-16T06:58:30.308Z"
   },
   {
     "academie": "Corse",
     "genre": "M.",
     "nom": "Rémi Decout-Paolini",
     "url": "https://lannuaire.service-public.gouv.fr/corse/corse-du-sud/56ef3fdb-7a64-4d5c-b33c-4434148b3a4a",
-    "updated_at": "2026-02-15T06:45:52.840Z"
+    "updated_at": "2026-02-16T06:58:39.826Z"
   },
   {
     "academie": "Créteil",
@@ -52,7 +52,7 @@
     "nom": "Jean-François Chanet",
     "date_nomination": "12/03/2025",
     "url": "https://www.education.gouv.fr/academie-de-creteil-100052",
-    "updated_at": "2026-02-15T06:45:59.389Z"
+    "updated_at": "2026-02-16T06:58:46.395Z"
   },
   {
     "academie": "Dijon",
@@ -60,7 +60,7 @@
     "nom": "Mathilde Gollety",
     "date_nomination": "23/10/2024",
     "url": "https://www.education.gouv.fr/academie-de-dijon-100073",
-    "updated_at": "2026-02-15T06:46:06.113Z"
+    "updated_at": "2026-02-16T06:58:53.116Z"
   },
   {
     "academie": "Grenoble",
@@ -68,7 +68,7 @@
     "nom": "Philippe Dulbecco",
     "date_nomination": "12/03/2025",
     "url": "https://www.education.gouv.fr/academie-de-grenoble-100082",
-    "updated_at": "2026-02-15T06:46:12.843Z"
+    "updated_at": "2026-02-16T06:58:59.825Z"
   },
   {
     "academie": "Guadeloupe",
@@ -76,7 +76,7 @@
     "nom": "Gabriele Fioni",
     "date_nomination": "04/06/2025",
     "url": "https://www.education.gouv.fr/academie-de-guadeloupe-100115",
-    "updated_at": "2026-02-15T06:46:19.407Z"
+    "updated_at": "2026-02-16T06:59:06.405Z"
   },
   {
     "academie": "Guyane",
@@ -84,7 +84,7 @@
     "nom": "Guillaume Gellé",
     "date_nomination": "12/03/2025",
     "url": "https://www.education.gouv.fr/academie-de-guyane-100121",
-    "updated_at": "2026-02-15T06:46:25.957Z"
+    "updated_at": "2026-02-16T06:59:12.963Z"
   },
   {
     "academie": "La Réunion",
@@ -92,7 +92,7 @@
     "nom": "Rostane Mehdi",
     "date_nomination": "23/10/2024",
     "url": "https://www.education.gouv.fr/academie-de-la-reunion-100118",
-    "updated_at": "2026-02-15T06:46:32.508Z"
+    "updated_at": "2026-02-16T06:59:19.517Z"
   },
   {
     "academie": "Lille",
@@ -100,7 +100,7 @@
     "nom": "Sophie Béjean",
     "date_nomination": "12/03/2025",
     "url": "https://www.education.gouv.fr/academie-de-lille-100043",
-    "updated_at": "2026-02-15T06:46:39.053Z"
+    "updated_at": "2026-02-16T06:59:26.070Z"
   },
   {
     "academie": "Limoges",
@@ -108,7 +108,7 @@
     "nom": "Valérie Baglin-Le Goff",
     "date_nomination": "27/11/2024",
     "url": "https://www.education.gouv.fr/academie-de-limoges-100088",
-    "updated_at": "2026-02-15T06:46:45.749Z"
+    "updated_at": "2026-02-16T06:59:32.636Z"
   },
   {
     "academie": "Lyon",
@@ -116,7 +116,7 @@
     "nom": "Anne Bisagni-Faure",
     "date_nomination": "12/03/2025",
     "url": "https://www.education.gouv.fr/academie-de-lyon-100079",
-    "updated_at": "2026-02-15T06:46:52.298Z"
+    "updated_at": "2026-02-16T06:59:39.195Z"
   },
   {
     "academie": "Martinique",
@@ -124,7 +124,7 @@
     "nom": "Nathalie Mons",
     "date_nomination": "16/03/2022",
     "url": "https://www.education.gouv.fr/academie-de-martinique-100112",
-    "updated_at": "2026-02-15T06:46:58.836Z"
+    "updated_at": "2026-02-16T06:59:45.734Z"
   },
   {
     "academie": "Mayotte",
@@ -132,7 +132,7 @@
     "nom": "Valérie Debuchy",
     "date_nomination": "04/06/2025",
     "url": "https://www.education.gouv.fr/academie-de-mayotte-100124",
-    "updated_at": "2026-02-15T06:47:05.521Z"
+    "updated_at": "2026-02-16T06:59:52.289Z"
   },
   {
     "academie": "Montpellier",
@@ -140,7 +140,7 @@
     "nom": "Carole Drucker-Godard",
     "date_nomination": "12/03/2025",
     "url": "https://www.education.gouv.fr/academie-de-montpellier-100100",
-    "updated_at": "2026-02-15T06:47:12.042Z"
+    "updated_at": "2026-02-16T06:59:58.797Z"
   },
   {
     "academie": "Nancy-Metz",
@@ -148,7 +148,7 @@
     "nom": "Pierre-François Mourier",
     "date_nomination": "23/10/2024",
     "url": "https://www.education.gouv.fr/academie-de-nancy-metz-100058",
-    "updated_at": "2026-02-15T06:47:18.581Z"
+    "updated_at": "2026-02-16T07:00:05.516Z"
   },
   {
     "academie": "Nantes",
@@ -156,7 +156,7 @@
     "nom": "Katia Béguin",
     "date_nomination": "13/07/2022",
     "url": "https://www.education.gouv.fr/academie-de-nantes-100067",
-    "updated_at": "2026-02-15T06:47:25.124Z"
+    "updated_at": "2026-02-16T07:00:12.205Z"
   },
   {
     "academie": "Nice",
@@ -164,7 +164,7 @@
     "nom": "Natacha Chicot",
     "date_nomination": "13/07/2022",
     "url": "https://www.education.gouv.fr/academie-de-nice-100106",
-    "updated_at": "2026-02-15T06:47:31.667Z"
+    "updated_at": "2026-02-16T07:00:18.756Z"
   },
   {
     "academie": "Normandie",
@@ -172,7 +172,7 @@
     "nom": "Valérie Cabuil",
     "date_nomination": "12/03/2025",
     "url": "https://www.education.gouv.fr/academie-de-normandie-101186",
-    "updated_at": "2026-02-15T06:47:38.204Z"
+    "updated_at": "2026-02-16T07:00:25.303Z"
   },
   {
     "academie": "Nouvelle-Calédonie",
@@ -180,7 +180,7 @@
     "nom": "Didier Vin-Datiche",
     "date_nomination": "24/05/2023",
     "url": "https://www.education.gouv.fr/vice-rectorat-de-nouvelle-caledonie-100133",
-    "updated_at": "2026-02-15T06:47:44.749Z"
+    "updated_at": "2026-02-16T07:00:31.858Z"
   },
   {
     "academie": "Orléans-Tours",
@@ -188,7 +188,7 @@
     "nom": "Jean-Philippe Agresti",
     "date_nomination": "26/06/2024",
     "url": "https://www.education.gouv.fr/academie-d-orleans-tours-100070",
-    "updated_at": "2026-02-15T06:47:51.293Z"
+    "updated_at": "2026-02-16T07:00:38.380Z"
   },
   {
     "academie": "Paris",
@@ -196,7 +196,7 @@
     "nom": "Julie Benetti",
     "date_nomination": "12/03/2025",
     "url": "https://www.education.gouv.fr/academie-de-paris-100049",
-    "updated_at": "2026-02-15T06:47:57.846Z"
+    "updated_at": "2026-02-16T07:00:44.930Z"
   },
   {
     "academie": "Poitiers",
@@ -204,7 +204,7 @@
     "nom": "Frédéric Périssat",
     "date_nomination": "23/10/2024",
     "url": "https://www.education.gouv.fr/academie-de-poitiers-100091",
-    "updated_at": "2026-02-15T06:48:04.388Z"
+    "updated_at": "2026-02-16T07:00:51.493Z"
   },
   {
     "academie": "Polynésie française",
@@ -212,7 +212,7 @@
     "nom": "André Canvel",
     "date_nomination": "Inconnue",
     "url": "https://www.education.gouv.fr/vice-rectorat-de-la-polynesie-francaise-100130",
-    "updated_at": "2026-02-15T06:48:11.074Z"
+    "updated_at": "2026-02-16T07:00:58.029Z"
   },
   {
     "academie": "Reims",
@@ -220,7 +220,7 @@
     "nom": "Vincent Stanek",
     "date_nomination": "30/08/2023",
     "url": "https://www.education.gouv.fr/academie-de-reims-100055",
-    "updated_at": "2026-02-15T06:48:17.627Z"
+    "updated_at": "2026-02-16T07:01:04.569Z"
   },
   {
     "academie": "Rennes",
@@ -228,7 +228,7 @@
     "nom": "Hélène Insel",
     "date_nomination": "12/03/2025",
     "url": "https://www.education.gouv.fr/academie-de-rennes-100064",
-    "updated_at": "2026-02-15T06:48:24.257Z"
+    "updated_at": "2026-02-16T07:01:11.122Z"
   },
   {
     "academie": "Saint-Pierre-et-Miquelon",
@@ -236,7 +236,7 @@
     "nom": "Jean-Pierre Tegon",
     "date_nomination": "Inconnue",
     "url": "https://www.education.gouv.fr/service-de-l-education-nationale-de-saint-pierre-et-miquelon-100136",
-    "updated_at": "2026-02-15T06:48:30.841Z"
+    "updated_at": "2026-02-16T07:01:17.815Z"
   },
   {
     "academie": "Strasbourg",
@@ -244,7 +244,7 @@
     "nom": "Olivier Klein",
     "date_nomination": "26/06/2024",
     "url": "https://www.education.gouv.fr/academie-de-strasbourg-100061",
-    "updated_at": "2026-02-15T06:48:37.392Z"
+    "updated_at": "2026-02-16T07:01:24.367Z"
   },
   {
     "academie": "Toulouse",
@@ -252,7 +252,7 @@
     "nom": "Karim Benmiloud",
     "date_nomination": "12/03/2025",
     "url": "https://www.education.gouv.fr/academie-de-toulouse-100097",
-    "updated_at": "2026-02-15T06:48:43.929Z"
+    "updated_at": "2026-02-16T07:01:30.905Z"
   },
   {
     "academie": "Versailles",
@@ -260,7 +260,7 @@
     "nom": "Étienne Champion",
     "date_nomination": "13/07/2023",
     "url": "https://www.education.gouv.fr/academie-de-versailles-100046",
-    "updated_at": "2026-02-15T06:48:50.467Z"
+    "updated_at": "2026-02-16T07:01:37.489Z"
   },
   {
     "academie": "Wallis-et-Futuna",
@@ -268,6 +268,6 @@
     "nom": "Régine Vigier",
     "date_nomination": "Inconnue",
     "url": "https://www.education.gouv.fr/vice-rectorat-de-wallis-et-futuna-100127",
-    "updated_at": "2026-02-15T06:48:57.005Z"
+    "updated_at": "2026-02-16T07:01:44.199Z"
   }
 ]
