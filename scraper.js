@@ -356,10 +356,18 @@ async function scrape() {
           if (!telephone) telephone = "-"; // Au cas où
 
           let finalUrl = academieUrl;
-          if (email && email !== "-" && email.includes('@')) {
+
+          // 1. Essayer de récupérer l'URL officielle dans la carte (bouton en bas)
+          const cardUrl = $page('.fr-card__end a').attr('href');
+          if (cardUrl) {
+            finalUrl = cardUrl;
+            console.log(` 🔗 URL officielle (carte) : ${finalUrl}`);
+          } else if (email && email !== "-" && email.includes('@')) {
+            // 2. Fallback via email si pas de bouton
             const domain = email.split('@')[1];
             if (domain) {
               finalUrl = `https://www.${domain}`;
+              console.log(` 🔗 URL déduite (email) : ${finalUrl}`);
             }
           }
 
