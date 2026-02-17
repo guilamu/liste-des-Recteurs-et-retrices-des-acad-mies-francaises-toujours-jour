@@ -3,271 +3,340 @@
     "academie": "Aix-Marseille",
     "genre": "M.",
     "nom": "Benoît Delaunay",
-    "date_nomination": "31/05/2024",
-    "url": "https://www.education.gouv.fr/academie-d-aix-marseille-100103",
-    "updated_at": "2026-02-16T06:58:04.009Z"
+    "adresse": "Place Lucien Paye 13100 Aix-en-Provence",
+    "telephone": "04 42 91 70 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-d-aix-marseille-467830",
+    "updated_at": "2026-02-17T10:16:18.461Z"
   },
   {
     "academie": "Amiens",
     "genre": "M.",
     "nom": "Pierre Moya",
-    "date_nomination": "13/07/2023",
-    "url": "https://www.education.gouv.fr/academie-d-amiens-253",
-    "updated_at": "2026-02-16T06:58:10.639Z"
+    "adresse": "20 Boulevard d'Alsace-Lorraine 80000 Amiens",
+    "telephone": "03 22 82 38 23",
+    "email": "ce.rectorat@ac-amiens.fr",
+    "url": "https://www.ac-amiens.fr",
+    "updated_at": "2026-02-17T10:16:23.186Z"
   },
   {
     "academie": "Besançon",
     "genre": "Mme",
     "nom": "Nathalie Albert-Moretti",
-    "date_nomination": "16/03/2022",
-    "url": "https://www.education.gouv.fr/academie-de-besancon-100076",
-    "updated_at": "2026-02-16T06:58:17.195Z"
+    "adresse": "10 Rue de la Convention 25000 Besançon",
+    "telephone": "03 81 65 47 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-besancon-467836",
+    "updated_at": "2026-02-17T10:16:27.847Z"
   },
   {
     "academie": "Bordeaux",
     "genre": "M.",
     "nom": "Jean-Marc Huart",
-    "date_nomination": "12/03/2025",
-    "url": "https://www.education.gouv.fr/academie-de-bordeaux-100094",
-    "updated_at": "2026-02-16T06:58:23.758Z"
+    "adresse": "5 Rue Joseph de Carayon Latour 33000 Bordeaux",
+    "telephone": "05 57 57 38 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-bordeaux-467839",
+    "updated_at": "2026-02-17T10:16:32.486Z"
   },
   {
     "academie": "Clermont-Ferrand",
     "genre": "Mme",
     "nom": "Virginie Dupont",
-    "date_nomination": "12/03/2025",
-    "url": "https://www.education.gouv.fr/academie-de-clermont-ferrand-100085",
-    "updated_at": "2026-02-16T06:58:30.308Z"
+    "adresse": "3 Avenue Vercingétorix 63000 Clermont-Ferrand",
+    "telephone": "04 73 99 30 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-clermont-ferrand-467842",
+    "updated_at": "2026-02-17T10:16:37.202Z"
   },
   {
     "academie": "Corse",
     "genre": "M.",
-    "nom": "Rémi Decout-Paolini",
-    "url": "https://lannuaire.service-public.gouv.fr/corse/corse-du-sud/56ef3fdb-7a64-4d5c-b33c-4434148b3a4a",
-    "updated_at": "2026-02-16T06:58:39.826Z"
+    "nom": "Rémi-François Paolini",
+    "adresse": "18 Boulevard Pascal Rossini 20000 Ajaccio",
+    "telephone": "04 95 50 33 33",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-corse-467845",
+    "updated_at": "2026-02-17T10:16:41.917Z"
   },
   {
     "academie": "Créteil",
     "genre": "M.",
     "nom": "Jean-François Chanet",
-    "date_nomination": "12/03/2025",
-    "url": "https://www.education.gouv.fr/academie-de-creteil-100052",
-    "updated_at": "2026-02-16T06:58:46.395Z"
+    "adresse": "4 Rue Georges Enesco 94000 Créteil",
+    "telephone": "01 57 02 60 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-creteil-467848",
+    "updated_at": "2026-02-17T10:16:46.589Z"
   },
   {
     "academie": "Dijon",
     "genre": "Mme",
     "nom": "Mathilde Gollety",
-    "date_nomination": "23/10/2024",
-    "url": "https://www.education.gouv.fr/academie-de-dijon-100073",
-    "updated_at": "2026-02-16T06:58:53.116Z"
+    "adresse": "2 g Rue du General Delaborde 21000 Dijon",
+    "telephone": "03 80 44 84 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-dijon-467851",
+    "updated_at": "2026-02-17T10:16:51.413Z"
   },
   {
     "academie": "Grenoble",
     "genre": "M.",
     "nom": "Philippe Dulbecco",
-    "date_nomination": "12/03/2025",
-    "url": "https://www.education.gouv.fr/academie-de-grenoble-100082",
-    "updated_at": "2026-02-16T06:58:59.825Z"
+    "adresse": "7 Place Bir Hakeim 38000 Grenoble",
+    "telephone": "04 76 74 70 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-grenoble-467863",
+    "updated_at": "2026-02-17T10:16:56.126Z"
   },
   {
     "academie": "Guadeloupe",
     "genre": "M.",
     "nom": "Gabriele Fioni",
-    "date_nomination": "04/06/2025",
-    "url": "https://www.education.gouv.fr/academie-de-guadeloupe-100115",
-    "updated_at": "2026-02-16T06:59:06.405Z"
+    "adresse": "Parc d'Activité Dothemare 97139 Les Abymes",
+    "telephone": "0590 47 81 00",
+    "email": "ce.rectorat@ac-guadeloupe.fr",
+    "url": "https://www.ac-guadeloupe.fr",
+    "updated_at": "2026-02-17T10:17:11.227Z"
   },
   {
     "academie": "Guyane",
     "genre": "M.",
     "nom": "Guillaume Gellé",
-    "date_nomination": "12/03/2025",
-    "url": "https://www.education.gouv.fr/academie-de-guyane-100121",
-    "updated_at": "2026-02-16T06:59:12.963Z"
+    "adresse": "Route de Baduel 97300 Cayenne",
+    "telephone": "05 94 25 58 58",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-guyane-467866",
+    "updated_at": "2026-02-17T10:17:15.950Z"
   },
   {
     "academie": "La Réunion",
     "genre": "M.",
     "nom": "Rostane Mehdi",
-    "date_nomination": "23/10/2024",
-    "url": "https://www.education.gouv.fr/academie-de-la-reunion-100118",
-    "updated_at": "2026-02-16T06:59:19.517Z"
+    "adresse": "24 Avenue Georges Brassens 97400 Saint-Denis",
+    "telephone": "02 62 48 10 10",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-la-reunion-467869",
+    "updated_at": "2026-02-17T10:17:20.794Z"
   },
   {
     "academie": "Lille",
     "genre": "Mme",
     "nom": "Sophie Béjean",
-    "date_nomination": "12/03/2025",
-    "url": "https://www.education.gouv.fr/academie-de-lille-100043",
-    "updated_at": "2026-02-16T06:59:26.070Z"
+    "adresse": "144 rue de Bavay 59000 Lille",
+    "telephone": "03 20 15 60 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-lille-467872",
+    "updated_at": "2026-02-17T10:17:25.396Z"
   },
   {
     "academie": "Limoges",
     "genre": "Mme",
     "nom": "Valérie Baglin-Le Goff",
-    "date_nomination": "27/11/2024",
-    "url": "https://www.education.gouv.fr/academie-de-limoges-100088",
-    "updated_at": "2026-02-16T06:59:32.636Z"
+    "adresse": "13 Rue François Chénieux 87000 Limoges",
+    "telephone": "05 55 11 40 40",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-limoges-467875",
+    "updated_at": "2026-02-17T10:17:30.112Z"
   },
   {
     "academie": "Lyon",
     "genre": "Mme",
-    "nom": "Anne Bisagni-Faure",
-    "date_nomination": "12/03/2025",
-    "url": "https://www.education.gouv.fr/academie-de-lyon-100079",
-    "updated_at": "2026-02-16T06:59:39.195Z"
+    "nom": "Anne Bisagni-Faurer",
+    "adresse": "92 Rue de Marseille 69007 Lyon",
+    "telephone": "04 72 80 60 60",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-lyon-467917",
+    "updated_at": "2026-02-17T10:17:34.935Z"
   },
   {
     "academie": "Martinique",
     "genre": "Mme",
     "nom": "Nathalie Mons",
-    "date_nomination": "16/03/2022",
-    "url": "https://www.education.gouv.fr/academie-de-martinique-100112",
-    "updated_at": "2026-02-16T06:59:45.734Z"
+    "adresse": "Terreville 97233 Schœlcher",
+    "telephone": "0596 52 25 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-martinique-467926",
+    "updated_at": "2026-02-17T10:17:39.701Z"
   },
   {
     "academie": "Mayotte",
     "genre": "Mme",
     "nom": "Valérie Debuchy",
-    "date_nomination": "04/06/2025",
-    "url": "https://www.education.gouv.fr/academie-de-mayotte-100124",
-    "updated_at": "2026-02-16T06:59:52.289Z"
+    "adresse": "BP 76 97600 Mayotte",
+    "telephone": "02 69 61 10 24",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-mayotte-467929",
+    "updated_at": "2026-02-17T10:17:44.404Z"
   },
   {
     "academie": "Montpellier",
     "genre": "Mme",
     "nom": "Carole Drucker-Godard",
-    "date_nomination": "12/03/2025",
-    "url": "https://www.education.gouv.fr/academie-de-montpellier-100100",
-    "updated_at": "2026-02-16T06:59:58.797Z"
+    "adresse": "31 Rue de l'Université 34000 Montpellier",
+    "telephone": "04 67 91 47 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-montpellier-467932",
+    "updated_at": "2026-02-17T10:17:49.266Z"
   },
   {
     "academie": "Nancy-Metz",
     "genre": "M.",
     "nom": "Pierre-François Mourier",
-    "date_nomination": "23/10/2024",
-    "url": "https://www.education.gouv.fr/academie-de-nancy-metz-100058",
-    "updated_at": "2026-02-16T07:00:05.516Z"
+    "adresse": "9 rue des Brice- Rond-point Marguerite CS 30013 54035 Nancy Cedex",
+    "telephone": "03 83 86 20 20",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-nancy-metz-467935",
+    "updated_at": "2026-02-17T10:17:54.108Z"
   },
   {
     "academie": "Nantes",
     "genre": "Mme",
     "nom": "Katia Béguin",
-    "date_nomination": "13/07/2022",
-    "url": "https://www.education.gouv.fr/academie-de-nantes-100067",
-    "updated_at": "2026-02-16T07:00:12.205Z"
+    "adresse": "Chemin de la Houssinière 44300 Nantes",
+    "telephone": "02 40 37 37 37",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-nantes-467938",
+    "updated_at": "2026-02-17T10:17:58.874Z"
   },
   {
     "academie": "Nice",
     "genre": "Mme",
     "nom": "Natacha Chicot",
-    "date_nomination": "13/07/2022",
-    "url": "https://www.education.gouv.fr/academie-de-nice-100106",
-    "updated_at": "2026-02-16T07:00:18.756Z"
+    "adresse": "53 Avenue Cap de Croix 06100 Nice",
+    "telephone": "04 93 53 70 70",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-nice-467941",
+    "updated_at": "2026-02-17T10:18:03.653Z"
   },
   {
     "academie": "Normandie",
     "genre": "Mme",
     "nom": "Valérie Cabuil",
-    "date_nomination": "12/03/2025",
-    "url": "https://www.education.gouv.fr/academie-de-normandie-101186",
-    "updated_at": "2026-02-16T07:00:25.303Z"
+    "adresse": "168 Rue Caponière 14000 Caen",
+    "telephone": "02 31 30 15 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-normandie-467944",
+    "updated_at": "2026-02-17T10:18:08.392Z"
   },
   {
     "academie": "Nouvelle-Calédonie",
     "genre": "M.",
-    "nom": "Didier Vin-Datiche",
-    "date_nomination": "24/05/2023",
-    "url": "https://www.education.gouv.fr/vice-rectorat-de-nouvelle-caledonie-100133",
-    "updated_at": "2026-02-16T07:00:31.858Z"
+    "nom": "Didier Vin-Datiche Est Vice-Recteur De La Nouvelle-Calédonie. Pour Aller Plus Loin L'annuaire De L'éducation Trouvez Les Coordonnées Des Écoles",
+    "adresse": "BP G 4 98848 Nouméa Cedex",
+    "telephone": "00 687 26 61 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/vice-rectorat-de-nouvelle-caledonie-467947",
+    "updated_at": "2026-02-17T10:18:14.225Z"
   },
   {
     "academie": "Orléans-Tours",
     "genre": "M.",
     "nom": "Jean-Philippe Agresti",
-    "date_nomination": "26/06/2024",
-    "url": "https://www.education.gouv.fr/academie-d-orleans-tours-100070",
-    "updated_at": "2026-02-16T07:00:38.380Z"
+    "adresse": "21 Rue Saint Etienne 45000 Orléans",
+    "telephone": "02 38 79 38 79",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-d-orleans-tours-467950",
+    "updated_at": "2026-02-17T10:18:19.016Z"
   },
   {
     "academie": "Paris",
     "genre": "Mme",
     "nom": "Julie Benetti",
-    "date_nomination": "12/03/2025",
-    "url": "https://www.education.gouv.fr/academie-de-paris-100049",
-    "updated_at": "2026-02-16T07:00:44.930Z"
+    "adresse": "12 Boulevard d'Indochine 75019 Paris",
+    "telephone": "01 44 62 40 40",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-paris-467953",
+    "updated_at": "2026-02-17T10:18:23.856Z"
   },
   {
     "academie": "Poitiers",
     "genre": "M.",
     "nom": "Frédéric Périssat",
-    "date_nomination": "23/10/2024",
-    "url": "https://www.education.gouv.fr/academie-de-poitiers-100091",
-    "updated_at": "2026-02-16T07:00:51.493Z"
+    "adresse": "22 Rue Guillaume 7 le Troubadour 86000 Poitiers",
+    "telephone": "05 16 52 66 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-poitiers-467956",
+    "updated_at": "2026-02-17T10:18:28.630Z"
   },
   {
     "academie": "Polynésie française",
     "genre": "M.",
-    "nom": "André Canvel",
-    "date_nomination": "Inconnue",
-    "url": "https://www.education.gouv.fr/vice-rectorat-de-la-polynesie-francaise-100130",
-    "updated_at": "2026-02-16T07:00:58.029Z"
+    "nom": "André Canvel Est Vice-Recteur De La Polynésie Française. Pour Aller Plus Loin L'annuaire De L'éducation Trouvez Les Coordonnées Des Écoles",
+    "adresse": "25 avenue Pierre Loti BP 1632 98713 Papeete - Tahiti",
+    "telephone": "00 689 478400 (standard)",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/vice-rectorat-de-la-polynesie-francaise-467959",
+    "updated_at": "2026-02-17T10:18:43.436Z"
   },
   {
     "academie": "Reims",
     "genre": "M.",
     "nom": "Vincent Stanek",
-    "date_nomination": "30/08/2023",
-    "url": "https://www.education.gouv.fr/academie-de-reims-100055",
-    "updated_at": "2026-02-16T07:01:04.569Z"
+    "adresse": "1 Rue Navier 51100 Reims",
+    "telephone": "03 26 05 69 69",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-reims-467968",
+    "updated_at": "2026-02-17T10:18:48.235Z"
   },
   {
     "academie": "Rennes",
     "genre": "Mme",
     "nom": "Hélène Insel",
-    "date_nomination": "12/03/2025",
-    "url": "https://www.education.gouv.fr/academie-de-rennes-100064",
-    "updated_at": "2026-02-16T07:01:11.122Z"
+    "adresse": "96 Rue d'Antrain 35700 Rennes",
+    "telephone": "02 23 21 77 77",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-rennes-467971",
+    "updated_at": "2026-02-17T10:18:53.019Z"
   },
   {
     "academie": "Saint-Pierre-et-Miquelon",
     "genre": "M.",
-    "nom": "Jean-Pierre Tegon",
-    "date_nomination": "Inconnue",
-    "url": "https://www.education.gouv.fr/service-de-l-education-nationale-de-saint-pierre-et-miquelon-100136",
-    "updated_at": "2026-02-16T07:01:17.815Z"
+    "nom": "Jean-Pierre Tegon Est Chef Du Service De L'éducation Nationale De Saint-Pierre Et Miquelon. Pour Aller Plus Loin L'annuaire De L'éducation Trouvez Les Coordonnées Des Écoles",
+    "adresse": "BP 4239 97500 Saint-Pierre-et-Miquelon",
+    "telephone": "0508 41 04 60",
+    "email": "ia@ac-spm.fr",
+    "url": "https://www.ac-spm.fr",
+    "updated_at": "2026-02-17T10:18:57.900Z"
   },
   {
     "academie": "Strasbourg",
     "genre": "M.",
     "nom": "Olivier Klein",
-    "date_nomination": "26/06/2024",
-    "url": "https://www.education.gouv.fr/academie-de-strasbourg-100061",
-    "updated_at": "2026-02-16T07:01:24.367Z"
+    "adresse": "6 Rue de la Toussaint 67000 Strasbourg",
+    "telephone": "03 88 23 37 23",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-strasbourg-467974",
+    "updated_at": "2026-02-17T10:19:02.757Z"
   },
   {
     "academie": "Toulouse",
     "genre": "M.",
     "nom": "Karim Benmiloud",
-    "date_nomination": "12/03/2025",
-    "url": "https://www.education.gouv.fr/academie-de-toulouse-100097",
-    "updated_at": "2026-02-16T07:01:30.905Z"
+    "adresse": "75 Rue Saint Roch 31400 Toulouse",
+    "telephone": "05 61 17 70 00",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-toulouse-467977",
+    "updated_at": "2026-02-17T10:19:07.565Z"
   },
   {
     "academie": "Versailles",
     "genre": "M.",
     "nom": "Étienne Champion",
-    "date_nomination": "13/07/2023",
-    "url": "https://www.education.gouv.fr/academie-de-versailles-100046",
-    "updated_at": "2026-02-16T07:01:37.489Z"
+    "adresse": "3 Boulevard de Lesseps 78000 Versailles",
+    "telephone": "01 30 83 44 44",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/academie-de-versailles-467980",
+    "updated_at": "2026-02-17T10:19:12.332Z"
   },
   {
     "academie": "Wallis-et-Futuna",
     "genre": "Mme",
-    "nom": "Régine Vigier",
-    "date_nomination": "Inconnue",
-    "url": "https://www.education.gouv.fr/vice-rectorat-de-wallis-et-futuna-100127",
-    "updated_at": "2026-02-16T07:01:44.199Z"
+    "nom": "Régine Vigier Est Vice-Rectrice De Wallis-Et-Futuna. Pour Aller Plus Loin L'annuaire De L'éducation Trouvez Les Coordonnées Des Écoles",
+    "adresse": "Mata Utu 98609 Wallis et Futuna",
+    "telephone": "00681 72 28 28",
+    "email": "-",
+    "url": "https://www.education.gouv.fr/vice-rectorat-de-wallis-et-futuna-467965",
+    "updated_at": "2026-02-17T10:19:17.160Z"
   }
 ]
