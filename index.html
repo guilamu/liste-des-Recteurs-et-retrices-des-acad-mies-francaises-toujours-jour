@@ -209,6 +209,44 @@
                     updateText.innerText = "Mise à jour quotidienne automatique.";
                 }
 
+                // Mapping des emails (hardcoded)
+                const emailMapping = {
+                    "Aix-Marseille": "ce.rectorat@ac-aix-marseille.fr",
+                    "Amiens": "ce.rectorat@ac-amiens.fr",
+                    "Besançon": "ce.rectorat@ac-besancon.fr",
+                    "Bordeaux": "ce.rectorat@ac-bordeaux.fr",
+                    "Clermont-Ferrand": "ce.rectorat@ac-clermont.fr",
+                    "Corse": "ce.rectorat@ac-corse.fr",
+                    "Créteil": "ce.rectorat@ac-creteil.fr",
+                    "Dijon": "ce.rectorat@ac-dijon.fr",
+                    "Grenoble": "ce.rectorat@ac-grenoble.fr",
+                    "Guadeloupe": "ce.rectorat@ac-guadeloupe.fr",
+                    "Guyane": "ce.rectorat@ac-guyane.fr",
+                    "La Réunion": "ce.rectorat@ac-reunion.fr",
+                    "Lille": "ce.rectorat@ac-lille.fr",
+                    "Limoges": "ce.rectorat@ac-limoges.fr",
+                    "Lyon": "ce.rectorat@ac-lyon.fr",
+                    "Martinique": "ce.rectorat@ac-martinique.fr",
+                    "Mayotte": "ce.rectorat@ac-mayotte.fr",
+                    "Montpellier": "ce.rectorat@ac-montpellier.fr",
+                    "Nancy-Metz": "ce.rectorat@ac-nancy-metz.fr",
+                    "Nantes": "ce.rectorat@ac-nantes.fr",
+                    "Nice": "ce.rectorat@ac-nice.fr",
+                    "Normandie": "ce.rectorat@ac-normandie.fr",
+                    "Nouvelle-Calédonie": "ce.rectorat@ac-noumea.nc",
+                    "Orléans-Tours": "ce.rectorat@ac-orleans-tours.fr",
+                    "Paris": "ce.rectorat@ac-paris.fr",
+                    "Poitiers": "ce.rectorat@ac-poitiers.fr",
+                    "Polynésie française": "accueil@ac-polynesie.pf",
+                    "Reims": "ce.rectorat@ac-reims.fr",
+                    "Rennes": "ce.rectorat@ac-rennes.fr",
+                    "Saint-Pierre-et-Miquelon": "ia@ac-spm.fr",
+                    "Strasbourg": "ce.rectorat@ac-strasbourg.fr",
+                    "Toulouse": "ce.rectorat@ac-toulouse.fr",
+                    "Versailles": "ce.rectorat@ac-versailles.fr",
+                    "Wallis-et-Futuna": "ce.rectorat@ac-wf.wf"
+                };
+
                 // 2. Remplissage du tableau
                 tbody.innerHTML = ''; // Vide le loader
 
@@ -232,13 +270,20 @@
                         `;
                     } else {
                         const dateNomination = row.date_nomination || 'Inconnue';
+                        // On récupère l'email hardcodé pour cette académie (en utilisant le nom cleané)
+                        // On essaye d'abord row.academie (nom original du JSON) car le mapping utilise les clés exactes
+                        // Si le JSON contient "Aix-Marseille", notre clé est "Aix-Marseille". 
+                        // cleanAcademieName retire juste les parenthèses s'il y en a.
+                        // Par sécurité on peut utiliser row.academie qui correspond aux clés du mapping.
+                        const email = emailMapping[row.academie] || '-';
+
                         tr.innerHTML = `
                             <td><a href="${row.url}" target="_blank">${cleanAcademieName}</a></td>
                             <td>${row.genre}</td>
                             <td><strong>${row.nom}</strong></td>
                             <td>${row.adresse || '-'}</td>
-                            <td>${row.telephone || '-'}</td>
-                            <td>${row.email !== '-' ? `<a href="mailto:${row.email}">${row.email}</a>` : '-'}</td>
+                            <td>${row.telephone && row.telephone !== '-' ? `<a href="tel:${row.telephone.replace(/\s/g, '')}" title="${row.telephone}">📞</a>` : '-'}</td>
+                            <td>${email !== '-' ? `<a href="mailto:${email}" title="${email}">✉️</a>` : '-'}</td>
                             <td style="color: #666; font-size: 0.9em;">${dateStr}</td>
                         `;
                     }
