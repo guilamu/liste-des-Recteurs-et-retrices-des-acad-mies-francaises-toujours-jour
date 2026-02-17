@@ -182,7 +182,19 @@
                 display: none;
             }
 
-            /* History detail row: reset the forced left-padding and kill the pseudo-label */
+            /* History detail row: visually merge into the card above */
+            tr.hist-open {
+                margin-bottom: 0;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                border-bottom-color: transparent;
+            }
+            tr.hist-detail {
+                margin-top: 0;
+                border-top: none;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
             tr.hist-detail td {
                 padding-left: 1rem;
                 padding-right: 1rem;
@@ -330,8 +342,10 @@
             if (existingDetail) {
                 existingDetail.remove();
                 btn.classList.remove('active');
+                refRow.classList.remove('hist-open');
                 return;
             }
+            refRow.classList.add('hist-open');
 
             btn.classList.add('active');
 
