@@ -157,6 +157,73 @@
             td:nth-of-type(7):before {
                 content: "Mise à jour";
             }
+
+            td:nth-of-type(8):before {
+                content: "Historique";
+            }
+        }
+
+        /* History toggle button */
+        .hist-btn {
+            background: none;
+            border: 1px solid #c8d8e8;
+            border-radius: 4px;
+            color: #0366d6;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 2px 6px;
+            white-space: nowrap;
+        }
+        .hist-btn:hover {
+            background-color: #f1f8ff;
+        }
+        .hist-btn.active {
+            background-color: #e8f4ff;
+            border-color: #0366d6;
+        }
+
+        /* History detail row */
+        tr.hist-detail td {
+            background-color: #f8fbff;
+            border-top: none;
+            padding: 0.6rem 1.2rem 0.8rem 2.5rem;
+        }
+
+        /* History timeline list */
+        .hist-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .hist-list li {
+            font-size: 0.85rem;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .hist-list li::before {
+            content: "→";
+            color: #aaa;
+            flex-shrink: 0;
+        }
+        .hist-list li:first-child::before {
+            content: "★";
+            color: #f0a030;
+        }
+        .hist-since {
+            color: #888;
+            font-size: 0.8rem;
+        }
+        .hist-badge-current {
+            background: #e6f4ea;
+            color: #1a7f37;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            padding: 1px 5px;
         }
     </style>
 </head>
@@ -174,6 +241,7 @@
                 <th>Téléphone</th>
                 <th>Email</th>
                 <th>Mise à jour</th>
+                <th>Historique</th>
             </tr>
         </thead>
         <tbody>
@@ -187,117 +255,172 @@
     <p id="last-update">Chargement de la date de mise à jour...</p>
 
     <script>
-        fetch('recteurs.json')
-            .then(response => response.json())
-            .then(data => {
-                const tbody = document.querySelector('#rectors-table tbody');
-                const updateText = document.querySelector('#last-update');
+        // Mapping des emails (hardcoded)
+        const emailMapping = {
+            "Aix-Marseille": "ce.rectorat@ac-aix-marseille.fr",
+            "Amiens": "ce.rectorat@ac-amiens.fr",
+            "Besançon": "ce.rectorat@ac-besancon.fr",
+            "Bordeaux": "ce.rectorat@ac-bordeaux.fr",
+            "Clermont-Ferrand": "ce.rectorat@ac-clermont.fr",
+            "Corse": "ce.rectorat@ac-corse.fr",
+            "Créteil": "ce.rectorat@ac-creteil.fr",
+            "Dijon": "ce.rectorat@ac-dijon.fr",
+            "Grenoble": "ce.rectorat@ac-grenoble.fr",
+            "Guadeloupe": "ce.rectorat@ac-guadeloupe.fr",
+            "Guyane": "ce.rectorat@ac-guyane.fr",
+            "La Réunion": "ce.rectorat@ac-reunion.fr",
+            "Lille": "ce.rectorat@ac-lille.fr",
+            "Limoges": "ce.rectorat@ac-limoges.fr",
+            "Lyon": "ce.rectorat@ac-lyon.fr",
+            "Martinique": "ce.rectorat@ac-martinique.fr",
+            "Mayotte": "ce.rectorat@ac-mayotte.fr",
+            "Montpellier": "ce.rectorat@ac-montpellier.fr",
+            "Nancy-Metz": "ce.rectorat@ac-nancy-metz.fr",
+            "Nantes": "ce.rectorat@ac-nantes.fr",
+            "Nice": "ce.rectorat@ac-nice.fr",
+            "Normandie": "ce.rectorat@ac-normandie.fr",
+            "Nouvelle-Calédonie": "ce.rectorat@ac-noumea.nc",
+            "Orléans-Tours": "ce.rectorat@ac-orleans-tours.fr",
+            "Paris": "ce.rectorat@ac-paris.fr",
+            "Poitiers": "ce.rectorat@ac-poitiers.fr",
+            "Polynésie française": "accueil@ac-polynesie.pf",
+            "Reims": "ce.rectorat@ac-reims.fr",
+            "Rennes": "ce.rectorat@ac-rennes.fr",
+            "Saint-Pierre-et-Miquelon": "ia@ac-spm.fr",
+            "Strasbourg": "ce.rectorat@ac-strasbourg.fr",
+            "Toulouse": "ce.rectorat@ac-toulouse.fr",
+            "Versailles": "ce.rectorat@ac-versailles.fr",
+            "Wallis-et-Futuna": "ce.rectorat@ac-wf.wf"
+        };
 
-                // 1. Gestion de la date de mise à jour
-                if (data.length > 0 && data[0].updated_at) {
-                    const rawDate = new Date(data[0].updated_at);
-                    const formattedDate = rawDate.toLocaleDateString('fr-FR', {
-                        weekday: 'long',
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                    });
-                    // Capitalize la première lettre du jour
-                    const finalDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
-                    updateText.innerText = `Mise à jour quotidienne automatique (Dernière exécution : ${finalDate})`;
-                } else {
-                    updateText.innerText = "Mise à jour quotidienne automatique.";
+        /**
+         * Toggle the history detail row for a given academy.
+         */
+        function toggleHistory(acad, entries, refRow, btn) {
+            const existingDetail = document.querySelector(`tr.hist-detail[data-acad="${CSS.escape(acad)}"]`);
+            if (existingDetail) {
+                existingDetail.remove();
+                btn.classList.remove('active');
+                return;
+            }
+
+            btn.classList.add('active');
+
+            const detailRow = document.createElement('tr');
+            detailRow.className = 'hist-detail';
+            detailRow.dataset.acad = acad;
+
+            const td = document.createElement('td');
+            td.colSpan = 8;
+
+            // Build the timeline list (newest first)
+            const list = document.createElement('ol');
+            list.className = 'hist-list';
+
+            [...entries].reverse().forEach((entry, idx) => {
+                const li = document.createElement('li');
+                const sinceDate = new Date(entry.since + 'T00:00:00').toLocaleDateString('fr-FR', {
+                    day: 'numeric', month: 'long', year: 'numeric'
+                });
+                const currentBadge = idx === 0
+                    ? ' <span class="hist-badge-current">en poste</span>'
+                    : '';
+                li.innerHTML = `<strong>${entry.genre} ${entry.nom}</strong>`
+                    + ` <span class="hist-since">depuis le ${sinceDate}</span>`
+                    + currentBadge;
+                list.appendChild(li);
+            });
+
+            td.appendChild(list);
+            detailRow.appendChild(td);
+            refRow.after(detailRow);
+        }
+
+        Promise.all([
+            fetch('recteurs.json').then(r => r.json()),
+            fetch('history.json').then(r => r.json()).catch(() => ({}))
+        ])
+        .then(([data, history]) => {
+            const tbody = document.querySelector('#rectors-table tbody');
+            const updateText = document.querySelector('#last-update');
+
+            // 1. Gestion de la date de mise à jour
+            if (data.length > 0 && data[0].updated_at) {
+                const rawDate = new Date(data[0].updated_at);
+                const formattedDate = rawDate.toLocaleDateString('fr-FR', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                const finalDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+                updateText.innerText = `Mise à jour quotidienne automatique (Dernière exécution : ${finalDate})`;
+            } else {
+                updateText.innerText = "Mise à jour quotidienne automatique.";
+            }
+
+            // 2. Remplissage du tableau
+            tbody.innerHTML = '';
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+
+                // Clean academy name (remove parenthetical suffixes)
+                const cleanAcademieName = row.academie.replace(/\s*\(.*?\)/g, '').trim();
+
+                // Format update date
+                let dateStr = '';
+                if (row.updated_at) {
+                    const d = new Date(row.updated_at);
+                    dateStr = d.toLocaleDateString('fr-FR');
                 }
 
-                // Mapping des emails (hardcoded)
-                const emailMapping = {
-                    "Aix-Marseille": "ce.rectorat@ac-aix-marseille.fr",
-                    "Amiens": "ce.rectorat@ac-amiens.fr",
-                    "Besançon": "ce.rectorat@ac-besancon.fr",
-                    "Bordeaux": "ce.rectorat@ac-bordeaux.fr",
-                    "Clermont-Ferrand": "ce.rectorat@ac-clermont.fr",
-                    "Corse": "ce.rectorat@ac-corse.fr",
-                    "Créteil": "ce.rectorat@ac-creteil.fr",
-                    "Dijon": "ce.rectorat@ac-dijon.fr",
-                    "Grenoble": "ce.rectorat@ac-grenoble.fr",
-                    "Guadeloupe": "ce.rectorat@ac-guadeloupe.fr",
-                    "Guyane": "ce.rectorat@ac-guyane.fr",
-                    "La Réunion": "ce.rectorat@ac-reunion.fr",
-                    "Lille": "ce.rectorat@ac-lille.fr",
-                    "Limoges": "ce.rectorat@ac-limoges.fr",
-                    "Lyon": "ce.rectorat@ac-lyon.fr",
-                    "Martinique": "ce.rectorat@ac-martinique.fr",
-                    "Mayotte": "ce.rectorat@ac-mayotte.fr",
-                    "Montpellier": "ce.rectorat@ac-montpellier.fr",
-                    "Nancy-Metz": "ce.rectorat@ac-nancy-metz.fr",
-                    "Nantes": "ce.rectorat@ac-nantes.fr",
-                    "Nice": "ce.rectorat@ac-nice.fr",
-                    "Normandie": "ce.rectorat@ac-normandie.fr",
-                    "Nouvelle-Calédonie": "ce.rectorat@ac-noumea.nc",
-                    "Orléans-Tours": "ce.rectorat@ac-orleans-tours.fr",
-                    "Paris": "ce.rectorat@ac-paris.fr",
-                    "Poitiers": "ce.rectorat@ac-poitiers.fr",
-                    "Polynésie française": "accueil@ac-polynesie.pf",
-                    "Reims": "ce.rectorat@ac-reims.fr",
-                    "Rennes": "ce.rectorat@ac-rennes.fr",
-                    "Saint-Pierre-et-Miquelon": "ia@ac-spm.fr",
-                    "Strasbourg": "ce.rectorat@ac-strasbourg.fr",
-                    "Toulouse": "ce.rectorat@ac-toulouse.fr",
-                    "Versailles": "ce.rectorat@ac-versailles.fr",
-                    "Wallis-et-Futuna": "ce.rectorat@ac-wf.wf"
-                };
+                const acadHistory = history[row.academie] || [];
+                const hasHistory = acadHistory.length > 1;
 
-                // 2. Remplissage du tableau
-                tbody.innerHTML = ''; // Vide le loader
+                if (row.error) {
+                    tr.innerHTML = `
+                        <td><a href="${row.url}" target="_blank">${cleanAcademieName}</a></td>
+                        <td colspan="6"><span class="error-text">⚠️ ${row.error} (Vérifier manuellement)</span></td>
+                        <td></td>
+                    `;
+                } else {
+                    const email = emailMapping[row.academie] || '-';
 
-                data.forEach(row => {
-                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><a href="${row.url}" target="_blank">${cleanAcademieName}</a></td>
+                        <td>${row.genre}</td>
+                        <td><strong>${row.nom}</strong></td>
+                        <td>${row.adresse || '-'}</td>
+                        <td>${row.telephone && row.telephone !== '-' ? `<a href="tel:${row.telephone.replace(/\s/g, '')}" title="${row.telephone}">📞</a>` : '-'}</td>
+                        <td>${email !== '-' ? `<a href="mailto:${email}" title="${email}">✉️</a>` : '-'}</td>
+                        <td style="color: #666; font-size: 0.9em;">${dateStr}</td>
+                        <td></td>
+                    `;
 
-                    // NETTOYAGE DU NOM : Supprime tout texte entre parenthèses
-                    const cleanAcademieName = row.academie.replace(/\s*\(.*?\)/g, '').trim();
-
-                    // FORMATAGE DATE
-                    let dateStr = '';
-                    if (row.updated_at) {
-                        const d = new Date(row.updated_at);
-                        dateStr = d.toLocaleDateString('fr-FR');
+                    // Add history button if there is at least 2 entries
+                    if (hasHistory) {
+                        const histCell = tr.lastElementChild;
+                        const btn = document.createElement('button');
+                        btn.className = 'hist-btn';
+                        btn.title = 'Voir l\'historique des recteurs';
+                        btn.textContent = `📜 ${acadHistory.length}`;
+                        btn.addEventListener('click', () => toggleHistory(row.academie, acadHistory, tr, btn));
+                        histCell.appendChild(btn);
                     }
+                }
 
-                    if (row.error) {
-                        tr.innerHTML = `
-                            <td><a href="${row.url}" target="_blank">${cleanAcademieName}</a></td>
-                            <td colspan="4"><span class="error-text">⚠️ ${row.error} (Vérifier manuellement)</span></td>
-                        `;
-                    } else {
-                        const dateNomination = row.date_nomination || 'Inconnue';
-                        // On récupère l'email hardcodé pour cette académie (en utilisant le nom cleané)
-                        // On essaye d'abord row.academie (nom original du JSON) car le mapping utilise les clés exactes
-                        // Si le JSON contient "Aix-Marseille", notre clé est "Aix-Marseille". 
-                        // cleanAcademieName retire juste les parenthèses s'il y en a.
-                        // Par sécurité on peut utiliser row.academie qui correspond aux clés du mapping.
-                        const email = emailMapping[row.academie] || '-';
-
-                        tr.innerHTML = `
-                            <td><a href="${row.url}" target="_blank">${cleanAcademieName}</a></td>
-                            <td>${row.genre}</td>
-                            <td><strong>${row.nom}</strong></td>
-                            <td>${row.adresse || '-'}</td>
-                            <td>${row.telephone && row.telephone !== '-' ? `<a href="tel:${row.telephone.replace(/\s/g, '')}" title="${row.telephone}">📞</a>` : '-'}</td>
-                            <td>${email !== '-' ? `<a href="mailto:${email}" title="${email}">✉️</a>` : '-'}</td>
-                            <td style="color: #666; font-size: 0.9em;">${dateStr}</td>
-                        `;
-                    }
-                    tbody.appendChild(tr);
-                });
-            })
-            .catch(err => {
-                console.error(err);
-                document.querySelector('#rectors-table tbody').innerHTML =
-                    `<tr><td colspan="5" style="color:#d73a49; text-align:center; padding:2rem;">
-                        <strong>Erreur lors du chargement du fichier JSON.</strong><br>
-                        Vérifiez que le fichier recteurs.json a bien été généré.
-                    </td></tr>`;
+                tbody.appendChild(tr);
             });
+        })
+        .catch(err => {
+            console.error(err);
+            document.querySelector('#rectors-table tbody').innerHTML =
+                `<tr><td colspan="8" style="color:#d73a49; text-align:center; padding:2rem;">
+                    <strong>Erreur lors du chargement des données.</strong><br>
+                    Vérifiez que les fichiers recteurs.json et history.json ont bien été générés.
+                </td></tr>`;
+        });
     </script>
 </body>
 
