@@ -11,7 +11,7 @@ const CORSE_FALLBACK_URL = "https://lannuaire.service-public.gouv.fr/navigation/
 const OUTPUT_FILE = path.join(__dirname, 'recteurs.json');
 
 // Regex pour extraire le nom du recteur
-const RECTOR_REGEX = /\b(M\.|Mme)\s+(.+?)(?=,|est nomm)/i;
+const RECTOR_REGEX = /\b(M\.|Mme)\s+(.+?)(?=\s+est\s+(?:recteur|rectrice|nomm)|,)/i;
 
 // Fallback regex quand M./Mme est absent - capture le nom avant un titre professionnel
 const RECTOR_FALLBACK_REGEX = /([A-ZÀ-ÿ][a-zA-ZÀ-ÿ\-]+(?:\s+[A-ZÀ-ÿ][a-zA-ZÀ-ÿ\-]+)+)\s*,\s*(?:administrateur|administratrice|conseiller|conseillère|recteur|rectrice|maître|maîtresse|professeur|professeure|chancelier|chancelière|inspecteur|inspectrice)/i;
@@ -123,8 +123,9 @@ async function scrapeCorseFallback(browser) {
 
 async function scrape() {
   console.log("🚀 Lancement du navigateur...");
+  // Launch in headful mode so the user can see Cloudflare challenges and solve them if needed
   const browser = await puppeteer.launch({
-    headless: "new",
+    headless: false,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
@@ -140,9 +141,16 @@ async function scrape() {
       timeout: 60000
     });
 
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    // Wait 15 seconds to allow user to solve Cloudflare
+    console.log("⏳ Attente de 15s pour résolution manuelle Cloudflare/Chargement...");
+    await new Promise(resolve => setTimeout(resolve, 15000));
 
-    // ÉTAPE 1 : Récupérer la liste des académies
+    // DEBUG: Sauvegarder le HTML pour analyse
+    const htmlContent = await page.content();
+    fs.writeFileSync(path.join(__dirname, 'debug_page.html'), htmlContent);
+    console.log("📄 HTML de la page sauvegardé dans debug_page.html");
+
+    // ÉTAPE 1 : Récupérer la liste des académies depuis le select
     const academies = await page.evaluate(() => {
       const select = document.querySelector('.svg-select');
       if (!select) return [];
@@ -168,20 +176,32 @@ async function scrape() {
       // 2a. Découvrir l'URL via la carte interactive
       try {
         console.log(" 🔍 Découverte de l'URL...");
-        await page.goto(INDEX_URL, {
-          waitUntil: 'networkidle2',
-          timeout: 60000
-        });
 
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        await page.select('.svg-select', academie.slug);
-        await new Promise(resolve => setTimeout(resolve, 800));
+        // On retourne sur l'index si on n'y est pas
+        if (!page.url().includes('les-regions-academiques')) {
+          console.log(" 🔙 Retour à la carte...");
+          await page.goto(INDEX_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
 
-        await page.evaluate(() => {
-          const button = document.querySelector('.svg-submit, button[type="submit"]');
-          if (button) button.click();
-        });
+        await page.waitForSelector(`path[data-region="${academie.slug}"]`, { timeout: 30000 });
 
+        // On retourne sur l'index si on n'y est pas
+        if (!page.url().includes('les-regions-academiques')) {
+          console.log(" 🔙 Retour à la carte...");
+          await page.goto(INDEX_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+
+        // Cliquer et attendre la navigation
+        const navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 });
+
+        console.log(` 🖱️ Clic sur la région ${academie.slug}...`);
+        await page.click(`path[data-region="${academie.slug}"]`);
+
+        await navigationPromise;
+
+        // Petite pause pour laisser Cloudflare tranquille
         await new Promise(resolve => setTimeout(resolve, 2000));
 
         const currentUrl = page.url();
@@ -213,43 +233,83 @@ async function scrape() {
         await page.goto(academieUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
 
         const pageHtml = await page.content();
+        // DEBUG: Sauvegarder le HTML de la page académie
+        fs.writeFileSync(path.join(__dirname, `debug_academy_${academie.slug}.html`), pageHtml);
         const $page = cheerio.load(pageHtml);
-        
-        // Extraire le texte uniquement des blockquotes (où se trouvent les nominations)
-        const blockquoteText = $page('blockquote').text().replace(/\s+/g, ' ');
+
+        let genre = null;
+        let nom = null;
+
+        // Définir fullTextContent ici pour qu'il soit accessible partout
         const fullTextContent = $page('body').text().replace(/\s+/g, ' ');
-        
-        // Utiliser le texte des blockquotes pour l'extraction du nom
-        const textForName = blockquoteText || fullTextContent;
 
-        let match = textForName.match(RECTOR_REGEX);
-        let genre, nom;
+        // 1. Essayer d'extraire depuis .fr-highlight (Nouveau format DSFR)
+        const highlightElement = $page('.fr-highlight');
+        if (highlightElement.length > 0) {
+          const highlightText = highlightElement.text().replace(/\s+/g, ' ');
+          let match = highlightText.match(RECTOR_REGEX);
+          if (match) {
+            genre = match[1];
+            nom = normalizeName(match[2].trim());
+            console.log(` ✓ Trouvé via .fr-highlight: ${genre} ${nom}`);
+          }
+        }
 
-        if (match) {
-          genre = match[1];
-          nom = normalizeName(match[2].trim());
-        } else {
-          // Fallback: essayer de trouver un nom sans M./Mme
-          const fallbackMatch = textForName.match(RECTOR_FALLBACK_REGEX);
-          if (fallbackMatch) {
-            genre = 'M.'; // Défaut à M. si pas de préfixe
-            nom = normalizeName(fallbackMatch[1].trim());
-            console.log(` ℹ️  Fallback regex utilisé (pas de M./Mme détecté)`);
+        // 2. Fallback sur l'ancienne méthode si non trouvé
+        if (!nom) {
+          // Extraire le texte uniquement des blockquotes (où se trouvent les nominations)
+          const blockquoteText = $page('blockquote').text().replace(/\s+/g, ' ');
+
+          // Utiliser le texte des blockquotes pour l'extraction du nom
+          const textForName = blockquoteText || fullTextContent;
+
+          let match = textForName.match(RECTOR_REGEX);
+
+          if (match) {
+            genre = match[1];
+            nom = normalizeName(match[2].trim());
+          } else {
+            // Fallback: essayer de trouver un nom sans M./Mme
+            const fallbackMatch = textForName.match(RECTOR_FALLBACK_REGEX);
+            if (fallbackMatch) {
+              genre = 'M.'; // Défaut à M. si pas de préfixe
+              nom = normalizeName(fallbackMatch[1].trim());
+              console.log(` ℹ️  Fallback regex utilisé (pas de M./Mme détecté)`);
+            }
           }
         }
 
         if (nom) {
-          // Utiliser le texte complet pour la date (peut être en dehors du blockquote)
-          const dateNomination = extractDecreeDate(fullTextContent);
+          // Extraction des nouvelles données : Adresse, Téléphone, Email via attributs robustes
+          const adresse = $page('[data-component-id="tandem_dsfr:adresse"] .coordinate').text().trim().replace(/\\s+/g, ' ');
+          let telephone = $page('[data-component-id="tandem_dsfr:telephone"] .coordinate').text().trim();
+          let email = $page('[data-component-id="tandem_dsfr:email"] .coordinate').text().trim();
+
+          if (!email) email = "-";
+          if (!telephone) telephone = "-"; // Au cas où
+
+          let finalUrl = academieUrl;
+          if (email && email !== "-" && email.includes('@')) {
+            const domain = email.split('@')[1];
+            if (domain) {
+              finalUrl = `https://www.${domain}`;
+            }
+          }
+
           console.log(` ★ Trouvé : ${genre} ${nom}`);
-          console.log(` 📅 Date de nomination : ${dateNomination}`);
+          console.log(` 📍 Adresse : ${adresse}`);
+          console.log(` 📞 Téléphone : ${telephone}`);
+          console.log(` 📧 Email : ${email}`);
+          console.log(` 🔗 URL : ${finalUrl}`);
 
           results.push({
             academie: academie.name,
             genre: genre,
             nom: nom,
-            date_nomination: dateNomination,
-            url: academieUrl,
+            adresse: adresse,
+            telephone: telephone,
+            email: email,
+            url: finalUrl,
             updated_at: new Date().toISOString()
           });
           found = true;
@@ -277,6 +337,12 @@ async function scrape() {
       // 2d. Si rien trouvé
       if (!found) {
         console.log(` ⚠️ Aucun recteur trouvé`);
+
+        // DEBUG: Sauvegarder la page en cas d'échec
+        const failedHtml = await page.content();
+        fs.writeFileSync(path.join(__dirname, `debug_failed_${academie.slug}.html`), failedHtml);
+        console.log(` 📄 HTML sauvegardé dans debug_failed_${academie.slug}.html`);
+
         results.push({
           academie: academie.name,
           error: "Non trouvé",

@@ -22,7 +22,10 @@ Les données sont disponibles au format JSON dans le fichier [`recteurs.json`](.
 "academie": "Aix-Marseille",
 "genre": "M.",
 "nom": "Benoît Delaunay",
-"url": "https://www.education.gouv.fr/academie-d-aix-marseille-100103",
+"adresse": "Place Lucien Paye 13100 Aix-en-Provence",
+"telephone": "04 42 91 70 00",
+"email": "-",
+"url": "https://www.education.gouv.fr/academie-d-aix-marseille-467830",
 "updated_at": "2025-11-20T12:46:39.758Z"
 }
 ```
@@ -61,7 +64,9 @@ Pour chaque académie, les informations suivantes sont disponibles[web:31][web:3
 - **Genre** : Civilité (M. ou Mme)
 - **Nom** : Nom complet du recteur ou de la rectrice
 - **URL** : Lien vers la page officielle de l'académie
-- **Nomination** : Date de nomination sur le poste
+- **Adresse** : Adresse postale du rectorat
+- **Téléphone** : Numéro de téléphone standard
+- **Email** : Adresse électronique de contact (ou "-" si non disponible)
 - **Date de mise à jour** : Timestamp de la dernière vérification
 
 ## 🤝 Contribution
