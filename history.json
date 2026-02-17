@@ -1,0 +1,262 @@
+{
+  "Aix-Marseille": [
+    {
+      "nom": "Benoît Delaunay",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Amiens": [
+    {
+      "nom": "Pierre Moya",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Besançon": [
+    {
+      "nom": "Nathalie Albert-Moretti",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Bordeaux": [
+    {
+      "nom": "Jean-Marc Huart",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Clermont-Ferrand": [
+    {
+      "nom": "Virginie Dupont",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Créteil": [
+    {
+      "nom": "Jean-François Chanet",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Dijon": [
+    {
+      "nom": "Mathilde Gollety",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Grenoble": [
+    {
+      "nom": "Philippe Dulbecco",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Guyane": [
+    {
+      "nom": "Guillaume Gellé",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "La Réunion": [
+    {
+      "nom": "Rostane Mehdi",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Lille": [
+    {
+      "nom": "Sophie Béjean",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Limoges": [
+    {
+      "nom": "Valérie Baglin-Le Goff",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Lyon": [
+    {
+      "nom": "Anne Bisagni-Faure",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Martinique": [
+    {
+      "nom": "Nathalie Mons",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Mayotte": [
+    {
+      "nom": "Jacques Mikulovic",
+      "genre": "M.",
+      "since": "2025-11-20"
+    },
+    {
+      "nom": "Valérie Debuchy",
+      "genre": "Mme",
+      "since": "2026-01-15"
+    }
+  ],
+  "Montpellier": [
+    {
+      "nom": "Carole Drucker-Godard",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Nancy-Metz": [
+    {
+      "nom": "Pierre-François Mourier",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Nantes": [
+    {
+      "nom": "Katia Béguin",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Nice": [
+    {
+      "nom": "Natacha Chicot",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Normandie": [
+    {
+      "nom": "Valérie Cabuil",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Nouvelle-Calédonie": [
+    {
+      "nom": "Didier Vin-Datiche",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Orléans-Tours": [
+    {
+      "nom": "Jean-Philippe Agresti",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Paris": [
+    {
+      "nom": "Julie Benetti",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Poitiers": [
+    {
+      "nom": "Frédéric Périssat",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Polynésie française": [
+    {
+      "nom": "Thierry Terret",
+      "genre": "M.",
+      "since": "2025-11-20"
+    },
+    {
+      "nom": "André Canvel",
+      "genre": "M.",
+      "since": "2026-02-03"
+    }
+  ],
+  "Reims": [
+    {
+      "nom": "Vincent Stanek",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Rennes": [
+    {
+      "nom": "Hélène Insel",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Toulouse": [
+    {
+      "nom": "Karim Benmiloud",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Versailles": [
+    {
+      "nom": "Étienne Champion",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Wallis-et-Futuna": [
+    {
+      "nom": "Régine Vigier",
+      "genre": "Mme",
+      "since": "2025-11-20"
+    }
+  ],
+  "Guadeloupe": [
+    {
+      "nom": "Gabriele Fioni",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Saint-Pierre et Miquelon (Services de l’EN)": [
+    {
+      "nom": "Jean-Pierre Tegon",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Strasbourg": [
+    {
+      "nom": "Olivier Klein",
+      "genre": "M.",
+      "since": "2025-11-20"
+    }
+  ],
+  "Corse": [
+    {
+      "nom": "Rémi Decout-Paolini",
+      "genre": "M.",
+      "since": "2025-11-20"
+    },
+    {
+      "nom": "Rémi-François Paolini",
+      "genre": "M.",
+      "since": "2026-02-17"
+    }
+  ],
+  "Saint-Pierre-et-Miquelon": [
+    {
+      "nom": "Jean-Pierre Tegon",
+      "genre": "M.",
+      "since": "2025-12-25"
+    }
+  ]
+}

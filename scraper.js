@@ -9,6 +9,90 @@ puppeteer.use(StealthPlugin());
 const INDEX_URL = "https://www.education.gouv.fr/les-regions-academiques-academies-et-services-departementaux-de-l-education-nationale-6557";
 const CORSE_FALLBACK_URL = "https://lannuaire.service-public.gouv.fr/navigation/corse/corse-du-sud/rectorat";
 const OUTPUT_FILE = path.join(__dirname, 'recteurs.json');
+const HISTORY_FILE = path.join(__dirname, 'history.json');
+
+// ---------- History helpers ----------
+
+function canonicalName(nom) {
+  return (nom || '').toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+function editDistanceHistory(a, b) {
+  a = a.toLowerCase(); b = b.toLowerCase();
+  if (a === b) return 0;
+  if (Math.abs(a.length - b.length) > 3) return Infinity;
+  const m = a.length, n = b.length;
+  const dp = Array.from({ length: m + 1 }, (_, i) => Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = a[i - 1] === b[j - 1]
+        ? dp[i - 1][j - 1]
+        : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+
+function samePersonName(a, b) {
+  if (canonicalName(a) === canonicalName(b)) return true;
+  return editDistanceHistory(a, b) <= 2;
+}
+
+/**
+ * Loads history.json or returns an empty object.
+ */
+function loadHistory() {
+  if (fs.existsSync(HISTORY_FILE)) {
+    try { return JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8')); } catch { return {}; }
+  }
+  return {};
+}
+
+/**
+ * Compares new rector data against the history and records changes.
+ * Returns the updated history map (does NOT write to disk).
+ */
+function updateHistory(history, newRectors) {
+  const today = new Date().toISOString().slice(0, 10);
+  let changed = 0;
+
+  for (const rector of newRectors) {
+    if (rector.error || !rector.nom) continue;
+
+    const acad  = rector.academie;
+    const nom   = (rector.nom   || '').trim();
+    const genre = (rector.genre || '').trim();
+
+    if (!history[acad]) history[acad] = [];
+
+    const entries = history[acad];
+    const last    = entries[entries.length - 1];
+
+    if (!last) {
+      entries.push({ nom, genre, since: today });
+      changed++;
+    } else if (!samePersonName(last.nom, nom)) {
+      console.log(`\n📜 Changement détecté pour ${acad}:`);
+      console.log(`   ${last.genre} ${last.nom} → ${genre} ${nom}`);
+      entries.push({ nom, genre, since: today });
+      changed++;
+    } else if (last.nom !== nom) {
+      // Same person, name reformatted (e.g., normalization) — update in-place
+      last.nom   = nom;
+      last.genre = genre;
+    }
+  }
+
+  if (changed > 0) {
+    console.log(`\n📜 ${changed} changement(s) enregistré(s) dans l'historique.`);
+  } else {
+    console.log('\n📜 Aucun changement de recteur détecté.');
+  }
+
+  return history;
+}
 
 
 // Regex pour extraire le nom du recteur
@@ -446,6 +530,12 @@ async function scrape() {
     console.log(`\n${"=".repeat(60)}`);
     console.log(`💾 Sauvegardé dans ${OUTPUT_FILE}`);
     console.log(`📊 Résumé Global : ${finalResults.filter(r => !r.error).length}/${finalResults.length} recteurs trouvés`);
+
+    // NOUVEAU : Mise à jour de l'historique des recteurs
+    const history = loadHistory();
+    const updatedHistory = updateHistory(history, finalResults);
+    fs.writeFileSync(HISTORY_FILE, JSON.stringify(updatedHistory, null, 2));
+    console.log(`📜 Historique mis à jour dans ${HISTORY_FILE}`);
 
     // NOUVEAU : Compter et signaler les erreurs (sur la totalité ou juste ce run ?)
     // Signalons les erreurs globales pour avoir une vue d'ensemble

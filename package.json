@@ -2,6 +2,10 @@
   "name": "recteurs-scraper",
   "version": "2.0.0",
   "private": true,
+  "scripts": {
+    "scrape": "node scraper.js",
+    "build-history": "node build-history.js"
+  },
   "dependencies": {
     "puppeteer": "^23.0.0",
     "puppeteer-extra": "^3.3.6",
