@@ -6,8 +6,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=Place+Lucien+Paye+13100+Aix-en-Provence\" target=\"_blank\">📍</a>",
     "telephone": "04 42 91 70 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-d-aix-marseille-467830",
-    "updated_at": "2026-02-17T10:36:01.071Z"
+    "url": "https://www.ac-aix-marseille.fr/",
+    "updated_at": "2026-02-17T12:03:36.487Z"
   },
   {
     "academie": "Amiens",
@@ -16,8 +16,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=20+Boulevard+d'Alsace-Lorraine+80000+Amiens\" target=\"_blank\">📍</a>",
     "telephone": "03 22 82 38 23",
     "email": "ce.rectorat@ac-amiens.fr",
-    "url": "https://www.ac-amiens.fr",
-    "updated_at": "2026-02-17T10:36:05.880Z"
+    "url": "http://www.ac-amiens.fr/",
+    "updated_at": "2026-02-17T12:03:41.124Z"
   },
   {
     "academie": "Besançon",
@@ -26,8 +26,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=10+Rue+de+la+Convention+25000+Besan%C3%A7on\" target=\"_blank\">📍</a>",
     "telephone": "03 81 65 47 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-besancon-467836",
-    "updated_at": "2026-02-17T10:36:10.669Z"
+    "url": "http://www.ac-besancon.fr/",
+    "updated_at": "2026-02-17T12:03:45.697Z"
   },
   {
     "academie": "Bordeaux",
@@ -36,8 +36,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=5+Rue+Joseph+de+Carayon+Latour+33000+Bordeaux\" target=\"_blank\">📍</a>",
     "telephone": "05 57 57 38 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-bordeaux-467839",
-    "updated_at": "2026-02-17T10:36:15.423Z"
+    "url": "http://www.ac-bordeaux.fr/",
+    "updated_at": "2026-02-17T12:03:50.411Z"
   },
   {
     "academie": "Clermont-Ferrand",
@@ -46,8 +46,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=3+Avenue+Vercing%C3%A9torix+63000+Clermont-Ferrand\" target=\"_blank\">📍</a>",
     "telephone": "04 73 99 30 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-clermont-ferrand-467842",
-    "updated_at": "2026-02-17T10:36:20.374Z"
+    "url": "http://www.ac-clermont.fr/",
+    "updated_at": "2026-02-17T12:03:55.177Z"
   },
   {
     "academie": "Corse",
@@ -56,8 +56,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=18+Boulevard+Pascal+Rossini+20000+Ajaccio\" target=\"_blank\">📍</a>",
     "telephone": "04 95 50 33 33",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-corse-467845",
-    "updated_at": "2026-02-17T10:36:25.142Z"
+    "url": "http://www.ac-corse.fr/",
+    "updated_at": "2026-02-17T12:03:59.739Z"
   },
   {
     "academie": "Créteil",
@@ -66,8 +66,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=4+Rue+Georges+Enesco+94000+Cr%C3%A9teil\" target=\"_blank\">📍</a>",
     "telephone": "01 57 02 60 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-creteil-467848",
-    "updated_at": "2026-02-17T10:36:29.891Z"
+    "url": "http://www.ac-creteil.fr/",
+    "updated_at": "2026-02-17T12:04:04.422Z"
   },
   {
     "academie": "Dijon",
@@ -76,8 +76,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=2+g+Rue+du+General+Delaborde+21000+Dijon\" target=\"_blank\">📍</a>",
     "telephone": "03 80 44 84 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-dijon-467851",
-    "updated_at": "2026-02-17T10:36:34.629Z"
+    "url": "http://www.ac-dijon.fr/",
+    "updated_at": "2026-02-17T12:04:09.163Z"
   },
   {
     "academie": "Grenoble",
@@ -86,8 +86,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=7+Place+Bir+Hakeim+38000+Grenoble\" target=\"_blank\">📍</a>",
     "telephone": "04 76 74 70 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-grenoble-467863",
-    "updated_at": "2026-02-17T10:36:39.386Z"
+    "url": "http://www.ac-grenoble.fr/",
+    "updated_at": "2026-02-17T12:04:13.859Z"
   },
   {
     "academie": "Guadeloupe",
@@ -96,8 +96,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=Parc+d'Activit%C3%A9+Dothemare+97139+Les+Abymes\" target=\"_blank\">📍</a>",
     "telephone": "0590 47 81 00",
     "email": "ce.rectorat@ac-guadeloupe.fr",
-    "url": "https://www.ac-guadeloupe.fr",
-    "updated_at": "2026-02-17T10:36:54.576Z"
+    "url": "http://www.ac-guadeloupe.fr/",
+    "updated_at": "2026-02-17T12:04:28.848Z"
   },
   {
     "academie": "Guyane",
@@ -106,8 +106,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=Route+de+Baduel+97300+Cayenne\" target=\"_blank\">📍</a>",
     "telephone": "05 94 25 58 58",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-guyane-467866",
-    "updated_at": "2026-02-17T10:36:59.389Z"
+    "url": "http://www.ac-guyane.fr/",
+    "updated_at": "2026-02-17T12:04:33.504Z"
   },
   {
     "academie": "La Réunion",
@@ -116,8 +116,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=24+Avenue+Georges+Brassens+97400+Saint-Denis\" target=\"_blank\">📍</a>",
     "telephone": "02 62 48 10 10",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-la-reunion-467869",
-    "updated_at": "2026-02-17T10:37:04.264Z"
+    "url": "http://www.ac-reunion.fr/",
+    "updated_at": "2026-02-17T12:04:38.145Z"
   },
   {
     "academie": "Lille",
@@ -126,8 +126,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=144+rue+de+Bavay+59000+Lille\" target=\"_blank\">📍</a>",
     "telephone": "03 20 15 60 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-lille-467872",
-    "updated_at": "2026-02-17T10:37:08.964Z"
+    "url": "http://www.ac-lille.fr/",
+    "updated_at": "2026-02-17T12:04:42.822Z"
   },
   {
     "academie": "Limoges",
@@ -136,8 +136,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=13+Rue+Fran%C3%A7ois+Ch%C3%A9nieux+87000+Limoges\" target=\"_blank\">📍</a>",
     "telephone": "05 55 11 40 40",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-limoges-467875",
-    "updated_at": "2026-02-17T10:37:13.700Z"
+    "url": "http://www.ac-limoges.fr/",
+    "updated_at": "2026-02-17T12:04:47.524Z"
   },
   {
     "academie": "Lyon",
@@ -146,8 +146,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=92+Rue+de+Marseille+69007+Lyon\" target=\"_blank\">📍</a>",
     "telephone": "04 72 80 60 60",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-lyon-467917",
-    "updated_at": "2026-02-17T10:37:18.624Z"
+    "url": "http://www.ac-lyon.fr/",
+    "updated_at": "2026-02-17T12:04:52.211Z"
   },
   {
     "academie": "Martinique",
@@ -156,8 +156,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=Terreville+97233+Sch%C5%93lcher\" target=\"_blank\">📍</a>",
     "telephone": "0596 52 25 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-martinique-467926",
-    "updated_at": "2026-02-17T10:37:23.368Z"
+    "url": "http://www.ac-martinique.fr/",
+    "updated_at": "2026-02-17T12:04:58.240Z"
   },
   {
     "academie": "Mayotte",
@@ -166,8 +166,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=BP+76+97600+Mayotte\" target=\"_blank\">📍</a>",
     "telephone": "02 69 61 10 24",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-mayotte-467929",
-    "updated_at": "2026-02-17T10:37:28.109Z"
+    "url": "https://www.ac-mayotte.fr/",
+    "updated_at": "2026-02-17T12:05:02.904Z"
   },
   {
     "academie": "Montpellier",
@@ -176,8 +176,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=31+Rue+de+l'Universit%C3%A9+34000+Montpellier\" target=\"_blank\">📍</a>",
     "telephone": "04 67 91 47 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-montpellier-467932",
-    "updated_at": "2026-02-17T10:37:33.008Z"
+    "url": "http://www.ac-montpellier.fr/",
+    "updated_at": "2026-02-17T12:05:07.719Z"
   },
   {
     "academie": "Nancy-Metz",
@@ -186,8 +186,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=9+rue+des+Brice-+Rond-point+Marguerite+CS+30013+54035+Nancy+Cedex\" target=\"_blank\">📍</a>",
     "telephone": "03 83 86 20 20",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-nancy-metz-467935",
-    "updated_at": "2026-02-17T10:37:37.697Z"
+    "url": "http://www.ac-nancy-metz.fr/",
+    "updated_at": "2026-02-17T12:05:12.384Z"
   },
   {
     "academie": "Nantes",
@@ -196,8 +196,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=Chemin+de+la+Houssini%C3%A8re+44300+Nantes\" target=\"_blank\">📍</a>",
     "telephone": "02 40 37 37 37",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-nantes-467938",
-    "updated_at": "2026-02-17T10:37:42.626Z"
+    "url": "http://www.ac-nantes.fr/",
+    "updated_at": "2026-02-17T12:05:17.132Z"
   },
   {
     "academie": "Nice",
@@ -206,8 +206,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=53+Avenue+Cap+de+Croix+06100+Nice\" target=\"_blank\">📍</a>",
     "telephone": "04 93 53 70 70",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-nice-467941",
-    "updated_at": "2026-02-17T10:37:47.392Z"
+    "url": "https://www.ac-nice.fr/",
+    "updated_at": "2026-02-17T12:05:21.819Z"
   },
   {
     "academie": "Normandie",
@@ -216,8 +216,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=168+Rue+Caponi%C3%A8re+14000+Caen\" target=\"_blank\">📍</a>",
     "telephone": "02 31 30 15 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-normandie-467944",
-    "updated_at": "2026-02-17T10:37:52.225Z"
+    "url": "https://www.ac-normandie.fr/",
+    "updated_at": "2026-02-17T12:05:26.545Z"
   },
   {
     "academie": "Nouvelle-Calédonie",
@@ -226,8 +226,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=BP+G+4+98848+Noum%C3%A9a+Cedex\" target=\"_blank\">📍</a>",
     "telephone": "00 687 26 61 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/vice-rectorat-de-nouvelle-caledonie-467947",
-    "updated_at": "2026-02-17T10:37:57.049Z"
+    "url": "https://www.ac-noumea.nc/",
+    "updated_at": "2026-02-17T12:05:31.259Z"
   },
   {
     "academie": "Orléans-Tours",
@@ -236,8 +236,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=21+Rue+Saint+Etienne+45000+Orl%C3%A9ans\" target=\"_blank\">📍</a>",
     "telephone": "02 38 79 38 79",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-d-orleans-tours-467950",
-    "updated_at": "2026-02-17T10:38:01.805Z"
+    "url": "https://www.ac-orleans-tours.fr/",
+    "updated_at": "2026-02-17T12:05:36.033Z"
   },
   {
     "academie": "Paris",
@@ -246,8 +246,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=12+Boulevard+d'Indochine+75019+Paris\" target=\"_blank\">📍</a>",
     "telephone": "01 44 62 40 40",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-paris-467953",
-    "updated_at": "2026-02-17T10:38:06.541Z"
+    "url": "https://www.ac-paris.fr/",
+    "updated_at": "2026-02-17T12:05:40.728Z"
   },
   {
     "academie": "Poitiers",
@@ -256,18 +256,18 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=22+Rue+Guillaume+7+le+Troubadour+86000+Poitiers\" target=\"_blank\">📍</a>",
     "telephone": "05 16 52 66 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-poitiers-467956",
-    "updated_at": "2026-02-17T10:38:11.310Z"
+    "url": "https://www.ac-poitiers.fr/",
+    "updated_at": "2026-02-17T12:05:45.551Z"
   },
   {
     "academie": "Polynésie française",
     "genre": "M.",
     "nom": "André Canvel",
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=25+avenue+Pierre+Loti+BP+1632+98713+Papeete+-+Tahiti\" target=\"_blank\">📍</a>",
-    "telephone": "00 689 478400 (standard)",
+    "telephone": "00 689 478400",
     "email": "-",
-    "url": "https://www.education.gouv.fr/vice-rectorat-de-la-polynesie-francaise-467959",
-    "updated_at": "2026-02-17T10:38:26.078Z"
+    "url": "https://www.ac-polynesie.pf/",
+    "updated_at": "2026-02-17T12:06:00.318Z"
   },
   {
     "academie": "Reims",
@@ -276,8 +276,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=1+Rue+Navier+51100+Reims\" target=\"_blank\">📍</a>",
     "telephone": "03 26 05 69 69",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-reims-467968",
-    "updated_at": "2026-02-17T10:38:30.838Z"
+    "url": "https://www.ac-reims.fr/",
+    "updated_at": "2026-02-17T12:06:04.905Z"
   },
   {
     "academie": "Rennes",
@@ -286,8 +286,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=96+Rue+d'Antrain+35700+Rennes\" target=\"_blank\">📍</a>",
     "telephone": "02 23 21 77 77",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-rennes-467971",
-    "updated_at": "2026-02-17T10:38:35.604Z"
+    "url": "https://www.ac-rennes.fr/",
+    "updated_at": "2026-02-17T12:06:09.614Z"
   },
   {
     "academie": "Saint-Pierre-et-Miquelon",
@@ -296,8 +296,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=BP+4239+97500+Saint-Pierre-et-Miquelon\" target=\"_blank\">📍</a>",
     "telephone": "0508 41 04 60",
     "email": "ia@ac-spm.fr",
-    "url": "https://www.ac-spm.fr",
-    "updated_at": "2026-02-17T10:38:40.491Z"
+    "url": "https://www.ac-spm.fr/",
+    "updated_at": "2026-02-17T12:06:14.384Z"
   },
   {
     "academie": "Strasbourg",
@@ -306,8 +306,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=6+Rue+de+la+Toussaint+67000+Strasbourg\" target=\"_blank\">📍</a>",
     "telephone": "03 88 23 37 23",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-strasbourg-467974",
-    "updated_at": "2026-02-17T10:38:45.411Z"
+    "url": "https://www.ac-strasbourg.fr/",
+    "updated_at": "2026-02-17T12:06:19.139Z"
   },
   {
     "academie": "Toulouse",
@@ -316,8 +316,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=75+Rue+Saint+Roch+31400+Toulouse\" target=\"_blank\">📍</a>",
     "telephone": "05 61 17 70 00",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-toulouse-467977",
-    "updated_at": "2026-02-17T10:38:50.207Z"
+    "url": "https://www.ac-toulouse.fr/",
+    "updated_at": "2026-02-17T12:06:23.999Z"
   },
   {
     "academie": "Versailles",
@@ -326,8 +326,8 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=3+Boulevard+de+Lesseps+78000+Versailles\" target=\"_blank\">📍</a>",
     "telephone": "01 30 83 44 44",
     "email": "-",
-    "url": "https://www.education.gouv.fr/academie-de-versailles-467980",
-    "updated_at": "2026-02-17T10:38:55.183Z"
+    "url": "https://www.ac-versailles.fr/",
+    "updated_at": "2026-02-17T12:06:28.661Z"
   },
   {
     "academie": "Wallis-et-Futuna",
@@ -336,7 +336,7 @@
     "adresse": "<a href=\"https://www.openstreetmap.org/search?query=Mata+Utu+98609+Wallis+et+Futuna\" target=\"_blank\">📍</a>",
     "telephone": "00681 72 28 28",
     "email": "-",
-    "url": "https://www.education.gouv.fr/vice-rectorat-de-wallis-et-futuna-467965",
-    "updated_at": "2026-02-17T10:38:59.973Z"
+    "url": "https://www.ac-wf.wf/",
+    "updated_at": "2026-02-17T12:06:33.371Z"
   }
 ]
