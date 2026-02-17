@@ -273,15 +273,47 @@ async function scrape() {
         const fullTextContent = $page('body').text().replace(/\s+/g, ' ');
 
         // 1. Essayer d'extraire depuis .fr-highlight (Nouveau format DSFR)
+        // 1. Essayer d'extraire depuis .fr-highlight (Nouveau format DSFR)
         const highlightElement = $page('.fr-highlight');
         if (highlightElement.length > 0) {
-          const highlightText = highlightElement.text().replace(/\s+/g, ' ');
-          let match = highlightText.match(RECTOR_REGEX);
-          if (match) {
-            genre = match[1];
-            nom = normalizeName(match[2].trim());
-            console.log(` ✓ Trouvé via .fr-highlight: ${genre} ${nom}`);
+          // Stratégie 1A : Chercher un <strong> qui contient souvent le nom propre
+          const strongTag = highlightElement.find('strong');
+          if (strongTag.length > 0) {
+            const strongText = strongTag.text().trim();
+            // Vérifier si ça ressemble à un nom (M. X ou juste X)
+            let matchStrong = strongText.match(/\b(M\.|Mme)\s+(.+)/i);
+            if (matchStrong) {
+              genre = matchStrong[1];
+              nom = normalizeName(matchStrong[2].trim());
+              console.log(` ✓ Trouvé via .fr-highlight > strong : ${genre} ${nom}`);
+            } else {
+              // Si pas de civilité dans le strong, peut-être juste le nom ?
+              // On essaye de voir si c'est un nom propre
+              if (strongText.length > 3 && !strongText.toLowerCase().includes('recteur') && !strongText.toLowerCase().includes('vice-')) {
+                genre = "M."; // Par défaut si manque
+                nom = normalizeName(strongText);
+                console.log(` ✓ Trouvé via .fr-highlight > strong (guess): ${genre} ${nom}`);
+              }
+            }
           }
+
+          // Stratégie 1B : Regex classique sur tout le texte du highlight
+          if (!nom) {
+            const highlightText = highlightElement.text().replace(/\s+/g, ' ');
+            let match = highlightText.match(RECTOR_REGEX);
+            if (match) {
+              genre = match[1];
+              nom = normalizeName(match[2].trim());
+              console.log(` ✓ Trouvé via .fr-highlight (regex): ${genre} ${nom}`);
+            }
+          }
+        }
+
+        // Nettoyage post-extraction : Couper " Est " si présent (cas mal gérés par regex)
+        if (nom && /\s+est\s+/i.test(nom)) {
+          console.log(` 🧹 Nettoyage du nom : "${nom}" contient "est"...`);
+          nom = nom.split(/\s+est\s+/i)[0].trim();
+          console.log(`   -> Nom nettoyé : "${nom}"`);
         }
 
         // 2. Fallback sur l'ancienne méthode si non trouvé
@@ -310,7 +342,13 @@ async function scrape() {
 
         if (nom) {
           // Extraction des nouvelles données : Adresse, Téléphone, Email via attributs robustes
-          const adresse = $page('[data-component-id="tandem_dsfr:adresse"] .coordinate').text().trim().replace(/\s+/g, ' ');
+          const rawAdresse = $page('[data-component-id="tandem_dsfr:adresse"] .coordinate').text().trim().replace(/\s+/g, ' ');
+          let adresse = "-";
+          if (rawAdresse) {
+            const osmUrl = `https://www.openstreetmap.org/search?query=${encodeURIComponent(rawAdresse).replace(/%20/g, '+')}`;
+            adresse = `<a href="${osmUrl}" target="_blank">📍</a>`;
+          }
+
           let telephone = $page('[data-component-id="tandem_dsfr:telephone"] .coordinate').text().trim();
           let email = $page('[data-component-id="tandem_dsfr:email"] .coordinate').text().trim();
 
