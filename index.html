@@ -161,6 +161,20 @@
             td:nth-of-type(8):before {
                 content: "Historique";
             }
+
+            /* Hide the history cell entirely when it has no button */
+            td.hist-empty {
+                display: none;
+            }
+
+            /* History detail row: reset the forced left-padding and kill the pseudo-label */
+            tr.hist-detail td {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            tr.hist-detail td::before {
+                display: none;
+            }
         }
 
         /* History toggle button */
@@ -381,8 +395,7 @@
                 if (row.error) {
                     tr.innerHTML = `
                         <td><a href="${row.url}" target="_blank">${cleanAcademieName}</a></td>
-                        <td colspan="6"><span class="error-text">⚠️ ${row.error} (Vérifier manuellement)</span></td>
-                        <td></td>
+                        <td colspan="7"><span class="error-text">⚠️ ${row.error} (Vérifier manuellement)</span></td>
                     `;
                 } else {
                     const email = emailMapping[row.academie] || '-';
@@ -395,12 +408,13 @@
                         <td>${row.telephone && row.telephone !== '-' ? `<a href="tel:${row.telephone.replace(/\s/g, '')}" title="${row.telephone}">📞</a>` : '-'}</td>
                         <td>${email !== '-' ? `<a href="mailto:${email}" title="${email}">✉️</a>` : '-'}</td>
                         <td style="color: #666; font-size: 0.9em;">${dateStr}</td>
-                        <td></td>
+                        <td class="hist-empty"></td>
                     `;
 
-                    // Add history button if there is at least 2 entries
+                    // Add history button if there are at least 2 entries
                     if (hasHistory) {
                         const histCell = tr.lastElementChild;
+                        histCell.classList.remove('hist-empty');
                         const btn = document.createElement('button');
                         btn.className = 'hist-btn';
                         btn.title = 'Voir l\'historique des recteurs';
