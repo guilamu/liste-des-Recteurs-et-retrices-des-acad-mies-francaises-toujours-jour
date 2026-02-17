@@ -123,9 +123,9 @@ async function scrapeCorseFallback(browser) {
 
 async function scrape() {
   console.log("🚀 Lancement du navigateur...");
-  // Launch in headful mode so the user can see Cloudflare challenges and solve them if needed
+  // Launch in headless mode for CI environment
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: "new",
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
@@ -141,9 +141,9 @@ async function scrape() {
       timeout: 60000
     });
 
-    // Wait 15 seconds to allow user to solve Cloudflare
-    console.log("⏳ Attente de 15s pour résolution manuelle Cloudflare/Chargement...");
-    await new Promise(resolve => setTimeout(resolve, 15000));
+    // Wait 10 seconds for initial loading/Cloudflare checks
+    console.log("⏳ Attente de 10s pour chargement initial...");
+    await new Promise(resolve => setTimeout(resolve, 10000));
 
     // DEBUG: Sauvegarder le HTML pour analyse
     const htmlContent = await page.content();
