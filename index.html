@@ -32,13 +32,13 @@
         }
 
         table {
-            width: fit-content;
+            width: 100%;
+            max-width: fit-content;
             margin: 1rem auto;
             border-collapse: collapse;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             overflow: hidden;
-            /* Pour les coins arrondis */
         }
 
         th,
@@ -90,7 +90,7 @@
         }
 
         /* Responsive pour mobile */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
 
             body {
                 padding: 0 0.5rem;
@@ -98,7 +98,7 @@
             }
 
             table {
-                width: 100%;
+                max-width: 100%;
                 box-shadow: none;
                 border-radius: 0;
             }
