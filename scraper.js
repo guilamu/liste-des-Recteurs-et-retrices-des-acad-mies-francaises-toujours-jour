@@ -349,7 +349,7 @@ async function scrape() {
             adresse = `<a href="${osmUrl}" target="_blank">📍</a>`;
           }
 
-          let telephone = $page('[data-component-id="tandem_dsfr:telephone"] .coordinate').text().trim();
+          let telephone = $page('[data-component-id="tandem_dsfr:telephone"] .coordinate').text().trim().replace(/\s*\(.*?\)/g, '');
           let email = $page('[data-component-id="tandem_dsfr:email"] .coordinate').text().trim();
 
           if (!email) email = "-";
