@@ -10,6 +10,7 @@ const INDEX_URL = "https://www.education.gouv.fr/les-regions-academiques-academi
 const CORSE_FALLBACK_URL = "https://lannuaire.service-public.gouv.fr/navigation/corse/corse-du-sud/rectorat";
 const OUTPUT_FILE = path.join(__dirname, 'recteurs.json');
 
+
 // Regex pour extraire le nom du recteur
 const RECTOR_REGEX = /\b(M\.|Mme)\s+(.+?)(?=\s+est\s+(?:recteur|rectrice|nomm)|,)/i;
 
@@ -64,7 +65,7 @@ async function scrapeCorseFallback(browser) {
   await page.setViewport({ width: 1280, height: 800 });
 
   try {
-    await page.goto(CORSE_FALLBACK_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto(CORSE_FALLBACK_URL, { waitUntil: 'domcontentloaded', timeout: 5000 });
 
     const linkElement = await page.evaluateHandle(() => {
       const links = Array.from(document.querySelectorAll('a'));
@@ -165,15 +166,35 @@ async function scrape() {
 
     console.log(`✅ ${academies.length} académies trouvées.\n`);
 
+    // CHARGER LES RÉSULTATS EXISTANTS
+    let existingResults = [];
+    if (fs.existsSync(OUTPUT_FILE)) {
+      try {
+        existingResults = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'));
+        console.log(`📂 Fichiers existants chargés : ${existingResults.length} entrées.`);
+      } catch (e) {
+        console.error("⚠️ Erreur lecture fichier existant, on repart de zéro.");
+      }
+    }
+
+    // Filtrer pour ne garder que celles qui n'ont pas de résultat ou qui sont en erreur
+    const successfulAcademies = new Set(
+      existingResults.filter(r => !r.error && r.nom).map(r => r.academie)
+    );
+
+    const academiesToScrape = academies.filter(a => !successfulAcademies.has(a.name));
+
+    console.log(`⏭️  Déjà récupérées : ${successfulAcademies.size}`);
+    console.log(`📋 Reste à traiter : ${academiesToScrape.length}\n`);
+
     // ÉTAPE 2 : Pour chaque académie, découvrir l'URL ET extraire le recteur
-    for (let i = 0; i < academies.length; i++) {
-      const academie = academies[i];
-      console.log(`\n[${i + 1}/${academies.length}] ${academie.name}`);
+    for (let i = 0; i < academiesToScrape.length; i++) {
+      const academie = academiesToScrape[i];
+      console.log(`\n[${i + 1}/${academiesToScrape.length}] ${academie.name}`);
+
       console.log("─".repeat(50));
 
-      let academieUrl = null;
-
-      // 2a. Découvrir l'URL via la carte interactive
+      // 2a. Découvrir l'URL via la carte interactive ou le menu déroulant
       try {
         console.log(" 🔍 Découverte de l'URL...");
 
@@ -184,22 +205,35 @@ async function scrape() {
           await new Promise(resolve => setTimeout(resolve, 2000));
         }
 
-        await page.waitForSelector(`path[data-region="${academie.slug}"]`, { timeout: 30000 });
+        let mapClickSuccess = false;
 
-        // On retourne sur l'index si on n'y est pas
-        if (!page.url().includes('les-regions-academiques')) {
-          console.log(" 🔙 Retour à la carte...");
-          await page.goto(INDEX_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
-          await new Promise(resolve => setTimeout(resolve, 2000));
+        // TENTATIVE 1 : Via la carte SVG (Sauf pour les DOM-TOM qui peuvent poser problème)
+        try {
+          const regionSelector = `[data-region="${academie.slug}"]`;
+          // Timeout court (2s) pour ne pas perdre de temps si l'élément n'existe pas (ex: DOM-TOM)
+          await page.waitForSelector(regionSelector, { timeout: 2000 });
+
+          console.log(` 🖱️ Clic sur la région carte ${academie.slug}...`);
+          const navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 });
+          await page.click(regionSelector);
+          await navigationPromise;
+          mapClickSuccess = true;
+        } catch (mapError) {
+          console.log(` ⚠️ Pas de région cliquable identifiée pour ${academie.slug} (ou timeout), essai via menu déroulant...`);
         }
 
-        // Cliquer et attendre la navigation
-        const navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 });
+        // TENTATIVE 2 : Via le menu déroulant (si carte échouée)
+        if (!mapClickSuccess) {
+          console.log(` 🔽 Sélection via menu déroulant pour ${academie.slug}...`);
 
-        console.log(` 🖱️ Clic sur la région ${academie.slug}...`);
-        await page.click(`path[data-region="${academie.slug}"]`);
+          // Sélectionner l'option
+          await page.select('.svg-select', academie.slug);
 
-        await navigationPromise;
+          // Cliquer sur le bouton OK (classe .svg-submit vérifiée)
+          const navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 });
+          await page.click('.svg-submit');
+          await navigationPromise;
+        }
 
         // Petite pause pour laisser Cloudflare tranquille
         await new Promise(resolve => setTimeout(resolve, 2000));
@@ -229,8 +263,8 @@ async function scrape() {
 
       try {
         console.log(" 📄 Extraction du recteur...");
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        await page.goto(academieUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
+
+        await page.goto(academieUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
 
         const pageHtml = await page.content();
         // DEBUG: Sauvegarder le HTML de la page académie
@@ -281,7 +315,7 @@ async function scrape() {
 
         if (nom) {
           // Extraction des nouvelles données : Adresse, Téléphone, Email via attributs robustes
-          const adresse = $page('[data-component-id="tandem_dsfr:adresse"] .coordinate').text().trim().replace(/\\s+/g, ' ');
+          const adresse = $page('[data-component-id="tandem_dsfr:adresse"] .coordinate').text().trim().replace(/\s+/g, ' ');
           let telephone = $page('[data-component-id="tandem_dsfr:telephone"] .coordinate').text().trim();
           let email = $page('[data-component-id="tandem_dsfr:email"] .coordinate').text().trim();
 
@@ -313,6 +347,8 @@ async function scrape() {
             updated_at: new Date().toISOString()
           });
           found = true;
+        } else {
+          console.log("   ❌ Nom non trouvé dans le contenu extrait.");
         }
 
       } catch (e) {
@@ -352,15 +388,29 @@ async function scrape() {
       }
     }
 
-    // ÉTAPE 3 : Sauvegarder les résultats
-    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(results, null, 2));
+    // ÉTAPE 3 : Sauvegarder les résultats (Fusion avec les existants)
+    // On prend les anciens succès + les nouveaux résultats (succès ou échecs)
+    // Attention : on doit retirer des anciens résultats ceux qu'on vient de re-traiter (s'ils étaient en erreur avant)
+
+    const newAcademiesNames = new Set(results.map(r => r.academie));
+    const finalResults = [
+      ...existingResults.filter(r => !newAcademiesNames.has(r.academie)), // Garder les anciens non re-traités
+      ...results // Ajouter les nouveaux
+    ];
+
+    // Trier par nom d'académie pour la propreté
+    finalResults.sort((a, b) => a.academie.localeCompare(b.academie));
+
+    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(finalResults, null, 2));
     console.log(`\n${"=".repeat(60)}`);
     console.log(`💾 Sauvegardé dans ${OUTPUT_FILE}`);
-    console.log(`📊 Résumé : ${results.filter(r => !r.error).length}/${results.length} recteurs trouvés`);
+    console.log(`📊 Résumé Global : ${finalResults.filter(r => !r.error).length}/${finalResults.length} recteurs trouvés`);
 
-    // NOUVEAU : Compter et signaler les erreurs
-    const errorsCount = results.filter(r => r.error).length;
-    const failedAcademies = results.filter(r => r.error).map(r => r.academie);
+    // NOUVEAU : Compter et signaler les erreurs (sur la totalité ou juste ce run ?)
+    // Signalons les erreurs globales pour avoir une vue d'ensemble
+    const errorsCount = finalResults.filter(r => r.error).length;
+    const failedAcademies = finalResults.filter(r => r.error).map(r => r.academie);
+
 
     if (errorsCount > 0) {
       console.error(`\n⚠️  ${errorsCount} académie(s) en échec :`);
