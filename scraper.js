@@ -177,15 +177,10 @@ async function scrape() {
       }
     }
 
-    // Filtrer pour ne garder que celles qui n'ont pas de résultat ou qui sont en erreur
-    const successfulAcademies = new Set(
-      existingResults.filter(r => !r.error && r.nom).map(r => r.academie)
-    );
+    // On scrape TOUT pour être toujours à jour
+    const academiesToScrape = academies;
 
-    const academiesToScrape = academies.filter(a => !successfulAcademies.has(a.name));
-
-    console.log(`⏭️  Déjà récupérées : ${successfulAcademies.size}`);
-    console.log(`📋 Reste à traiter : ${academiesToScrape.length}\n`);
+    console.log(`📋 Traitement de ${academiesToScrape.length} académies (Mode: Mise à jour complète)\n`);
 
     // ÉTAPE 2 : Pour chaque académie, découvrir l'URL ET extraire le recteur
     for (let i = 0; i < academiesToScrape.length; i++) {
