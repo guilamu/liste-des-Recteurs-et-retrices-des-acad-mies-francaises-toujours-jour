@@ -60,3 +60,9 @@ jobs:
               body: `Le scraping des données des recteurs a échoué.${errorDetails}\n\n**Workflow Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               labels: ['scraper-error', 'automated']
             });
+
+      - name: Fail workflow on scraper error
+        if: steps.scrape.outcome == 'failure'
+        run: |
+          echo "::error::Le scraper a échoué - voir les logs ci-dessus"
+          exit 1
