@@ -250,6 +250,13 @@ async function scrape() {
 
     console.log(`✅ ${academies.length} académies trouvées.\n`);
 
+    if (academies.length === 0) {
+      console.error("🚨 ERREUR CRITIQUE : Aucune académie trouvée dans le sélecteur !");
+      console.error("Le site a probablement bloqué le scraping (Cloudflare/WAF).");
+      console.error("URL testée :", INDEX_URL);
+      process.exit(1);
+    }
+
     // CHARGER LES RÉSULTATS EXISTANTS
     let existingResults = [];
     if (fs.existsSync(OUTPUT_FILE)) {
@@ -269,6 +276,7 @@ async function scrape() {
     // ÉTAPE 2 : Pour chaque académie, découvrir l'URL ET extraire le recteur
     for (let i = 0; i < academiesToScrape.length; i++) {
       const academie = academiesToScrape[i];
+      let academieUrl = null;
       console.log(`\n[${i + 1}/${academiesToScrape.length}] ${academie.name}`);
 
       console.log("─".repeat(50));
@@ -529,7 +537,16 @@ async function scrape() {
     fs.writeFileSync(OUTPUT_FILE, JSON.stringify(finalResults, null, 2));
     console.log(`\n${"=".repeat(60)}`);
     console.log(`💾 Sauvegardé dans ${OUTPUT_FILE}`);
-    console.log(`📊 Résumé Global : ${finalResults.filter(r => !r.error).length}/${finalResults.length} recteurs trouvés`);
+
+    const successCount = finalResults.filter(r => !r.error).length;
+    const totalCount = finalResults.length;
+    const successRate = totalCount > 0 ? (successCount / totalCount * 100).toFixed(1) : 0;
+    console.log(`📊 Résumé Global : ${successCount}/${totalCount} recteurs trouvés (${successRate}%)`);
+
+    if (successCount < totalCount * 0.5) {
+      console.error(`🚨 Taux de succès trop bas (${successRate}%) - possible blocage du site`);
+      process.exit(1);
+    }
 
     // NOUVEAU : Mise à jour de l'historique des recteurs
     const history = loadHistory();
