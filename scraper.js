@@ -61,14 +61,14 @@ function updateHistory(history, newRectors) {
   for (const rector of newRectors) {
     if (rector.error || !rector.nom) continue;
 
-    const acad  = rector.academie;
-    const nom   = (rector.nom   || '').trim();
+    const acad = rector.academie;
+    const nom = (rector.nom || '').trim();
     const genre = (rector.genre || '').trim();
 
     if (!history[acad]) history[acad] = [];
 
     const entries = history[acad];
-    const last    = entries[entries.length - 1];
+    const last = entries[entries.length - 1];
 
     if (!last) {
       entries.push({ nom, genre, since: today });
@@ -80,7 +80,7 @@ function updateHistory(history, newRectors) {
       changed++;
     } else if (last.nom !== nom) {
       // Same person, name reformatted (e.g., normalization) — update in-place
-      last.nom   = nom;
+      last.nom = nom;
       last.genre = genre;
     }
   }
@@ -281,244 +281,258 @@ async function scrape() {
 
       console.log("─".repeat(50));
 
-      // 2a. Découvrir l'URL via la carte interactive ou le menu déroulant
-      try {
-        console.log(" 🔍 Découverte de l'URL...");
+      try { // ← try/catch global par académie
 
-        // On retourne sur l'index si on n'y est pas
-        if (!page.url().includes('les-regions-academiques')) {
-          console.log(" 🔙 Retour à la carte...");
-          await page.goto(INDEX_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
-          await new Promise(resolve => setTimeout(resolve, 2000));
-        }
-
-        let mapClickSuccess = false;
-
-        // TENTATIVE 1 : Via la carte SVG (Sauf pour les DOM-TOM qui peuvent poser problème)
+        // 2a. Découvrir l'URL via la carte interactive ou le menu déroulant
         try {
-          const regionSelector = `[data-region="${academie.slug}"]`;
-          // Timeout court (2s) pour ne pas perdre de temps si l'élément n'existe pas (ex: DOM-TOM)
-          await page.waitForSelector(regionSelector, { timeout: 2000 });
+          console.log(" 🔍 Découverte de l'URL...");
 
-          console.log(` 🖱️ Clic sur la région carte ${academie.slug}...`);
-          const navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 });
-          await page.click(regionSelector);
-          await navigationPromise;
-          mapClickSuccess = true;
-        } catch (mapError) {
-          console.log(` ⚠️ Pas de région cliquable identifiée pour ${academie.slug} (ou timeout), essai via menu déroulant...`);
+          // On retourne sur l'index si on n'y est pas
+          if (!page.url().includes('les-regions-academiques')) {
+            console.log(" 🔙 Retour à la carte...");
+            await page.goto(INDEX_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          }
+
+          let mapClickSuccess = false;
+
+          // TENTATIVE 1 : Via la carte SVG (Sauf pour les DOM-TOM qui peuvent poser problème)
+          try {
+            const regionSelector = `[data-region="${academie.slug}"]`;
+            // Timeout court (2s) pour ne pas perdre de temps si l'élément n'existe pas (ex: DOM-TOM)
+            await page.waitForSelector(regionSelector, { timeout: 2000 });
+
+            console.log(` 🖱️ Clic sur la région carte ${academie.slug}...`);
+            await Promise.all([
+              page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }),
+              page.click(regionSelector)
+            ]);
+            mapClickSuccess = true;
+          } catch (mapError) {
+            console.log(` ⚠️ Pas de région cliquable identifiée pour ${academie.slug} (ou timeout), essai via menu déroulant...`);
+          }
+
+          // TENTATIVE 2 : Via le menu déroulant (si carte échouée)
+          if (!mapClickSuccess) {
+            console.log(` 🔽 Sélection via menu déroulant pour ${academie.slug}...`);
+
+            // Sélectionner l'option
+            await page.select('.svg-select', academie.slug);
+
+            // Cliquer sur le bouton OK (classe .svg-submit vérifiée)
+            await Promise.all([
+              page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }),
+              page.click('.svg-submit')
+            ]);
+          }
+
+          // Petite pause pour laisser Cloudflare tranquille
+          await new Promise(resolve => setTimeout(resolve, 2000));
+
+          const currentUrl = page.url();
+          if (currentUrl !== INDEX_URL) {
+            academieUrl = currentUrl;
+            console.log(` ✓ URL trouvée: ${academieUrl}`);
+          }
+
+        } catch (e) {
+          console.error(` ❌ Erreur découverte URL: ${e.message}`);
         }
 
-        // TENTATIVE 2 : Via le menu déroulant (si carte échouée)
-        if (!mapClickSuccess) {
-          console.log(` 🔽 Sélection via menu déroulant pour ${academie.slug}...`);
-
-          // Sélectionner l'option
-          await page.select('.svg-select', academie.slug);
-
-          // Cliquer sur le bouton OK (classe .svg-submit vérifiée)
-          const navigationPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 });
-          await page.click('.svg-submit');
-          await navigationPromise;
+        if (!academieUrl) {
+          console.log(` ⚠️ URL non trouvée pour ${academie.name}`);
+          results.push({
+            academie: academie.name,
+            error: "URL non trouvée",
+            updated_at: new Date().toISOString()
+          });
+          continue;
         }
 
-        // Petite pause pour laisser Cloudflare tranquille
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // 2b. Extraire le recteur depuis cette URL
+        let found = false;
 
-        const currentUrl = page.url();
-        if (currentUrl !== INDEX_URL) {
-          academieUrl = currentUrl;
-          console.log(` ✓ URL trouvée: ${academieUrl}`);
-        }
+        try {
+          console.log(" 📄 Extraction du recteur...");
 
-      } catch (e) {
-        console.error(` ❌ Erreur découverte URL: ${e.message}`);
-      }
+          await page.goto(academieUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
 
-      if (!academieUrl) {
-        console.log(` ⚠️ URL non trouvée pour ${academie.name}`);
-        results.push({
-          academie: academie.name,
-          error: "URL non trouvée",
-          updated_at: new Date().toISOString()
-        });
-        continue;
-      }
+          const pageHtml = await page.content();
+          // DEBUG: Sauvegarder le HTML de la page académie
+          fs.writeFileSync(path.join(__dirname, `debug_academy_${academie.slug}.html`), pageHtml);
+          const $page = cheerio.load(pageHtml);
 
-      // 2b. Extraire le recteur depuis cette URL
-      let found = false;
+          let genre = null;
+          let nom = null;
 
-      try {
-        console.log(" 📄 Extraction du recteur...");
+          // Définir fullTextContent ici pour qu'il soit accessible partout
+          const fullTextContent = $page('body').text().replace(/\s+/g, ' ');
 
-        await page.goto(academieUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
+          // 1. Essayer d'extraire depuis .fr-highlight (Nouveau format DSFR)
+          // 1. Essayer d'extraire depuis .fr-highlight (Nouveau format DSFR)
+          const highlightElement = $page('.fr-highlight');
+          if (highlightElement.length > 0) {
+            // Stratégie 1A : Chercher un <strong> qui contient souvent le nom propre
+            const strongTag = highlightElement.find('strong');
+            if (strongTag.length > 0) {
+              const strongText = strongTag.text().trim();
+              // Vérifier si ça ressemble à un nom (M. X ou juste X)
+              let matchStrong = strongText.match(/\b(M\.|Mme)\s+(.+)/i);
+              if (matchStrong) {
+                genre = matchStrong[1];
+                nom = normalizeName(matchStrong[2].trim());
+                console.log(` ✓ Trouvé via .fr-highlight > strong : ${genre} ${nom}`);
+              } else {
+                // Si pas de civilité dans le strong, peut-être juste le nom ?
+                // On essaye de voir si c'est un nom propre
+                if (strongText.length > 3 && !strongText.toLowerCase().includes('recteur') && !strongText.toLowerCase().includes('vice-')) {
+                  genre = "M."; // Par défaut si manque
+                  nom = normalizeName(strongText);
+                  console.log(` ✓ Trouvé via .fr-highlight > strong (guess): ${genre} ${nom}`);
+                }
+              }
+            }
 
-        const pageHtml = await page.content();
-        // DEBUG: Sauvegarder le HTML de la page académie
-        fs.writeFileSync(path.join(__dirname, `debug_academy_${academie.slug}.html`), pageHtml);
-        const $page = cheerio.load(pageHtml);
-
-        let genre = null;
-        let nom = null;
-
-        // Définir fullTextContent ici pour qu'il soit accessible partout
-        const fullTextContent = $page('body').text().replace(/\s+/g, ' ');
-
-        // 1. Essayer d'extraire depuis .fr-highlight (Nouveau format DSFR)
-        // 1. Essayer d'extraire depuis .fr-highlight (Nouveau format DSFR)
-        const highlightElement = $page('.fr-highlight');
-        if (highlightElement.length > 0) {
-          // Stratégie 1A : Chercher un <strong> qui contient souvent le nom propre
-          const strongTag = highlightElement.find('strong');
-          if (strongTag.length > 0) {
-            const strongText = strongTag.text().trim();
-            // Vérifier si ça ressemble à un nom (M. X ou juste X)
-            let matchStrong = strongText.match(/\b(M\.|Mme)\s+(.+)/i);
-            if (matchStrong) {
-              genre = matchStrong[1];
-              nom = normalizeName(matchStrong[2].trim());
-              console.log(` ✓ Trouvé via .fr-highlight > strong : ${genre} ${nom}`);
-            } else {
-              // Si pas de civilité dans le strong, peut-être juste le nom ?
-              // On essaye de voir si c'est un nom propre
-              if (strongText.length > 3 && !strongText.toLowerCase().includes('recteur') && !strongText.toLowerCase().includes('vice-')) {
-                genre = "M."; // Par défaut si manque
-                nom = normalizeName(strongText);
-                console.log(` ✓ Trouvé via .fr-highlight > strong (guess): ${genre} ${nom}`);
+            // Stratégie 1B : Regex classique sur tout le texte du highlight
+            if (!nom) {
+              const highlightText = highlightElement.text().replace(/\s+/g, ' ');
+              let match = highlightText.match(RECTOR_REGEX);
+              if (match) {
+                genre = match[1];
+                nom = normalizeName(match[2].trim());
+                console.log(` ✓ Trouvé via .fr-highlight (regex): ${genre} ${nom}`);
               }
             }
           }
 
-          // Stratégie 1B : Regex classique sur tout le texte du highlight
+          // Nettoyage post-extraction : Couper " Est " si présent (cas mal gérés par regex)
+          if (nom && /\s+est\s+/i.test(nom)) {
+            console.log(` 🧹 Nettoyage du nom : "${nom}" contient "est"...`);
+            nom = nom.split(/\s+est\s+/i)[0].trim();
+            console.log(`   -> Nom nettoyé : "${nom}"`);
+          }
+
+          // 2. Fallback sur l'ancienne méthode si non trouvé
           if (!nom) {
-            const highlightText = highlightElement.text().replace(/\s+/g, ' ');
-            let match = highlightText.match(RECTOR_REGEX);
+            // Extraire le texte uniquement des blockquotes (où se trouvent les nominations)
+            const blockquoteText = $page('blockquote').text().replace(/\s+/g, ' ');
+
+            // Utiliser le texte des blockquotes pour l'extraction du nom
+            const textForName = blockquoteText || fullTextContent;
+
+            let match = textForName.match(RECTOR_REGEX);
+
             if (match) {
               genre = match[1];
               nom = normalizeName(match[2].trim());
-              console.log(` ✓ Trouvé via .fr-highlight (regex): ${genre} ${nom}`);
+            } else {
+              // Fallback: essayer de trouver un nom sans M./Mme
+              const fallbackMatch = textForName.match(RECTOR_FALLBACK_REGEX);
+              if (fallbackMatch) {
+                genre = 'M.'; // Défaut à M. si pas de préfixe
+                nom = normalizeName(fallbackMatch[1].trim());
+                console.log(` ℹ️  Fallback regex utilisé (pas de M./Mme détecté)`);
+              }
             }
           }
-        }
 
-        // Nettoyage post-extraction : Couper " Est " si présent (cas mal gérés par regex)
-        if (nom && /\s+est\s+/i.test(nom)) {
-          console.log(` 🧹 Nettoyage du nom : "${nom}" contient "est"...`);
-          nom = nom.split(/\s+est\s+/i)[0].trim();
-          console.log(`   -> Nom nettoyé : "${nom}"`);
-        }
+          if (nom) {
+            // Extraction des nouvelles données : Adresse, Téléphone, Email via attributs robustes
+            const rawAdresse = $page('[data-component-id="tandem_dsfr:adresse"] .coordinate').text().trim().replace(/\s+/g, ' ');
+            let adresse = "-";
+            if (rawAdresse) {
+              const osmUrl = `https://www.openstreetmap.org/search?query=${encodeURIComponent(rawAdresse).replace(/%20/g, '+')}`;
+              adresse = `<a href="${osmUrl}" target="_blank">📍</a>`;
+            }
 
-        // 2. Fallback sur l'ancienne méthode si non trouvé
-        if (!nom) {
-          // Extraire le texte uniquement des blockquotes (où se trouvent les nominations)
-          const blockquoteText = $page('blockquote').text().replace(/\s+/g, ' ');
+            let telephone = $page('[data-component-id="tandem_dsfr:telephone"] .coordinate').text().trim().replace(/\s*\(.*?\)/g, '');
+            let email = $page('[data-component-id="tandem_dsfr:email"] .coordinate').text().trim();
 
-          // Utiliser le texte des blockquotes pour l'extraction du nom
-          const textForName = blockquoteText || fullTextContent;
+            if (!email) email = "-";
+            if (!telephone) telephone = "-"; // Au cas où
 
-          let match = textForName.match(RECTOR_REGEX);
+            let finalUrl = academieUrl;
 
-          if (match) {
-            genre = match[1];
-            nom = normalizeName(match[2].trim());
+            // 1. Essayer de récupérer l'URL officielle dans la carte (bouton en bas)
+            const cardUrl = $page('.fr-card__end a').attr('href');
+            if (cardUrl) {
+              finalUrl = cardUrl;
+              console.log(` 🔗 URL officielle (carte) : ${finalUrl}`);
+            } else if (email && email !== "-" && email.includes('@')) {
+              // 2. Fallback via email si pas de bouton
+              const domain = email.split('@')[1];
+              if (domain) {
+                finalUrl = `https://www.${domain}`;
+                console.log(` 🔗 URL déduite (email) : ${finalUrl}`);
+              }
+            }
+
+            console.log(` ★ Trouvé : ${genre} ${nom}`);
+            console.log(` 📍 Adresse : ${adresse}`);
+            console.log(` 📞 Téléphone : ${telephone}`);
+            console.log(` 📧 Email : ${email}`);
+            console.log(` 🔗 URL : ${finalUrl}`);
+
+            results.push({
+              academie: academie.name,
+              genre: genre,
+              nom: nom,
+              adresse: adresse,
+              telephone: telephone,
+              email: email,
+              url: finalUrl,
+              updated_at: new Date().toISOString()
+            });
+            found = true;
           } else {
-            // Fallback: essayer de trouver un nom sans M./Mme
-            const fallbackMatch = textForName.match(RECTOR_FALLBACK_REGEX);
-            if (fallbackMatch) {
-              genre = 'M.'; // Défaut à M. si pas de préfixe
-              nom = normalizeName(fallbackMatch[1].trim());
-              console.log(` ℹ️  Fallback regex utilisé (pas de M./Mme détecté)`);
-            }
+            console.log("   ❌ Nom non trouvé dans le contenu extrait.");
+          }
+
+        } catch (e) {
+          console.error(` ❌ Erreur extraction: ${e.message}`);
+        }
+
+        // 2c. Fallback pour la Corse
+        if (!found && academie.name.toLowerCase().includes('corse')) {
+          const fallbackResult = await scrapeCorseFallback(browser);
+          if (fallbackResult) {
+            results.push({
+              academie: academie.name,
+              genre: fallbackResult.genre,
+              nom: fallbackResult.nom,
+              url: fallbackResult.url,
+              updated_at: new Date().toISOString()
+            });
+            found = true;
           }
         }
 
-        if (nom) {
-          // Extraction des nouvelles données : Adresse, Téléphone, Email via attributs robustes
-          const rawAdresse = $page('[data-component-id="tandem_dsfr:adresse"] .coordinate').text().trim().replace(/\s+/g, ' ');
-          let adresse = "-";
-          if (rawAdresse) {
-            const osmUrl = `https://www.openstreetmap.org/search?query=${encodeURIComponent(rawAdresse).replace(/%20/g, '+')}`;
-            adresse = `<a href="${osmUrl}" target="_blank">📍</a>`;
-          }
+        // 2d. Si rien trouvé
+        if (!found) {
+          console.log(` ⚠️ Aucun recteur trouvé`);
 
-          let telephone = $page('[data-component-id="tandem_dsfr:telephone"] .coordinate').text().trim().replace(/\s*\(.*?\)/g, '');
-          let email = $page('[data-component-id="tandem_dsfr:email"] .coordinate').text().trim();
-
-          if (!email) email = "-";
-          if (!telephone) telephone = "-"; // Au cas où
-
-          let finalUrl = academieUrl;
-
-          // 1. Essayer de récupérer l'URL officielle dans la carte (bouton en bas)
-          const cardUrl = $page('.fr-card__end a').attr('href');
-          if (cardUrl) {
-            finalUrl = cardUrl;
-            console.log(` 🔗 URL officielle (carte) : ${finalUrl}`);
-          } else if (email && email !== "-" && email.includes('@')) {
-            // 2. Fallback via email si pas de bouton
-            const domain = email.split('@')[1];
-            if (domain) {
-              finalUrl = `https://www.${domain}`;
-              console.log(` 🔗 URL déduite (email) : ${finalUrl}`);
-            }
-          }
-
-          console.log(` ★ Trouvé : ${genre} ${nom}`);
-          console.log(` 📍 Adresse : ${adresse}`);
-          console.log(` 📞 Téléphone : ${telephone}`);
-          console.log(` 📧 Email : ${email}`);
-          console.log(` 🔗 URL : ${finalUrl}`);
+          // DEBUG: Sauvegarder la page en cas d'échec
+          const failedHtml = await page.content();
+          fs.writeFileSync(path.join(__dirname, `debug_failed_${academie.slug}.html`), failedHtml);
+          console.log(` 📄 HTML sauvegardé dans debug_failed_${academie.slug}.html`);
 
           results.push({
             academie: academie.name,
-            genre: genre,
-            nom: nom,
-            adresse: adresse,
-            telephone: telephone,
-            email: email,
-            url: finalUrl,
+            error: "Non trouvé",
+            url: academieUrl,
             updated_at: new Date().toISOString()
           });
-          found = true;
-        } else {
-          console.log("   ❌ Nom non trouvé dans le contenu extrait.");
         }
 
-      } catch (e) {
-        console.error(` ❌ Erreur extraction: ${e.message}`);
-      }
-
-      // 2c. Fallback pour la Corse
-      if (!found && academie.name.toLowerCase().includes('corse')) {
-        const fallbackResult = await scrapeCorseFallback(browser);
-        if (fallbackResult) {
-          results.push({
-            academie: academie.name,
-            genre: fallbackResult.genre,
-            nom: fallbackResult.nom,
-            url: fallbackResult.url,
-            updated_at: new Date().toISOString()
-          });
-          found = true;
-        }
-      }
-
-      // 2d. Si rien trouvé
-      if (!found) {
-        console.log(` ⚠️ Aucun recteur trouvé`);
-
-        // DEBUG: Sauvegarder la page en cas d'échec
-        const failedHtml = await page.content();
-        fs.writeFileSync(path.join(__dirname, `debug_failed_${academie.slug}.html`), failedHtml);
-        console.log(` 📄 HTML sauvegardé dans debug_failed_${academie.slug}.html`);
-
+      } catch (globalError) {
+        // Catch-all par académie : une erreur ne tue pas le reste du scraping
+        console.error(` 💥 Erreur fatale pour ${academie.name}: ${globalError.message}`);
         results.push({
           academie: academie.name,
-          error: "Non trouvé",
-          url: academieUrl,
+          error: `Erreur fatale: ${globalError.message}`,
           updated_at: new Date().toISOString()
         });
-      }
+      } // fin try/catch global par académie
     }
 
     // ÉTAPE 3 : Sauvegarder les résultats (Fusion avec les existants)
