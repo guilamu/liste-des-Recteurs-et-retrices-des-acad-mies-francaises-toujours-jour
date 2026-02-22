@@ -209,9 +209,14 @@ async function scrapeCorseFallback(browser) {
 async function scrape() {
   console.log("🚀 Lancement du navigateur...");
   // Launch in headless mode for CI environment
+  const proxyUrl = process.env.PUPPETEER_PROXY;
+  const proxyArgs = proxyUrl ? [`--proxy-server=${proxyUrl}`] : [];
+  if (proxyUrl) console.log(`🌐 Proxy actif : ${proxyUrl}`);
+  else console.log('🌐 Mode direct (pas de proxy)');
+
   const browser = await puppeteer.launch({
     headless: "new",
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: ['--no-sandbox', '--disable-setuid-sandbox', ...proxyArgs]
   });
 
   const results = [];
