@@ -22,23 +22,101 @@ jobs:
       
       - name: Install dependencies
         run: npm install
-      
-      - name: Run scraper
-        id: scrape
-        continue-on-error: true
+
+      - name: Setup SSH keys
+        env:
+          PROXY_DEBIAN_KEY: ${{ secrets.PROXY_DEBIAN_KEY }}
+          PROXY_WIN_KEY: ${{ secrets.PROXY_WIN_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$PROXY_DEBIAN_KEY" > ~/.ssh/proxy_debian
+          echo "$PROXY_WIN_KEY"   > ~/.ssh/proxy_win
+          chmod 600 ~/.ssh/proxy_debian ~/.ssh/proxy_win
+
+      # ─── Tentative 1 : Direct (pas de proxy) ────────────────────────────────────
+      - name: "🟢 Tentative 1 : Scraping direct (GitHub IP)"
+        id: try_direct
         run: node scraper.js
-      
+        continue-on-error: true
+
+      # ─── Tentative 2 : Proxy Debian ─────────────────────────────────────────────
+      - name: "🟡 Setup proxy Debian"
+        if: steps.try_direct.outcome == 'failure'
+        env:
+          PROXY_DEBIAN_HOST: ${{ secrets.PROXY_DEBIAN_HOST }}
+          PROXY_DEBIAN_USER: ${{ secrets.PROXY_DEBIAN_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/proxy_debian \
+              -D 1080 -N -f \
+              $PROXY_DEBIAN_USER@$PROXY_DEBIAN_HOST
+          echo "PROXY_URL=socks5://localhost:1080" >> $GITHUB_ENV
+          echo "✅ Tunnel SOCKS5 Debian actif"
+
+      - name: "🟡 Tentative 2 : Scraping via proxy Debian"
+        id: try_debian
+        if: steps.try_direct.outcome == 'failure'
+        env:
+          PUPPETEER_PROXY: ${{ env.PROXY_URL }}
+        run: node scraper.js
+        continue-on-error: true
+
+      - name: Kill tunnel Debian
+        if: steps.try_direct.outcome == 'failure'
+        run: pkill -f "ssh.*1080" || true
+
+      # ─── Tentative 3 : Proxy Windows home ───────────────────────────────────────
+      - name: "🔴 Setup proxy Windows home"
+        if: steps.try_direct.outcome == 'failure' && steps.try_debian.outcome == 'failure'
+        env:
+          PROXY_WIN_HOST: ${{ secrets.PROXY_WIN_HOST }}
+          PROXY_WIN_USER: ${{ secrets.PROXY_WIN_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/proxy_win \
+              -D 1081 -N -f \
+              $PROXY_WIN_USER@$PROXY_WIN_HOST
+          echo "PROXY_URL=socks5://localhost:1081" >> $GITHUB_ENV
+          echo "✅ Tunnel SOCKS5 Windows home actif"
+
+      - name: "🔴 Tentative 3 : Scraping via proxy Windows home"
+        id: try_win
+        if: steps.try_direct.outcome == 'failure' && steps.try_debian.outcome == 'failure'
+        env:
+          PUPPETEER_PROXY: ${{ env.PROXY_URL }}
+        run: node scraper.js
+        continue-on-error: true
+
+      - name: Kill tunnel Windows
+        if: steps.try_direct.outcome == 'failure' && steps.try_debian.outcome == 'failure'
+        run: pkill -f "ssh.*1081" || true
+
+      # ─── Échec global ────────────────────────────────────────────────────────────
+      - name: "💀 Toutes les tentatives ont échoué"
+        if: >
+          steps.try_direct.outcome == 'failure' &&
+          (steps.try_debian.outcome == 'failure' || steps.try_debian.outcome == 'skipped') &&
+          (steps.try_win.outcome == 'failure' || steps.try_win.outcome == 'skipped')
+        run: |
+          echo "❌ Les 3 proxies ont échoué. Cloudflare bloque tout."
+          exit 1
+
+      # ─── Commit si au moins une tentative a réussi ─────────────────────────────
       - name: Commit results
-        if: steps.scrape.outcome == 'success'
+        if: >
+          steps.try_direct.outcome == 'success' ||
+          steps.try_debian.outcome == 'success' ||
+          steps.try_win.outcome == 'success'
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add recteurs.json history.json
           git commit -m "Update rectors data" || echo "No changes"
           git push
-      
+
       - name: Create issue on failure
-        if: steps.scrape.outcome == 'failure'
+        if: >
+          steps.try_direct.outcome == 'failure' &&
+          (steps.try_debian.outcome == 'failure' || steps.try_debian.outcome == 'skipped') &&
+          (steps.try_win.outcome == 'failure' || steps.try_win.outcome == 'skipped')
         uses: actions/github-script@v7
         with:
           script: |
@@ -56,13 +134,7 @@ jobs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `❌ Échec du scraping - ${new Date().toLocaleDateString('fr-FR')}`,
-              body: `Le scraping des données des recteurs a échoué.${errorDetails}\n\n**Workflow Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              title: `❌ Échec du scraping (3 proxies) - ${new Date().toLocaleDateString('fr-FR')}`,
+              body: `Le scraping des données des recteurs a échoué malgré les 3 tentatives de proxy.${errorDetails}\n\n**Workflow Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               labels: ['scraper-error', 'automated']
             });
-
-      - name: Fail workflow on scraper error
-        if: steps.scrape.outcome == 'failure'
-        run: |
-          echo "::error::Le scraper a échoué - voir les logs ci-dessus"
-          exit 1
