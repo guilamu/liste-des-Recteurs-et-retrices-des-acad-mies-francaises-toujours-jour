@@ -2,7 +2,10 @@ name: Update Rectors Data
 
 on:
   schedule:
-    - cron: '0 6 * * *'
+    # 3 tentatives espacées d'1h — seule la dernière (08h) notifie en cas d'échec
+    - cron: '0 6 * * *'   # Tentative 1
+    - cron: '0 7 * * *'   # Tentative 2 (si T1 échouée)
+    - cron: '0 8 * * *'   # Tentative 3 (si T1+T2 échouées) → notification
   workflow_dispatch:
 
 permissions:
@@ -14,16 +17,52 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
+      # ─── Skip si déjà réussi aujourd'hui (évite les runs inutiles à 07h/08h) ──
+      - name: "🔎 Vérifier si déjà réussi aujourd'hui"
+        id: check_skip
+        if: github.event_name == 'schedule'
+        run: |
+          TODAY=$(date -u +%Y-%m-%d)
+          if [ -f .last-scrape-success ] && [ "$(cat .last-scrape-success)" = "$TODAY" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "✅ Scraping déjà réussi aujourd'hui, on passe."
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "🔄 Pas de succès aujourd'hui, lancement du scraping."
+          fi
+
+      # ─── Déterminer si c'est la dernière tentative (= doit notifier si échec) ──
+      - name: "📋 Déterminer le numéro de tentative"
+        id: attempt_info
+        if: steps.check_skip.outputs.skip != 'true'
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "is_last=true" >> $GITHUB_OUTPUT
+            echo "📋 Lancement manuel → notification en cas d'échec"
+          else
+            HOUR=$(date -u +%-H)
+            if [ "$HOUR" -ge 8 ]; then
+              echo "is_last=true" >> $GITHUB_OUTPUT
+              echo "📋 Tentative 3/3 (dernière) → notification en cas d'échec"
+            else
+              echo "is_last=false" >> $GITHUB_OUTPUT
+              echo "📋 Tentative intermédiaire (heure=$HOUR) → retry silencieux si échec"
+            fi
+          fi
+
       - name: Setup Node.js
+        if: steps.check_skip.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  # ← Changez de '18' à '20'
+          node-version: '20'
       
       - name: Install dependencies
+        if: steps.check_skip.outputs.skip != 'true'
         run: npm install
 
       - name: Setup SSH keys
+        if: steps.check_skip.outputs.skip != 'true'
         env:
           PROXY_DEBIAN_KEY: ${{ secrets.PROXY_DEBIAN_KEY }}
           PROXY_WIN_KEY: ${{ secrets.PROXY_WIN_KEY }}
@@ -36,12 +75,13 @@ jobs:
       # ─── Tentative 1 : Direct (pas de proxy) ────────────────────────────────────
       - name: "🟢 Tentative 1 : Scraping direct (GitHub IP)"
         id: try_direct
+        if: steps.check_skip.outputs.skip != 'true'
         run: node scraper.js
         continue-on-error: true
 
       # ─── Tentative 2 : Proxy Debian ─────────────────────────────────────────────
       - name: "🟡 Setup proxy Debian"
-        if: steps.try_direct.outcome == 'failure'
+        if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure'
         env:
           PROXY_DEBIAN_HOST: ${{ secrets.PROXY_DEBIAN_HOST }}
           PROXY_DEBIAN_USER: ${{ secrets.PROXY_DEBIAN_USER }}
@@ -54,19 +94,19 @@ jobs:
 
       - name: "🟡 Tentative 2 : Scraping via proxy Debian"
         id: try_debian
-        if: steps.try_direct.outcome == 'failure'
+        if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure'
         env:
           PUPPETEER_PROXY: ${{ env.PROXY_URL }}
         run: node scraper.js
         continue-on-error: true
 
       - name: Kill tunnel Debian
-        if: steps.try_direct.outcome == 'failure'
+        if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure'
         run: pkill -f "ssh.*1080" || true
 
       # ─── Tentative 3 : Proxy Windows home ───────────────────────────────────────
       - name: "🔴 Setup proxy Windows home"
-        if: steps.try_direct.outcome == 'failure' && steps.try_debian.outcome == 'failure'
+        if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.try_debian.outcome == 'failure'
         env:
           PROXY_WIN_HOST: ${{ secrets.PROXY_WIN_HOST }}
           PROXY_WIN_USER: ${{ secrets.PROXY_WIN_USER }}
@@ -79,44 +119,52 @@ jobs:
 
       - name: "🔴 Tentative 3 : Scraping via proxy Windows home"
         id: try_win
-        if: steps.try_direct.outcome == 'failure' && steps.try_debian.outcome == 'failure'
+        if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.try_debian.outcome == 'failure'
         env:
           PUPPETEER_PROXY: ${{ env.PROXY_URL }}
         run: node scraper.js
         continue-on-error: true
 
       - name: Kill tunnel Windows
-        if: steps.try_direct.outcome == 'failure' && steps.try_debian.outcome == 'failure'
+        if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.try_debian.outcome == 'failure'
         run: pkill -f "ssh.*1081" || true
 
-      # ─── Échec global ────────────────────────────────────────────────────────────
-      - name: "💀 Toutes les tentatives ont échoué"
-        if: >
-          steps.try_direct.outcome == 'failure' &&
-          (steps.try_debian.outcome == 'failure' || steps.try_debian.outcome == 'skipped') &&
-          (steps.try_win.outcome == 'failure' || steps.try_win.outcome == 'skipped')
+      # ─── Évaluer le résultat global des 3 proxies ───────────────────────────────
+      - name: "📊 Résultat des tentatives proxy"
+        id: result
+        if: steps.check_skip.outputs.skip != 'true'
         run: |
-          echo "❌ Les 3 proxies ont échoué. Cloudflare bloque tout."
-          exit 1
+          if [ "${{ steps.try_direct.outcome }}" = "success" ] || \
+             [ "${{ steps.try_debian.outcome }}" = "success" ] || \
+             [ "${{ steps.try_win.outcome }}" = "success" ]; then
+            echo "success=true" >> $GITHUB_OUTPUT
+            echo "✅ Au moins une tentative proxy a réussi"
+          else
+            echo "success=false" >> $GITHUB_OUTPUT
+            echo "❌ Les 3 proxies ont échoué pour ce run"
+          fi
 
-      # ─── Commit si au moins une tentative a réussi ─────────────────────────────
-      - name: Commit results
-        if: >
-          steps.try_direct.outcome == 'success' ||
-          steps.try_debian.outcome == 'success' ||
-          steps.try_win.outcome == 'success'
+      # ─── Succès : commit + marquer le jour comme réussi ─────────────────────────
+      - name: "✅ Commit results & mark success"
+        if: steps.result.outputs.success == 'true'
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add recteurs.json history.json
+          date -u +%Y-%m-%d > .last-scrape-success
+          git add recteurs.json history.json .last-scrape-success
           git commit -m "Update rectors data" || echo "No changes"
           git push
 
-      - name: Create issue on failure
-        if: >
-          steps.try_direct.outcome == 'failure' &&
-          (steps.try_debian.outcome == 'failure' || steps.try_debian.outcome == 'skipped') &&
-          (steps.try_win.outcome == 'failure' || steps.try_win.outcome == 'skipped')
+      # ─── Échec intermédiaire : log silencieux, on retente dans ~1h ─────────────
+      - name: "⏳ Échec intermédiaire — retry dans ~1h"
+        if: steps.result.outputs.success == 'false' && steps.attempt_info.outputs.is_last != 'true'
+        run: |
+          echo "::warning::Scraping échoué (3 proxies). Nouvelle tentative automatique dans ~1 heure."
+          echo "Pas de notification envoyée."
+
+      # ─── Échec final (3 runs × 3 proxies) : notification ──────────────────────
+      - name: Create issue on final failure
+        if: steps.result.outputs.success == 'false' && steps.attempt_info.outputs.is_last == 'true'
         uses: actions/github-script@v7
         with:
           script: |
@@ -134,7 +182,13 @@ jobs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `❌ Échec du scraping (3 proxies) - ${new Date().toLocaleDateString('fr-FR')}`,
-              body: `Le scraping des données des recteurs a échoué malgré les 3 tentatives de proxy.${errorDetails}\n\n**Workflow Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              title: `❌ Échec du scraping (3 runs × 3 proxies) - ${new Date().toLocaleDateString('fr-FR')}`,
+              body: `Le scraping des données des recteurs a échoué malgré **3 tentatives espacées d'1 heure**, chacune avec 3 proxies (direct, Debian, Windows).\n\nSoit **9 essais au total** sans succès.${errorDetails}\n\n**Workflow Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               labels: ['scraper-error', 'automated']
             });
+
+      - name: "💀 Échec final"
+        if: steps.result.outputs.success == 'false' && steps.attempt_info.outputs.is_last == 'true'
+        run: |
+          echo "❌ 3 runs espacés d'1h ont tous échoué (3 proxies chacun = 9 essais)."
+          exit 1
