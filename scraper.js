@@ -569,10 +569,21 @@ async function scrape() {
         if (!found) {
           console.log(` ⚠️ Aucun recteur trouvé`);
 
-          // DEBUG: Sauvegarder la page en cas d'échec
-          const failedHtml = await page.content();
-          fs.writeFileSync(path.join(__dirname, `debug_failed_${academie.slug}.html`), failedHtml);
-          console.log(` 📄 HTML sauvegardé dans debug_failed_${academie.slug}.html`);
+          // DEBUG: Sauvegarder la page en cas d'échec (avec timeout pour éviter un blocage
+          // si la page est restée dans un état cassé après des timeouts de navigation)
+          try {
+            const failedHtml = await Promise.race([
+              page.content(),
+              new Promise((_, reject) => setTimeout(() => reject(new Error('content() timeout')), 5000))
+            ]);
+            fs.writeFileSync(path.join(__dirname, `debug_failed_${academie.slug}.html`), failedHtml);
+            console.log(` 📄 HTML sauvegardé dans debug_failed_${academie.slug}.html`);
+          } catch (debugErr) {
+            console.log(` ⚠️ Impossible de sauvegarder le HTML de debug (${debugErr.message})`);
+          }
+
+          // Réinitialiser la page pour éviter qu'une navigation cassée bloque les académies suivantes
+          try { await page.goto('about:blank', { timeout: 5000 }); } catch (_) { /* best effort */ }
 
           results.push({
             academie: academie.name,
