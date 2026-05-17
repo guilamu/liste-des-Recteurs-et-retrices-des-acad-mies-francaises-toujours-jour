@@ -231,9 +231,9 @@ async function scrape() {
       timeout: 60000
     });
 
-    // Wait 10 seconds for initial loading/Cloudflare checks
-    console.log("⏳ Attente de 10s pour chargement initial...");
-    await new Promise(resolve => setTimeout(resolve, 10000));
+    // Attente pour Cloudflare — réduite car on utilise l'API JSON (pas besoin du rendu SVG)
+    console.log("⏳ Attente de 3s pour chargement initial / Cloudflare...");
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
     // DEBUG: Sauvegarder le HTML pour analyse
     const htmlContent = await page.content();
@@ -262,6 +262,37 @@ async function scrape() {
       process.exit(1);
     }
 
+    // ÉTAPE 1b : Récupérer les URLs directement via l'API JSON (méthode principale)
+    // L'index contient un attribut data-api-url="/svgmaps/block/716" qui retourne
+    // un JSON avec tous les slugs → URLs des pages académies.
+    let apiUrlMap = null;
+    try {
+      apiUrlMap = await page.evaluate(async () => {
+        const block = document.querySelector('.svg-block[data-api-url]');
+        const apiPath = block ? block.getAttribute('data-api-url') : '/svgmaps/block/716';
+        try {
+          const resp = await fetch(apiPath);
+          const data = await resp.json();
+          if (data && data.content) {
+            const map = {};
+            for (const [slug, info] of Object.entries(data.content)) {
+              map[slug] = { title: info.title, link: info.link };
+            }
+            return map;
+          }
+        } catch (e) { /* handled below */ }
+        return null;
+      });
+
+      if (apiUrlMap) {
+        console.log(`🔗 ${Object.keys(apiUrlMap).length} URLs récupérées via l'API JSON.`);
+      } else {
+        console.log("⚠️ API JSON indisponible, fallback sur carte/menu déroulant.");
+      }
+    } catch (e) {
+      console.log(`⚠️ Erreur API JSON (${e.message}), fallback sur carte/menu déroulant.`);
+    }
+
     // CHARGER LES RÉSULTATS EXISTANTS
     let existingResults = [];
     if (fs.existsSync(OUTPUT_FILE)) {
@@ -288,56 +319,67 @@ async function scrape() {
 
       try { // ← try/catch global par académie
 
-        // 2a. Découvrir l'URL via la carte interactive ou le menu déroulant
+        // 2a. Découvrir l'URL de la page académie
         try {
           console.log(" 🔍 Découverte de l'URL...");
 
-          // On retourne sur l'index si on n'y est pas
-          if (!page.url().includes('les-regions-academiques')) {
-            console.log(" 🔙 Retour à la carte...");
-            await page.goto(INDEX_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+          // MÉTHODE PRINCIPALE : URL depuis l'API JSON
+          if (apiUrlMap && apiUrlMap[academie.slug]) {
+            academieUrl = `https://www.education.gouv.fr${apiUrlMap[academie.slug].link}`;
+            console.log(` ✓ URL via API : ${academieUrl}`);
+          }
+
+          // FAILSAFE : Carte SVG interactive ou menu déroulant (si API indisponible ou slug absent)
+          if (!academieUrl) {
+            console.log(` ⚠️ Fallback carte/menu pour ${academie.slug}...`);
+
+            // On retourne sur l'index si on n'y est pas
+            if (!page.url().includes('les-regions-academiques')) {
+              console.log(" 🔙 Retour à la carte...");
+              await page.goto(INDEX_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+              await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+
+            let mapClickSuccess = false;
+
+            // TENTATIVE 1 : Via la carte SVG (Sauf pour les DOM-TOM qui peuvent poser problème)
+            try {
+              const regionSelector = `[data-region="${academie.slug}"]`;
+              // Timeout court (2s) pour ne pas perdre de temps si l'élément n'existe pas (ex: DOM-TOM)
+              await page.waitForSelector(regionSelector, { timeout: 2000 });
+
+              console.log(` 🖱️ Clic sur la région carte ${academie.slug}...`);
+              await Promise.all([
+                page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }),
+                page.click(regionSelector)
+              ]);
+              mapClickSuccess = true;
+            } catch (mapError) {
+              console.log(` ⚠️ Pas de région cliquable identifiée pour ${academie.slug} (ou timeout), essai via menu déroulant...`);
+            }
+
+            // TENTATIVE 2 : Via le menu déroulant (si carte échouée)
+            if (!mapClickSuccess) {
+              console.log(` 🔽 Sélection via menu déroulant pour ${academie.slug}...`);
+
+              // Sélectionner l'option
+              await page.select('.svg-select', academie.slug);
+
+              // Cliquer sur le bouton OK (classe .svg-submit vérifiée)
+              await Promise.all([
+                page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }),
+                page.click('.svg-submit')
+              ]);
+            }
+
+            // Petite pause pour laisser Cloudflare tranquille
             await new Promise(resolve => setTimeout(resolve, 2000));
-          }
 
-          let mapClickSuccess = false;
-
-          // TENTATIVE 1 : Via la carte SVG (Sauf pour les DOM-TOM qui peuvent poser problème)
-          try {
-            const regionSelector = `[data-region="${academie.slug}"]`;
-            // Timeout court (2s) pour ne pas perdre de temps si l'élément n'existe pas (ex: DOM-TOM)
-            await page.waitForSelector(regionSelector, { timeout: 2000 });
-
-            console.log(` 🖱️ Clic sur la région carte ${academie.slug}...`);
-            await Promise.all([
-              page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }),
-              page.click(regionSelector)
-            ]);
-            mapClickSuccess = true;
-          } catch (mapError) {
-            console.log(` ⚠️ Pas de région cliquable identifiée pour ${academie.slug} (ou timeout), essai via menu déroulant...`);
-          }
-
-          // TENTATIVE 2 : Via le menu déroulant (si carte échouée)
-          if (!mapClickSuccess) {
-            console.log(` 🔽 Sélection via menu déroulant pour ${academie.slug}...`);
-
-            // Sélectionner l'option
-            await page.select('.svg-select', academie.slug);
-
-            // Cliquer sur le bouton OK (classe .svg-submit vérifiée)
-            await Promise.all([
-              page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }),
-              page.click('.svg-submit')
-            ]);
-          }
-
-          // Petite pause pour laisser Cloudflare tranquille
-          await new Promise(resolve => setTimeout(resolve, 2000));
-
-          const currentUrl = page.url();
-          if (currentUrl !== INDEX_URL) {
-            academieUrl = currentUrl;
-            console.log(` ✓ URL trouvée: ${academieUrl}`);
+            const currentUrl = page.url();
+            if (currentUrl !== INDEX_URL) {
+              academieUrl = currentUrl;
+              console.log(` ✓ URL trouvée via fallback: ${academieUrl}`);
+            }
           }
 
         } catch (e) {
@@ -354,13 +396,19 @@ async function scrape() {
           continue;
         }
 
-        // 2b. Extraire le recteur depuis cette URL
+        // 2b. Extraire le recteur depuis cette URL (avec retry)
         let found = false;
+        const MAX_RETRIES = 3;
 
-        try {
-          console.log(" 📄 Extraction du recteur...");
+        for (let attempt = 1; attempt <= MAX_RETRIES && !found; attempt++) {
+          try {
+            if (attempt > 1) {
+              console.log(` 🔄 Tentative ${attempt}/${MAX_RETRIES}...`);
+              await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+            console.log(" 📄 Extraction du recteur...");
 
-          await page.goto(academieUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
+            await page.goto(academieUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
 
           const pageHtml = await page.content();
           // DEBUG: Sauvegarder le HTML de la page académie
@@ -494,8 +542,13 @@ async function scrape() {
           }
 
         } catch (e) {
-          console.error(` ❌ Erreur extraction: ${e.message}`);
+          if (attempt < MAX_RETRIES) {
+            console.warn(` ⚠️ Erreur extraction (tentative ${attempt}/${MAX_RETRIES}): ${e.message}`);
+          } else {
+            console.error(` ❌ Erreur extraction après ${MAX_RETRIES} tentatives: ${e.message}`);
+          }
         }
+        } // fin boucle retry
 
         // 2c. Fallback pour la Corse
         if (!found && academie.name.toLowerCase().includes('corse')) {
