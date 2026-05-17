@@ -408,7 +408,7 @@ async function scrape() {
             }
             console.log(" 📄 Extraction du recteur...");
 
-            await page.goto(academieUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
+            await page.goto(academieUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
 
           const pageHtml = await page.content();
           // DEBUG: Sauvegarder le HTML de la page académie
@@ -644,10 +644,10 @@ async function scrape() {
 
 
     if (errorsCount > 0) {
-      console.error(`\n⚠️  ${errorsCount} académie(s) en échec :`);
-      failedAcademies.forEach(name => console.error(`   - ${name}`));
+      console.warn(`\n⚠️  ${errorsCount} académie(s) en échec (données précédentes conservées) :`);
+      failedAcademies.forEach(name => console.warn(`   - ${name}`));
 
-      // Créer un fichier d'erreur pour GitHub Actions
+      // Créer un fichier d'erreur pour GitHub Actions (info seulement, ne bloque pas le commit)
       fs.writeFileSync(
         path.join(__dirname, 'scraper-errors.json'),
         JSON.stringify({
@@ -656,9 +656,8 @@ async function scrape() {
           timestamp: new Date().toISOString()
         }, null, 2)
       );
-
-      // Faire échouer le process pour déclencher les notifications
-      process.exit(1);
+      // On ne fait PAS process.exit(1) ici : les académies réussies doivent être commitées.
+      // Le seuil de <50% (ci-dessus) reste la seule condition de blocage.
     }
 
   } catch (error) {
