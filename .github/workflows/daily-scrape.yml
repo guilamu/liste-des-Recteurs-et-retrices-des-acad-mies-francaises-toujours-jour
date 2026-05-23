@@ -81,58 +81,68 @@ jobs:
 
       # ─── Tentative 2 : Proxy Debian ─────────────────────────────────────────────
       - name: "🟡 Setup proxy Debian"
+        id: setup_debian
         if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure'
+        continue-on-error: true
         env:
           PROXY_DEBIAN_HOST: ${{ secrets.PROXY_DEBIAN_HOST }}
           PROXY_DEBIAN_USER: ${{ secrets.PROXY_DEBIAN_USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/proxy_debian \
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=15 -i ~/.ssh/proxy_debian \
               -D 1080 -N -f \
               $PROXY_DEBIAN_USER@$PROXY_DEBIAN_HOST
+          # Vérifier que le tunnel fonctionne réellement
+          sleep 2
+          curl --socks5-hostname localhost:1080 -s -o /dev/null -w "%{http_code}" --max-time 10 https://example.com | grep -q 200 || { echo "❌ Tunnel Debian non fonctionnel"; exit 1; }
           echo "PROXY_URL=socks5://localhost:1080" >> $GITHUB_ENV
-          echo "✅ Tunnel SOCKS5 Debian actif"
+          echo "✅ Tunnel SOCKS5 Debian actif et vérifié"
 
       - name: "🟡 Tentative 2 : Scraping via proxy Debian"
         id: try_debian
-        if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure'
+        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.setup_debian.outcome == 'success'
         env:
           PUPPETEER_PROXY: ${{ env.PROXY_URL }}
         run: node scraper.js
         continue-on-error: true
 
       - name: Kill tunnel Debian
-        if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure'
+        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure'
         run: pkill -f "ssh.*1080" || true
 
       # ─── Tentative 3 : Proxy Windows home ───────────────────────────────────────
       - name: "🔴 Setup proxy Windows home"
-        if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.try_debian.outcome == 'failure'
+        id: setup_win
+        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.try_debian.outcome != 'success'
+        continue-on-error: true
         env:
           PROXY_WIN_HOST: ${{ secrets.PROXY_WIN_HOST }}
           PROXY_WIN_USER: ${{ secrets.PROXY_WIN_USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/proxy_win \
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=15 -i ~/.ssh/proxy_win \
               -D 1081 -N -f \
               $PROXY_WIN_USER@$PROXY_WIN_HOST
+          # Vérifier que le tunnel fonctionne réellement
+          sleep 2
+          curl --socks5-hostname localhost:1081 -s -o /dev/null -w "%{http_code}" --max-time 10 https://example.com | grep -q 200 || { echo "❌ Tunnel Windows non fonctionnel"; exit 1; }
           echo "PROXY_URL=socks5://localhost:1081" >> $GITHUB_ENV
-          echo "✅ Tunnel SOCKS5 Windows home actif"
+          echo "✅ Tunnel SOCKS5 Windows home actif et vérifié"
 
       - name: "🔴 Tentative 3 : Scraping via proxy Windows home"
         id: try_win
-        if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.try_debian.outcome == 'failure'
+        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.try_debian.outcome != 'success' && steps.setup_win.outcome == 'success'
         env:
           PUPPETEER_PROXY: ${{ env.PROXY_URL }}
         run: node scraper.js
         continue-on-error: true
 
       - name: Kill tunnel Windows
-        if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.try_debian.outcome == 'failure'
+        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.try_debian.outcome != 'success'
         run: pkill -f "ssh.*1081" || true
 
       # ─── Évaluer le résultat global des 3 proxies ───────────────────────────────
       - name: "📊 Résultat des tentatives proxy"
         id: result
-        if: steps.check_skip.outputs.skip != 'true'
+        if: always() && steps.check_skip.outputs.skip != 'true'
         run: |
           if [ "${{ steps.try_direct.outcome }}" = "success" ] || \
              [ "${{ steps.try_debian.outcome }}" = "success" ] || \
@@ -146,7 +156,7 @@ jobs:
 
       # ─── Succès : commit + marquer le jour comme réussi ─────────────────────────
       - name: "✅ Commit results & mark success"
-        if: steps.result.outputs.success == 'true'
+        if: always() && steps.result.outputs.success == 'true'
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
@@ -157,14 +167,14 @@ jobs:
 
       # ─── Échec intermédiaire : log silencieux, on retente dans ~1h ─────────────
       - name: "⏳ Échec intermédiaire — retry dans ~1h"
-        if: steps.result.outputs.success == 'false' && steps.attempt_info.outputs.is_last != 'true'
+        if: always() && steps.result.outputs.success == 'false' && steps.attempt_info.outputs.is_last != 'true'
         run: |
           echo "::warning::Scraping échoué (3 proxies). Nouvelle tentative automatique dans ~1 heure."
           echo "Pas de notification envoyée."
 
       # ─── Échec final (3 runs × 3 proxies) : notification ──────────────────────
       - name: Create issue on final failure
-        if: steps.result.outputs.success == 'false' && steps.attempt_info.outputs.is_last == 'true'
+        if: always() && steps.result.outputs.success == 'false' && steps.attempt_info.outputs.is_last == 'true'
         uses: actions/github-script@v7
         with:
           script: |
@@ -188,7 +198,7 @@ jobs:
             });
 
       - name: "💀 Échec final"
-        if: steps.result.outputs.success == 'false' && steps.attempt_info.outputs.is_last == 'true'
+        if: always() && steps.result.outputs.success == 'false' && steps.attempt_info.outputs.is_last == 'true'
         run: |
           echo "❌ 3 runs espacés d'1h ont tous échoué (3 proxies chacun = 9 essais)."
           exit 1
