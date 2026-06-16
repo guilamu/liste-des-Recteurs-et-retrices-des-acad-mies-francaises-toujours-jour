@@ -304,6 +304,11 @@ async function scrape() {
       }
     }
 
+    // Helper : chercher une entrée valide existante pour une académie
+    function findExistingValid(academieName) {
+      return existingResults.find(r => r.academie === academieName && !r.error);
+    }
+
     // On scrape TOUT pour être toujours à jour
     const academiesToScrape = academies;
 
@@ -388,11 +393,17 @@ async function scrape() {
 
         if (!academieUrl) {
           console.log(` ⚠️ URL non trouvée pour ${academie.name}`);
-          results.push({
-            academie: academie.name,
-            error: "URL non trouvée",
-            updated_at: new Date().toISOString()
-          });
+          const existing = findExistingValid(academie.name);
+          if (existing) {
+            console.log(` 🔄 Conservation des données existantes pour ${academie.name} (${existing.nom})`);
+            results.push(existing);
+          } else {
+            results.push({
+              academie: academie.name,
+              error: "URL non trouvée",
+              updated_at: new Date().toISOString()
+            });
+          }
           continue;
         }
 
@@ -585,22 +596,34 @@ async function scrape() {
           // Réinitialiser la page pour éviter qu'une navigation cassée bloque les académies suivantes
           try { await page.goto('about:blank', { timeout: 5000 }); } catch (_) { /* best effort */ }
 
-          results.push({
-            academie: academie.name,
-            error: "Non trouvé",
-            url: academieUrl,
-            updated_at: new Date().toISOString()
-          });
+          const existing = findExistingValid(academie.name);
+          if (existing) {
+            console.log(` 🔄 Conservation des données existantes pour ${academie.name} (${existing.nom})`);
+            results.push(existing);
+          } else {
+            results.push({
+              academie: academie.name,
+              error: "Non trouvé",
+              url: academieUrl,
+              updated_at: new Date().toISOString()
+            });
+          }
         }
 
       } catch (globalError) {
         // Catch-all par académie : une erreur ne tue pas le reste du scraping
         console.error(` 💥 Erreur fatale pour ${academie.name}: ${globalError.message}`);
-        results.push({
-          academie: academie.name,
-          error: `Erreur fatale: ${globalError.message}`,
-          updated_at: new Date().toISOString()
-        });
+        const existing = findExistingValid(academie.name);
+        if (existing) {
+          console.log(` 🔄 Conservation des données existantes pour ${academie.name} (${existing.nom})`);
+          results.push(existing);
+        } else {
+          results.push({
+            academie: academie.name,
+            error: `Erreur fatale: ${globalError.message}`,
+            updated_at: new Date().toISOString()
+          });
+        }
       } // fin try/catch global par académie
     }
 
