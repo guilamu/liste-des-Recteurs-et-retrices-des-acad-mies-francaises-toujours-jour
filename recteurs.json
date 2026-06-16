@@ -7,7 +7,7 @@
     "telephone": "04 42 91 70 00",
     "email": "-",
     "url": "https://www.ac-aix-marseille.fr/",
-    "updated_at": "2026-06-16T11:02:33.134Z"
+    "updated_at": "2026-06-16T11:15:09.785Z"
   },
   {
     "academie": "Amiens",
@@ -17,13 +17,17 @@
     "telephone": "03 22 82 38 23",
     "email": "ce.rectorat@ac-amiens.fr",
     "url": "http://www.ac-amiens.fr/",
-    "updated_at": "2026-06-16T11:02:34.609Z"
+    "updated_at": "2026-06-16T11:15:10.066Z"
   },
   {
     "academie": "Besançon",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-besancon-467836",
-    "updated_at": "2026-06-16T11:02:40.086Z"
+    "genre": "Mme",
+    "nom": "Nathalie Albert-Moretti",
+    "adresse": "<a href=\"https://www.openstreetmap.org/search?query=10+Rue+de+la+Convention+25000+Besan%C3%A7on\" target=\"_blank\">📍</a>",
+    "telephone": "03 81 65 47 00",
+    "email": "-",
+    "url": "http://www.ac-besancon.fr/",
+    "updated_at": "2026-06-16T11:15:10.361Z"
   },
   {
     "academie": "Bordeaux",
@@ -33,7 +37,7 @@
     "telephone": "05 57 57 38 00",
     "email": "-",
     "url": "http://www.ac-bordeaux.fr/",
-    "updated_at": "2026-06-16T11:02:41.526Z"
+    "updated_at": "2026-06-16T11:15:10.631Z"
   },
   {
     "academie": "Clermont-Ferrand",
@@ -43,7 +47,7 @@
     "telephone": "04 73 99 30 00",
     "email": "-",
     "url": "http://www.ac-clermont.fr/",
-    "updated_at": "2026-06-16T11:02:42.837Z"
+    "updated_at": "2026-06-16T11:15:10.921Z"
   },
   {
     "academie": "Corse",
@@ -53,7 +57,7 @@
     "telephone": "04 95 50 33 33",
     "email": "-",
     "url": "http://www.ac-corse.fr/",
-    "updated_at": "2026-06-16T11:02:44.239Z"
+    "updated_at": "2026-06-16T11:15:12.262Z"
   },
   {
     "academie": "Créteil",
@@ -63,7 +67,7 @@
     "telephone": "01 57 02 60 00",
     "email": "-",
     "url": "https://www.ac-creteil.fr/",
-    "updated_at": "2026-06-16T11:02:44.541Z"
+    "updated_at": "2026-06-16T11:15:12.529Z"
   },
   {
     "academie": "Dijon",
@@ -73,7 +77,7 @@
     "telephone": "03 80 44 84 00",
     "email": "-",
     "url": "http://www.ac-dijon.fr/",
-    "updated_at": "2026-06-16T11:02:46.220Z"
+    "updated_at": "2026-06-16T11:15:12.818Z"
   },
   {
     "academie": "Grenoble",
@@ -83,13 +87,13 @@
     "telephone": "04 76 74 70 00",
     "email": "-",
     "url": "http://www.ac-grenoble.fr/",
-    "updated_at": "2026-06-16T11:02:47.643Z"
+    "updated_at": "2026-06-16T11:15:13.087Z"
   },
   {
     "academie": "Guadeloupe",
     "error": "Non trouvé",
     "url": "https://www.education.gouv.fr/academie-de-guadeloupe-467824",
-    "updated_at": "2026-06-16T11:02:52.999Z"
+    "updated_at": "2026-06-16T11:15:18.237Z"
   },
   {
     "academie": "Guyane",
@@ -99,7 +103,7 @@
     "telephone": "05 94 25 58 58",
     "email": "-",
     "url": "http://www.ac-guyane.fr/",
-    "updated_at": "2026-06-16T11:02:54.316Z"
+    "updated_at": "2026-06-16T11:15:19.591Z"
   },
   {
     "academie": "La Réunion",
@@ -109,13 +113,17 @@
     "telephone": "02 62 48 10 10",
     "email": "-",
     "url": "http://www.ac-reunion.fr/",
-    "updated_at": "2026-06-16T11:02:55.541Z"
+    "updated_at": "2026-06-16T11:15:21.000Z"
   },
   {
     "academie": "Lille",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-lille-467872",
-    "updated_at": "2026-06-16T11:03:00.193Z"
+    "genre": "Mme",
+    "nom": "Sophie Béjean",
+    "adresse": "<a href=\"https://www.openstreetmap.org/search?query=144+rue+de+Bavay+59000+Lille\" target=\"_blank\">📍</a>",
+    "telephone": "03 20 15 60 00",
+    "email": "-",
+    "url": "http://www.ac-lille.fr/",
+    "updated_at": "2026-06-16T11:15:21.322Z"
   },
   {
     "academie": "Limoges",
@@ -125,7 +133,7 @@
     "telephone": "05 55 11 40 40",
     "email": "-",
     "url": "http://www.ac-limoges.fr/",
-    "updated_at": "2026-06-16T11:03:01.644Z"
+    "updated_at": "2026-06-16T11:15:22.783Z"
   },
   {
     "academie": "Lyon",
@@ -135,7 +143,7 @@
     "telephone": "04 72 80 60 60",
     "email": "-",
     "url": "http://www.ac-lyon.fr/",
-    "updated_at": "2026-06-16T11:03:03.092Z"
+    "updated_at": "2026-06-16T11:15:23.064Z"
   },
   {
     "academie": "Martinique",
@@ -145,25 +153,37 @@
     "telephone": "0596 52 25 00",
     "email": "-",
     "url": "http://www.ac-martinique.fr/",
-    "updated_at": "2026-06-16T11:03:04.571Z"
+    "updated_at": "2026-06-16T11:15:23.335Z"
   },
   {
     "academie": "Mayotte",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-mayotte-467929",
-    "updated_at": "2026-06-16T11:03:09.890Z"
+    "genre": "Mme",
+    "nom": "Valérie Debuchy",
+    "adresse": "<a href=\"https://www.openstreetmap.org/search?query=BP+76+97600+Mayotte\" target=\"_blank\">📍</a>",
+    "telephone": "02 69 61 10 24",
+    "email": "-",
+    "url": "https://www.ac-mayotte.fr/",
+    "updated_at": "2026-06-16T11:15:24.594Z"
   },
   {
     "academie": "Montpellier",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-montpellier-467932",
-    "updated_at": "2026-06-16T11:03:15.402Z"
+    "genre": "Mme",
+    "nom": "Carole Drucker-Godard",
+    "adresse": "<a href=\"https://www.openstreetmap.org/search?query=31+Rue+de+l'Universit%C3%A9+34000+Montpellier\" target=\"_blank\">📍</a>",
+    "telephone": "04 67 91 47 00",
+    "email": "-",
+    "url": "http://www.ac-montpellier.fr/",
+    "updated_at": "2026-06-16T11:15:24.908Z"
   },
   {
     "academie": "Nancy-Metz",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-nancy-metz-467935",
-    "updated_at": "2026-06-16T11:03:20.688Z"
+    "genre": "M.",
+    "nom": "Pierre-François Mourier",
+    "adresse": "<a href=\"https://www.openstreetmap.org/search?query=9+rue+des+Brice-+Rond-point+Marguerite+CS+30013+54035+Nancy+Cedex\" target=\"_blank\">📍</a>",
+    "telephone": "03 83 86 20 20",
+    "email": "-",
+    "url": "http://www.ac-nancy-metz.fr/",
+    "updated_at": "2026-06-16T11:15:25.194Z"
   },
   {
     "academie": "Nantes",
@@ -173,7 +193,7 @@
     "telephone": "02 40 37 37 37",
     "email": "-",
     "url": "http://www.ac-nantes.fr/",
-    "updated_at": "2026-06-16T11:03:22.390Z"
+    "updated_at": "2026-06-16T11:15:25.486Z"
   },
   {
     "academie": "Nice",
@@ -183,7 +203,7 @@
     "telephone": "04 93 53 70 70",
     "email": "-",
     "url": "https://www.ac-nice.fr/",
-    "updated_at": "2026-06-16T11:03:23.754Z"
+    "updated_at": "2026-06-16T11:15:25.762Z"
   },
   {
     "academie": "Normandie",
@@ -193,7 +213,7 @@
     "telephone": "02 31 30 15 00",
     "email": "-",
     "url": "https://www.ac-normandie.fr/",
-    "updated_at": "2026-06-16T11:03:25.194Z"
+    "updated_at": "2026-06-16T11:15:26.033Z"
   },
   {
     "academie": "Nouvelle-Calédonie",
@@ -203,7 +223,7 @@
     "telephone": "00 687 26 61 00",
     "email": "-",
     "url": "https://www.ac-noumea.nc/",
-    "updated_at": "2026-06-16T11:03:26.744Z"
+    "updated_at": "2026-06-16T11:15:26.300Z"
   },
   {
     "academie": "Orléans-Tours",
@@ -213,7 +233,7 @@
     "telephone": "02 38 79 38 79",
     "email": "-",
     "url": "https://www.ac-orleans-tours.fr/",
-    "updated_at": "2026-06-16T11:03:28.311Z"
+    "updated_at": "2026-06-16T11:15:26.612Z"
   },
   {
     "academie": "Paris",
@@ -223,7 +243,7 @@
     "telephone": "01 44 62 40 40",
     "email": "-",
     "url": "https://www.ac-paris.fr/",
-    "updated_at": "2026-06-16T11:03:29.750Z"
+    "updated_at": "2026-06-16T11:15:26.890Z"
   },
   {
     "academie": "Poitiers",
@@ -233,7 +253,7 @@
     "telephone": "05 16 52 66 00",
     "email": "-",
     "url": "https://www.ac-poitiers.fr/",
-    "updated_at": "2026-06-16T11:03:31.217Z"
+    "updated_at": "2026-06-16T11:15:27.163Z"
   },
   {
     "academie": "Polynésie française",
@@ -243,13 +263,17 @@
     "telephone": "00 689 478400",
     "email": "-",
     "url": "https://www.ac-polynesie.pf/",
-    "updated_at": "2026-06-16T11:03:32.825Z"
+    "updated_at": "2026-06-16T11:15:27.478Z"
   },
   {
     "academie": "Reims",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-reims-467968",
-    "updated_at": "2026-06-16T11:03:38.290Z"
+    "genre": "M.",
+    "nom": "Vincent Stanek",
+    "adresse": "<a href=\"https://www.openstreetmap.org/search?query=1+Rue+Navier+51100+Reims\" target=\"_blank\">📍</a>",
+    "telephone": "03 26 05 69 69",
+    "email": "-",
+    "url": "https://www.ac-reims.fr/",
+    "updated_at": "2026-06-16T11:15:27.781Z"
   },
   {
     "academie": "Rennes",
@@ -259,7 +283,7 @@
     "telephone": "02 23 21 77 77",
     "email": "-",
     "url": "https://www.ac-rennes.fr/",
-    "updated_at": "2026-06-16T11:03:39.722Z"
+    "updated_at": "2026-06-16T11:15:28.098Z"
   },
   {
     "academie": "Saint-Pierre-et-Miquelon",
@@ -269,13 +293,17 @@
     "telephone": "0508 41 04 60",
     "email": "ia@ac-spm.fr",
     "url": "https://www.ac-spm.fr/",
-    "updated_at": "2026-06-16T11:03:41.265Z"
+    "updated_at": "2026-06-16T11:15:28.417Z"
   },
   {
     "academie": "Strasbourg",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-strasbourg-467974",
-    "updated_at": "2026-06-16T11:03:46.538Z"
+    "genre": "M.",
+    "nom": "Olivier Klein",
+    "adresse": "<a href=\"https://www.openstreetmap.org/search?query=6+Rue+de+la+Toussaint+67000+Strasbourg\" target=\"_blank\">📍</a>",
+    "telephone": "03 88 23 37 23",
+    "email": "-",
+    "url": "https://www.ac-strasbourg.fr/",
+    "updated_at": "2026-06-16T11:15:28.720Z"
   },
   {
     "academie": "Toulouse",
@@ -285,13 +313,17 @@
     "telephone": "05 61 17 70 00",
     "email": "-",
     "url": "https://www.ac-toulouse.fr/",
-    "updated_at": "2026-06-16T11:03:48.185Z"
+    "updated_at": "2026-06-16T11:15:29.028Z"
   },
   {
     "academie": "Versailles",
-    "error": "Non trouvé",
-    "url": "https://www.education.gouv.fr/academie-de-versailles-467980",
-    "updated_at": "2026-06-16T11:03:53.576Z"
+    "genre": "M.",
+    "nom": "Étienne Champion",
+    "adresse": "<a href=\"https://www.openstreetmap.org/search?query=3+Boulevard+de+Lesseps+78000+Versailles\" target=\"_blank\">📍</a>",
+    "telephone": "01 30 83 44 44",
+    "email": "-",
+    "url": "https://www.ac-versailles.fr/",
+    "updated_at": "2026-06-16T11:15:29.331Z"
   },
   {
     "academie": "Wallis-et-Futuna",
@@ -301,6 +333,6 @@
     "telephone": "00681 72 28 28",
     "email": "-",
     "url": "https://www.ac-wf.wf/",
-    "updated_at": "2026-06-16T11:03:58.009Z"
+    "updated_at": "2026-06-16T11:15:29.645Z"
   }
 ]
