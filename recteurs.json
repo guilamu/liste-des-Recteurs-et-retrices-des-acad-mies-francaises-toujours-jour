@@ -7,7 +7,7 @@
     "telephone": "04 42 91 70 00",
     "email": "-",
     "url": "https://www.ac-aix-marseille.fr/",
-    "updated_at": "2026-06-16T11:43:37.550Z"
+    "updated_at": "2026-06-17T10:46:19.060Z"
   },
   {
     "academie": "Amiens",
@@ -17,7 +17,7 @@
     "telephone": "03 22 82 38 23",
     "email": "ce.rectorat@ac-amiens.fr",
     "url": "http://www.ac-amiens.fr/",
-    "updated_at": "2026-06-16T11:43:37.807Z"
+    "updated_at": "2026-06-17T10:46:20.500Z"
   },
   {
     "academie": "Besançon",
@@ -27,7 +27,7 @@
     "telephone": "03 81 65 47 00",
     "email": "-",
     "url": "http://www.ac-besancon.fr/",
-    "updated_at": "2026-06-16T11:43:38.083Z"
+    "updated_at": "2026-06-17T10:46:20.861Z"
   },
   {
     "academie": "Bordeaux",
@@ -37,7 +37,7 @@
     "telephone": "05 57 57 38 00",
     "email": "-",
     "url": "http://www.ac-bordeaux.fr/",
-    "updated_at": "2026-06-16T11:43:38.408Z"
+    "updated_at": "2026-06-17T10:46:21.228Z"
   },
   {
     "academie": "Clermont-Ferrand",
@@ -47,17 +47,14 @@
     "telephone": "04 73 99 30 00",
     "email": "-",
     "url": "http://www.ac-clermont.fr/",
-    "updated_at": "2026-06-16T11:43:38.646Z"
+    "updated_at": "2026-06-17T10:46:22.597Z"
   },
   {
     "academie": "Corse",
     "genre": "M.",
-    "nom": "Rémi-François Paolini",
-    "adresse": "<a href=\"https://www.openstreetmap.org/search?query=18+Boulevard+Pascal+Rossini+20000+Ajaccio\" target=\"_blank\">📍</a>",
-    "telephone": "04 95 50 33 33",
-    "email": "-",
-    "url": "http://www.ac-corse.fr/",
-    "updated_at": "2026-06-16T11:43:38.934Z"
+    "nom": "Rémi Decout-Paolini",
+    "url": "https://lannuaire.service-public.gouv.fr/corse/corse-du-sud/56ef3fdb-7a64-4d5c-b33c-4434148b3a4a",
+    "updated_at": "2026-06-17T10:46:30.122Z"
   },
   {
     "academie": "Créteil",
@@ -67,7 +64,7 @@
     "telephone": "01 57 02 60 00",
     "email": "-",
     "url": "https://www.ac-creteil.fr/",
-    "updated_at": "2026-06-16T11:43:39.209Z"
+    "updated_at": "2026-06-17T10:46:30.463Z"
   },
   {
     "academie": "Dijon",
@@ -77,7 +74,7 @@
     "telephone": "03 80 44 84 00",
     "email": "-",
     "url": "http://www.ac-dijon.fr/",
-    "updated_at": "2026-06-16T11:43:39.452Z"
+    "updated_at": "2026-06-17T10:46:32.152Z"
   },
   {
     "academie": "Grenoble",
@@ -87,7 +84,7 @@
     "telephone": "04 76 74 70 00",
     "email": "-",
     "url": "http://www.ac-grenoble.fr/",
-    "updated_at": "2026-06-16T11:43:39.758Z"
+    "updated_at": "2026-06-17T10:46:32.512Z"
   },
   {
     "academie": "Guadeloupe",
@@ -97,7 +94,7 @@
     "telephone": "0590 47 81 00",
     "email": "ce.rectorat@ac-guadeloupe.fr",
     "url": "http://www.ac-guadeloupe.fr/",
-    "updated_at": "2026-06-16T11:43:40.038Z"
+    "updated_at": "2026-06-17T10:46:32.888Z"
   },
   {
     "academie": "Guyane",
@@ -117,7 +114,7 @@
     "telephone": "02 62 48 10 10",
     "email": "-",
     "url": "http://www.ac-reunion.fr/",
-    "updated_at": "2026-06-16T11:43:40.582Z"
+    "updated_at": "2026-06-17T10:46:39.480Z"
   },
   {
     "academie": "Lille",
@@ -127,7 +124,7 @@
     "telephone": "03 20 15 60 00",
     "email": "-",
     "url": "http://www.ac-lille.fr/",
-    "updated_at": "2026-06-16T11:43:40.846Z"
+    "updated_at": "2026-06-17T10:46:40.844Z"
   },
   {
     "academie": "Limoges",
@@ -137,7 +134,7 @@
     "telephone": "05 55 11 40 40",
     "email": "-",
     "url": "http://www.ac-limoges.fr/",
-    "updated_at": "2026-06-16T11:43:41.091Z"
+    "updated_at": "2026-06-17T10:46:42.257Z"
   },
   {
     "academie": "Lyon",
@@ -147,7 +144,7 @@
     "telephone": "04 72 80 60 60",
     "email": "-",
     "url": "http://www.ac-lyon.fr/",
-    "updated_at": "2026-06-16T11:43:41.334Z"
+    "updated_at": "2026-06-17T10:46:42.606Z"
   },
   {
     "academie": "Martinique",
@@ -157,7 +154,7 @@
     "telephone": "0596 52 25 00",
     "email": "-",
     "url": "http://www.ac-martinique.fr/",
-    "updated_at": "2026-06-16T11:43:41.575Z"
+    "updated_at": "2026-06-17T10:46:43.925Z"
   },
   {
     "academie": "Mayotte",
@@ -167,7 +164,7 @@
     "telephone": "02 69 61 10 24",
     "email": "-",
     "url": "https://www.ac-mayotte.fr/",
-    "updated_at": "2026-06-16T11:43:41.865Z"
+    "updated_at": "2026-06-17T10:46:44.249Z"
   },
   {
     "academie": "Montpellier",
@@ -187,7 +184,7 @@
     "telephone": "03 83 86 20 20",
     "email": "-",
     "url": "http://www.ac-nancy-metz.fr/",
-    "updated_at": "2026-06-16T11:43:42.401Z"
+    "updated_at": "2026-06-17T10:46:50.606Z"
   },
   {
     "academie": "Nantes",
@@ -197,7 +194,7 @@
     "telephone": "02 40 37 37 37",
     "email": "-",
     "url": "http://www.ac-nantes.fr/",
-    "updated_at": "2026-06-16T11:43:42.684Z"
+    "updated_at": "2026-06-17T10:46:50.941Z"
   },
   {
     "academie": "Nice",
@@ -207,7 +204,7 @@
     "telephone": "04 93 53 70 70",
     "email": "-",
     "url": "https://www.ac-nice.fr/",
-    "updated_at": "2026-06-16T11:43:42.995Z"
+    "updated_at": "2026-06-17T10:46:51.271Z"
   },
   {
     "academie": "Normandie",
@@ -217,7 +214,7 @@
     "telephone": "02 31 30 15 00",
     "email": "-",
     "url": "https://www.ac-normandie.fr/",
-    "updated_at": "2026-06-16T11:43:43.256Z"
+    "updated_at": "2026-06-17T10:46:51.602Z"
   },
   {
     "academie": "Nouvelle-Calédonie",
@@ -227,7 +224,7 @@
     "telephone": "00 687 26 61 00",
     "email": "-",
     "url": "https://www.ac-noumea.nc/",
-    "updated_at": "2026-06-16T11:43:43.524Z"
+    "updated_at": "2026-06-17T10:46:52.796Z"
   },
   {
     "academie": "Orléans-Tours",
@@ -237,7 +234,7 @@
     "telephone": "02 38 79 38 79",
     "email": "-",
     "url": "https://www.ac-orleans-tours.fr/",
-    "updated_at": "2026-06-16T11:43:43.791Z"
+    "updated_at": "2026-06-17T10:46:53.130Z"
   },
   {
     "academie": "Paris",
@@ -247,7 +244,7 @@
     "telephone": "01 44 62 40 40",
     "email": "-",
     "url": "https://www.ac-paris.fr/",
-    "updated_at": "2026-06-16T11:43:44.105Z"
+    "updated_at": "2026-06-17T10:46:53.469Z"
   },
   {
     "academie": "Poitiers",
@@ -267,7 +264,7 @@
     "telephone": "00 689 478400",
     "email": "-",
     "url": "https://www.ac-polynesie.pf/",
-    "updated_at": "2026-06-16T11:43:44.666Z"
+    "updated_at": "2026-06-17T10:46:59.777Z"
   },
   {
     "academie": "Reims",
@@ -287,7 +284,7 @@
     "telephone": "02 23 21 77 77",
     "email": "-",
     "url": "https://www.ac-rennes.fr/",
-    "updated_at": "2026-06-16T11:43:45.407Z"
+    "updated_at": "2026-06-17T10:47:05.277Z"
   },
   {
     "academie": "Saint-Pierre-et-Miquelon",
@@ -297,7 +294,7 @@
     "telephone": "0508 41 04 60",
     "email": "ia@ac-spm.fr",
     "url": "https://www.ac-spm.fr/",
-    "updated_at": "2026-06-16T11:43:45.690Z"
+    "updated_at": "2026-06-17T10:47:06.698Z"
   },
   {
     "academie": "Strasbourg",
@@ -307,7 +304,7 @@
     "telephone": "03 88 23 37 23",
     "email": "-",
     "url": "https://www.ac-strasbourg.fr/",
-    "updated_at": "2026-06-16T11:43:45.998Z"
+    "updated_at": "2026-06-17T10:47:07.097Z"
   },
   {
     "academie": "Toulouse",
@@ -317,7 +314,7 @@
     "telephone": "05 61 17 70 00",
     "email": "-",
     "url": "https://www.ac-toulouse.fr/",
-    "updated_at": "2026-06-16T11:43:46.339Z"
+    "updated_at": "2026-06-17T10:47:07.490Z"
   },
   {
     "academie": "Versailles",
@@ -327,7 +324,7 @@
     "telephone": "01 30 83 44 44",
     "email": "-",
     "url": "https://www.ac-versailles.fr/",
-    "updated_at": "2026-06-16T11:43:46.697Z"
+    "updated_at": "2026-06-17T10:47:07.857Z"
   },
   {
     "academie": "Wallis-et-Futuna",
