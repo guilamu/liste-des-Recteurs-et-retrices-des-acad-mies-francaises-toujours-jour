@@ -1,15 +1,19 @@
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const { connect } = require('puppeteer-real-browser');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
-
-puppeteer.use(StealthPlugin());
 
 const INDEX_URL = "https://www.education.gouv.fr/les-regions-academiques-academies-et-services-departementaux-de-l-education-nationale-6557";
 const CORSE_FALLBACK_URL = "https://lannuaire.service-public.gouv.fr/navigation/corse/corse-du-sud/rectorat";
 const OUTPUT_FILE = path.join(__dirname, 'recteurs.json');
 const HISTORY_FILE = path.join(__dirname, 'history.json');
+
+// Le site est protégé par un "managed challenge" Cloudflare : la première
+// navigation renvoie un interstitiel ("Just a moment...") qui ne contient
+// aucun contenu utile. Il faut laisser au challenge le temps de se résoudre
+// avant de lire le DOM — d'où les attentes conditionnelles ci-dessous.
+const CHALLENGE_TIMEOUT = 60000;   // attente max sur l'index (challenge inclus)
+const PAGE_READY_TIMEOUT = 30000;  // attente max sur une page académie
 
 // ---------- History helpers ----------
 
@@ -143,13 +147,68 @@ function normalizeName(name) {
     .join('');
 }
 
+/**
+ * Renvoie un état de diagnostic de la page courante.
+ * Sert à distinguer un blocage Cloudflare d'un changement de structure du site.
+ */
+async function inspectPage(page) {
+  try {
+    return await page.evaluate(() => ({
+      title: document.title,
+      url: location.href,
+      challenge: /just a moment|un instant|attention required|verifying you are human/i.test(document.title)
+        || !!document.querySelector('#challenge-form, #challenge-running, [name="cf-turnstile-response"]'),
+      textLength: (document.body && document.body.innerText || '').length
+    }));
+  } catch (e) {
+    return { title: '?', url: '?', challenge: false, textLength: 0, error: e.message };
+  }
+}
+
+/**
+ * Attend que la page réellement voulue soit rendue (et non l'interstitiel Cloudflare).
+ * Remplace les `setTimeout` fixes : on attend une condition, pas une durée.
+ *
+ * @param {import('rebrowser-puppeteer-core').Page} page
+ * @param {() => boolean} predicate - exécuté dans le contexte de la page
+ * @param {number} timeout
+ * @returns {Promise<boolean>} true si la condition est remplie dans les temps
+ */
+async function waitForRealPage(page, predicate, timeout) {
+  try {
+    await page.waitForFunction(predicate, { timeout, polling: 500 });
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// Prédicat : le sélecteur d'académies est présent ET peuplé.
+function indexReadyPredicate() {
+  const select = document.querySelector('.svg-select');
+  if (!select) return false;
+  return Array.from(select.querySelectorAll('option')).some(o => o.value && o.value !== '');
+}
+
+// Prédicat : on n'est plus sur un interstitiel Cloudflare et le contenu est rendu.
+function contentReadyPredicate() {
+  const isChallenge = /just a moment|un instant|attention required|verifying you are human/i.test(document.title)
+    || !!document.querySelector('#challenge-form, #challenge-running');
+  if (isChallenge) return false;
+  return !!document.querySelector('main, .fr-container, .fr-highlight, article');
+}
+
 async function scrapeCorseFallback(browser) {
   console.log(" 🚑 Activation du fallback Corse...");
+  // Pas de setViewport : on garde la taille réelle de la fenêtre (un viewport
+  // incohérent avec la fenêtre est un signal de détection). Les pages créées
+  // ici sont automatiquement patchées par puppeteer-real-browser
+  // (hook `targetcreated`), le challenge y est donc géré aussi.
   const page = await browser.newPage();
-  await page.setViewport({ width: 1280, height: 800 });
 
   try {
-    await page.goto(CORSE_FALLBACK_URL, { waitUntil: 'domcontentloaded', timeout: 5000 });
+    await page.goto(CORSE_FALLBACK_URL, { waitUntil: 'domcontentloaded', timeout: PAGE_READY_TIMEOUT });
+    await waitForRealPage(page, contentReadyPredicate, PAGE_READY_TIMEOUT);
 
     const linkElement = await page.evaluateHandle(() => {
       const links = Array.from(document.querySelectorAll('a'));
@@ -208,37 +267,62 @@ async function scrapeCorseFallback(browser) {
 
 async function scrape() {
   console.log("🚀 Lancement du navigateur...");
-  // Launch in headless mode for CI environment
+  // Chrome RÉEL en mode headful (sous Xvfb en CI) : le mode headless de
+  // Puppeteer est détecté par le managed challenge Cloudflare, quelle que
+  // soit l'IP utilisée. puppeteer-real-browser s'appuie sur
+  // rebrowser-puppeteer-core (pas de fuite CDP `Runtime.enable`), démarre
+  // Xvfb automatiquement sous Linux et résout le Turnstile (`turnstile: true`).
   const proxyUrl = process.env.PUPPETEER_PROXY;
   const proxyArgs = proxyUrl ? [`--proxy-server=${proxyUrl}`] : [];
   if (proxyUrl) console.log(`🌐 Proxy actif : ${proxyUrl}`);
   else console.log('🌐 Mode direct (pas de proxy)');
 
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: ['--no-sandbox', '--disable-setuid-sandbox', ...proxyArgs]
+  const { browser, page } = await connect({
+    headless: false,
+    turnstile: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', ...proxyArgs],
+    connectOption: { defaultViewport: null }
   });
 
   const results = [];
 
   try {
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1280, height: 800 });
-
     console.log(`🔍 Navigation vers l'index : ${INDEX_URL}`);
     await page.goto(INDEX_URL, {
-      waitUntil: 'networkidle2',
+      waitUntil: 'domcontentloaded',
       timeout: 60000
     });
 
-    // Attente pour Cloudflare — réduite car on utilise l'API JSON (pas besoin du rendu SVG)
-    console.log("⏳ Attente de 3s pour chargement initial / Cloudflare...");
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    // Attente CONDITIONNELLE (et non plus un setTimeout fixe de 3s) : on attend
+    // que le sélecteur d'académies soit réellement peuplé. Un managed challenge
+    // Cloudflare met 5 à 15s à se résoudre — l'ancienne attente fixe lisait le
+    // DOM de l'interstitiel et concluait à tort « 0 académies ».
+    console.log(`⏳ Attente du rendu réel de la page (challenge Cloudflare éventuel, max ${CHALLENGE_TIMEOUT / 1000}s)...`);
+    const indexReady = await waitForRealPage(page, indexReadyPredicate, CHALLENGE_TIMEOUT);
 
     // DEBUG: Sauvegarder le HTML pour analyse
     const htmlContent = await page.content();
     fs.writeFileSync(path.join(__dirname, 'debug_page.html'), htmlContent);
     console.log("📄 HTML de la page sauvegardé dans debug_page.html");
+
+    if (!indexReady) {
+      // Diagnostic explicite : distinguer blocage Cloudflare et changement de structure.
+      const diag = await inspectPage(page);
+      console.error("🚨 ERREUR CRITIQUE : le sélecteur d'académies n'est jamais apparu.");
+      console.error(`   Titre de la page : "${diag.title}"`);
+      console.error(`   URL finale       : ${diag.url}`);
+      console.error(`   Taille du texte  : ${diag.textLength} caractères`);
+      if (diag.challenge) {
+        console.error("   → Challenge Cloudflare NON résolu (le navigateur est resté sur l'interstitiel).");
+        console.error("     Piste : IP du runner blacklistée, ou durcissement de la politique Cloudflare.");
+      } else {
+        console.error("   → Pas de challenge détecté : la STRUCTURE du site a probablement changé.");
+        console.error("     Piste : vérifier que '.svg-select' existe toujours dans debug_page.html.");
+      }
+      console.error(`   URL testée : ${INDEX_URL}`);
+      process.exit(1);
+    }
+    console.log("✅ Page réelle chargée (challenge franchi).");
 
     // ÉTAPE 1 : Récupérer la liste des académies depuis le select
     const academies = await page.evaluate(() => {
@@ -255,9 +339,10 @@ async function scrape() {
 
     console.log(`✅ ${academies.length} académies trouvées.\n`);
 
+    // Garde-fou : ne devrait plus se déclencher, l'attente conditionnelle
+    // ci-dessus garantit déjà un sélecteur peuplé.
     if (academies.length === 0) {
       console.error("🚨 ERREUR CRITIQUE : Aucune académie trouvée dans le sélecteur !");
-      console.error("Le site a probablement bloqué le scraping (Cloudflare/WAF).");
       console.error("URL testée :", INDEX_URL);
       process.exit(1);
     }
@@ -342,7 +427,7 @@ async function scrape() {
             if (!page.url().includes('les-regions-academiques')) {
               console.log(" 🔙 Retour à la carte...");
               await page.goto(INDEX_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
-              await new Promise(resolve => setTimeout(resolve, 2000));
+              await waitForRealPage(page, indexReadyPredicate, CHALLENGE_TIMEOUT);
             }
 
             let mapClickSuccess = false;
@@ -377,8 +462,8 @@ async function scrape() {
               ]);
             }
 
-            // Petite pause pour laisser Cloudflare tranquille
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Attendre le rendu réel plutôt qu'une pause arbitraire
+            await waitForRealPage(page, contentReadyPredicate, PAGE_READY_TIMEOUT);
 
             const currentUrl = page.url();
             if (currentUrl !== INDEX_URL) {
@@ -419,7 +504,18 @@ async function scrape() {
             }
             console.log(" 📄 Extraction du recteur...");
 
-            await page.goto(academieUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
+            await page.goto(academieUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+
+            // Cloudflare peut réintercaler un challenge sur n'importe quelle page :
+            // on attend le contenu réel avant de lire le HTML, sinon cheerio
+            // analyserait l'interstitiel et conclurait « Nom non trouvé ».
+            const contentReady = await waitForRealPage(page, contentReadyPredicate, PAGE_READY_TIMEOUT);
+            if (!contentReady) {
+              const diag = await inspectPage(page);
+              throw new Error(diag.challenge
+                ? `challenge Cloudflare non résolu sur la page académie (titre: "${diag.title}")`
+                : `contenu de la page jamais rendu (titre: "${diag.title}")`);
+            }
 
           const pageHtml = await page.content();
           // DEBUG: Sauvegarder le HTML de la page académie

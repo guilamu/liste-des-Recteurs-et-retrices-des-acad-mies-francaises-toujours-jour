@@ -1,0 +1,7 @@
+node_modules/
+
+# HTML de debug produits à chaque run (conservés via l'artefact GitHub Actions)
+debug_page.html
+debug_academy_*.html
+debug_failed_*.html
+scraper-errors.json

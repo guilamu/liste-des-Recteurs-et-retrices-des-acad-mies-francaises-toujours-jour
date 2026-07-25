@@ -61,6 +61,27 @@ jobs:
         if: steps.check_skip.outputs.skip != 'true'
         run: npm install
 
+      # ─── Chrome réel + Xvfb ─────────────────────────────────────────────────────
+      # Le scraper lance un Chrome HEADFUL : le mode headless est détecté par le
+      # managed challenge Cloudflare. Xvfb fournit l'affichage virtuel (démarré
+      # automatiquement par puppeteer-real-browser, mais le binaire doit exister).
+      - name: "🖥️ Installer Xvfb et vérifier Chrome"
+        if: steps.check_skip.outputs.skip != 'true'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo "CHROME_BIN=$(command -v google-chrome)" >> $GITHUB_ENV
+            google-chrome --version
+          elif command -v chromium-browser >/dev/null 2>&1; then
+            echo "CHROME_BIN=$(command -v chromium-browser)" >> $GITHUB_ENV
+            chromium-browser --version
+          else
+            echo "❌ Aucun Chrome/Chromium système trouvé sur le runner."
+            exit 1
+          fi
+          echo "✅ Xvfb $(Xvfb -version 2>&1 | head -1) prêt"
+
       - name: Setup SSH keys
         if: steps.check_skip.outputs.skip != 'true'
         env:
@@ -72,17 +93,44 @@ jobs:
           echo "$PROXY_WIN_KEY"   > ~/.ssh/proxy_win
           chmod 600 ~/.ssh/proxy_debian ~/.ssh/proxy_win
 
-      # ─── Tentative 1 : Direct (pas de proxy) ────────────────────────────────────
-      - name: "🟢 Tentative 1 : Scraping direct (GitHub IP)"
-        id: try_direct
+      # ─── Ordre des tentatives : Windows home → Debian → direct (GitHub IP) ──────
+      # Chaque étape est court-circuitée dès qu'une tentative précédente a réussi
+      # (condition `outcome != 'success'`) : le tunnel n'est même pas monté.
+
+      # ─── Tentative 1 : Proxy Windows home ───────────────────────────────────────
+      - name: "🟢 Setup proxy Windows home"
+        id: setup_win
         if: steps.check_skip.outputs.skip != 'true'
+        continue-on-error: true
+        env:
+          PROXY_WIN_HOST: ${{ secrets.PROXY_WIN_HOST }}
+          PROXY_WIN_USER: ${{ secrets.PROXY_WIN_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=15 -i ~/.ssh/proxy_win \
+              -D 1081 -N -f \
+              $PROXY_WIN_USER@$PROXY_WIN_HOST
+          # Vérifier que le tunnel fonctionne réellement
+          sleep 2
+          curl --socks5-hostname localhost:1081 -s -o /dev/null -w "%{http_code}" --max-time 10 https://example.com | grep -q 200 || { echo "❌ Tunnel Windows non fonctionnel"; exit 1; }
+          echo "PROXY_URL=socks5://localhost:1081" >> $GITHUB_ENV
+          echo "✅ Tunnel SOCKS5 Windows home actif et vérifié"
+
+      - name: "🟢 Tentative 1 : Scraping via proxy Windows home"
+        id: try_win
+        if: steps.check_skip.outputs.skip != 'true' && steps.setup_win.outcome == 'success'
+        env:
+          PUPPETEER_PROXY: ${{ env.PROXY_URL }}
         run: node scraper.js
         continue-on-error: true
 
-      # ─── Tentative 2 : Proxy Debian ─────────────────────────────────────────────
+      - name: Kill tunnel Windows
+        if: always() && steps.check_skip.outputs.skip != 'true'
+        run: pkill -f "ssh.*1081" || true
+
+      # ─── Tentative 2 : Proxy Debian (si Windows a échoué) ───────────────────────
       - name: "🟡 Setup proxy Debian"
         id: setup_debian
-        if: steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure'
+        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_win.outcome != 'success'
         continue-on-error: true
         env:
           PROXY_DEBIAN_HOST: ${{ secrets.PROXY_DEBIAN_HOST }}
@@ -99,60 +147,58 @@ jobs:
 
       - name: "🟡 Tentative 2 : Scraping via proxy Debian"
         id: try_debian
-        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.setup_debian.outcome == 'success'
+        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_win.outcome != 'success' && steps.setup_debian.outcome == 'success'
         env:
           PUPPETEER_PROXY: ${{ env.PROXY_URL }}
         run: node scraper.js
         continue-on-error: true
 
       - name: Kill tunnel Debian
-        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure'
+        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_win.outcome != 'success'
         run: pkill -f "ssh.*1080" || true
 
-      # ─── Tentative 3 : Proxy Windows home ───────────────────────────────────────
-      - name: "🔴 Setup proxy Windows home"
-        id: setup_win
-        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.try_debian.outcome != 'success'
-        continue-on-error: true
+      # ─── Tentative 3 : Direct, IP GitHub (si les 2 proxies ont échoué) ──────────
+      # PUPPETEER_PROXY est explicitement vidé : PROXY_URL peut rester positionné
+      # dans $GITHUB_ENV par un setup de tunnel précédent, il ne doit pas fuiter ici.
+      - name: "🔴 Tentative 3 : Scraping direct (GitHub IP)"
+        id: try_direct
+        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_win.outcome != 'success' && steps.try_debian.outcome != 'success'
         env:
-          PROXY_WIN_HOST: ${{ secrets.PROXY_WIN_HOST }}
-          PROXY_WIN_USER: ${{ secrets.PROXY_WIN_USER }}
-        run: |
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=15 -i ~/.ssh/proxy_win \
-              -D 1081 -N -f \
-              $PROXY_WIN_USER@$PROXY_WIN_HOST
-          # Vérifier que le tunnel fonctionne réellement
-          sleep 2
-          curl --socks5-hostname localhost:1081 -s -o /dev/null -w "%{http_code}" --max-time 10 https://example.com | grep -q 200 || { echo "❌ Tunnel Windows non fonctionnel"; exit 1; }
-          echo "PROXY_URL=socks5://localhost:1081" >> $GITHUB_ENV
-          echo "✅ Tunnel SOCKS5 Windows home actif et vérifié"
-
-      - name: "🔴 Tentative 3 : Scraping via proxy Windows home"
-        id: try_win
-        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.try_debian.outcome != 'success' && steps.setup_win.outcome == 'success'
-        env:
-          PUPPETEER_PROXY: ${{ env.PROXY_URL }}
+          PUPPETEER_PROXY: ''
         run: node scraper.js
         continue-on-error: true
 
-      - name: Kill tunnel Windows
-        if: always() && steps.check_skip.outputs.skip != 'true' && steps.try_direct.outcome == 'failure' && steps.try_debian.outcome != 'success'
-        run: pkill -f "ssh.*1081" || true
-
-      # ─── Évaluer le résultat global des 3 proxies ───────────────────────────────
-      - name: "📊 Résultat des tentatives proxy"
+      # ─── Évaluer le résultat global des 3 tentatives ────────────────────────────
+      - name: "📊 Résultat des tentatives"
         id: result
         if: always() && steps.check_skip.outputs.skip != 'true'
         run: |
-          if [ "${{ steps.try_direct.outcome }}" = "success" ] || \
+          if [ "${{ steps.try_win.outcome }}" = "success" ] || \
              [ "${{ steps.try_debian.outcome }}" = "success" ] || \
-             [ "${{ steps.try_win.outcome }}" = "success" ]; then
+             [ "${{ steps.try_direct.outcome }}" = "success" ]; then
             echo "success=true" >> $GITHUB_OUTPUT
-            echo "✅ Au moins une tentative proxy a réussi"
+            echo "✅ Au moins une tentative a réussi"
           else
             echo "success=false" >> $GITHUB_OUTPUT
-            echo "❌ Les 3 proxies ont échoué pour ce run"
+            echo "❌ Les 3 tentatives ont échoué pour ce run (Windows, Debian, direct)"
           fi
+
+      # ─── Conserver les HTML de debug (sinon perdus avec le runner) ─────────────
+      # Sans ça, debug_page.html est écrit puis jeté : c'est précisément le
+      # fichier qui permet de trancher entre blocage Cloudflare et changement
+      # de structure du site.
+      - name: "📄 Upload des HTML de debug"
+        if: always() && steps.check_skip.outputs.skip != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-html-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            debug_page.html
+            debug_academy_*.html
+            debug_failed_*.html
+            scraper-errors.json
+          retention-days: 7
+          if-no-files-found: ignore
 
       # ─── Succès : commit + marquer le jour comme réussi ─────────────────────────
       - name: "✅ Commit results & mark success"
@@ -192,13 +238,13 @@ jobs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `❌ Échec du scraping (3 runs × 3 proxies) - ${new Date().toLocaleDateString('fr-FR')}`,
-              body: `Le scraping des données des recteurs a échoué malgré **3 tentatives espacées d'1 heure**, chacune avec 3 proxies (direct, Debian, Windows).\n\nSoit **9 essais au total** sans succès.${errorDetails}\n\n**Workflow Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              title: `❌ Échec du scraping (3 runs × 3 accès) - ${new Date().toLocaleDateString('fr-FR')}`,
+              body: `Le scraping des données des recteurs a échoué malgré **3 tentatives espacées d'1 heure**, chacune avec 3 accès dans l'ordre : **proxy Windows home, proxy Debian, puis direct (IP GitHub)**.\n\nSoit **9 essais au total** sans succès.${errorDetails}\n\nLe HTML de debug est disponible dans les artefacts du run (rétention 7 jours) : il permet de distinguer un blocage Cloudflare d'un changement de structure du site.\n\n**Workflow Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               labels: ['scraper-error', 'automated']
             });
 
       - name: "💀 Échec final"
         if: always() && steps.result.outputs.success == 'false' && steps.attempt_info.outputs.is_last == 'true'
         run: |
-          echo "❌ 3 runs espacés d'1h ont tous échoué (3 proxies chacun = 9 essais)."
+          echo "❌ 3 runs espacés d'1h ont tous échoué (Windows + Debian + direct chacun = 9 essais)."
           exit 1
