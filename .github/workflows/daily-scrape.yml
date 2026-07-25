@@ -55,7 +55,7 @@ jobs:
         if: steps.check_skip.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       
       - name: Install dependencies
         if: steps.check_skip.outputs.skip != 'true'
@@ -80,7 +80,8 @@ jobs:
             echo "❌ Aucun Chrome/Chromium système trouvé sur le runner."
             exit 1
           fi
-          echo "✅ Xvfb $(Xvfb -version 2>&1 | head -1) prêt"
+          command -v Xvfb >/dev/null 2>&1 || { echo "❌ Xvfb absent après installation."; exit 1; }
+          echo "✅ Xvfb $(dpkg-query -W -f='${Version}' xvfb 2>/dev/null) prêt"
 
       - name: Setup SSH keys
         if: steps.check_skip.outputs.skip != 'true'
@@ -183,12 +184,19 @@ jobs:
             echo "❌ Les 3 tentatives ont échoué pour ce run (Windows, Debian, direct)"
           fi
 
-      # ─── Conserver les HTML de debug (sinon perdus avec le runner) ─────────────
-      # Sans ça, debug_page.html est écrit puis jeté : c'est précisément le
-      # fichier qui permet de trancher entre blocage Cloudflare et changement
-      # de structure du site.
-      - name: "📄 Upload des HTML de debug"
-        if: always() && steps.check_skip.outputs.skip != 'true'
+      # ─── Conserver les HTML de debug EN CAS D'ÉCHEC ────────────────────────────
+      # Sans ça, debug_page.html est écrit puis jeté avec le runner : c'est
+      # précisément le fichier qui permet de trancher entre blocage Cloudflare
+      # et changement de structure du site.
+      # Uniquement quand il y a quelque chose à diagnostiquer : un run 100% réussi
+      # produit ~35 fichiers (570 Ko) qui n'apprennent rien.
+      # Deux cas déclenchent l'upload :
+      #   - échec global (les 3 tentatives ont échoué) ;
+      #   - succès partiel : le scraper sort en succès dès 50% d'académies
+      #     trouvées, mais écrit scraper-errors.json — sans cette 2e condition
+      #     on perdrait les debug_failed_*.html des académies en échec.
+      - name: "📄 Upload des HTML de debug (si échec total ou partiel)"
+        if: always() && steps.check_skip.outputs.skip != 'true' && (steps.result.outputs.success != 'true' || hashFiles('scraper-errors.json') != '')
         uses: actions/upload-artifact@v4
         with:
           name: debug-html-${{ github.run_id }}-${{ github.run_attempt }}
