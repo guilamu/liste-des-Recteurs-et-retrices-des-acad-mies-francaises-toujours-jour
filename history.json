@@ -11,6 +11,11 @@
       "nom": "Pierre Moya",
       "genre": "M.",
       "since": "2025-11-20"
+    },
+    {
+      "nom": "Benoît Bonaimé",
+      "genre": "M.",
+      "since": "2026-08-03"
     }
   ],
   "Besançon": [
@@ -18,6 +23,11 @@
       "nom": "Nathalie Albert-Moretti",
       "genre": "Mme",
       "since": "2025-11-20"
+    },
+    {
+      "nom": "Pierre Moya",
+      "genre": "M.",
+      "since": "2026-08-03"
     }
   ],
   "Bordeaux": [
@@ -95,6 +105,11 @@
       "nom": "Nathalie Mons",
       "genre": "Mme",
       "since": "2025-11-20"
+    },
+    {
+      "nom": "Cécile Laloux",
+      "genre": "Mme",
+      "since": "2026-08-03"
     }
   ],
   "Mayotte": [
@@ -140,6 +155,11 @@
       "nom": "Natacha Chicot",
       "genre": "Mme",
       "since": "2025-11-20"
+    },
+    {
+      "nom": "Emmanuel Roux",
+      "genre": "M.",
+      "since": "2026-08-03"
     }
   ],
   "Normandie": [
@@ -147,6 +167,11 @@
       "nom": "Valérie Cabuil",
       "genre": "Mme",
       "since": "2025-11-20"
+    },
+    {
+      "nom": "Natacha Chicot",
+      "genre": "Mme",
+      "since": "2026-08-03"
     }
   ],
   "Nouvelle-Calédonie": [
@@ -175,6 +200,11 @@
       "nom": "Frédéric Périssat",
       "genre": "M.",
       "since": "2025-11-20"
+    },
+    {
+      "nom": "Nicolas Castoldi",
+      "genre": "M.",
+      "since": "2026-08-03"
     }
   ],
   "Polynésie française": [
@@ -201,6 +231,11 @@
       "nom": "Hélène Insel",
       "genre": "Mme",
       "since": "2025-11-20"
+    },
+    {
+      "nom": "Nathalie Albert-Moretti",
+      "genre": "Mme",
+      "since": "2026-08-03"
     }
   ],
   "Toulouse": [
@@ -265,6 +300,11 @@
       "nom": "Rémi-François Paolini",
       "genre": "M.",
       "since": "2026-06-18"
+    },
+    {
+      "nom": "Nathalie Mons",
+      "genre": "Mme",
+      "since": "2026-08-03"
     }
   ],
   "Saint-Pierre-et-Miquelon": [
